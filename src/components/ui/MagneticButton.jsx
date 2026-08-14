@@ -9,15 +9,18 @@ export default function MagneticButton({
   onClick,
   className = '',
   strength = 0.25,
+  type = 'button',
+  disabled = false,
 }) {
   const ref = useRef(null)
+
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
   })
 
   const handleMouseMove = (event) => {
-    if (!ref.current) return
+    if (!ref.current || disabled) return
 
     const rect = ref.current.getBoundingClientRect()
 
@@ -45,7 +48,8 @@ export default function MagneticButton({
   return (
     <motion.button
       ref={ref}
-      type="button"
+      type={type}
+      disabled={disabled}
       onClick={onClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}

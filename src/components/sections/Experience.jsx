@@ -7,18 +7,22 @@ const journey = [
   {
     id: '01',
     label: 'Education',
-    title: 'Master’s in Computer Science',
+    title: "Master's in Computer Science",
     subtitle: 'Maharishi University of Information Technology',
     location: 'Lucknow',
     description:
-      'Building a strong foundation in computer science while developing practical skills in modern web development.',
+      'Building a strong foundation in computer science while developing practical skills in modern software and web development.',
     focus: [
       'Computer Science Fundamentals',
-      'Web Development',
-      'Problem Solving',
       'Software Development',
+      'Web Technologies',
+      'Problem Solving',
     ],
-    technologies: ['Computer Science', 'Web Development'],
+    technologies: [
+      'Computer Science',
+      'Web Development',
+      'Programming',
+    ],
   },
 
   {
@@ -27,14 +31,19 @@ const journey = [
     title: 'Frontend Development',
     subtitle: 'Learning by building',
     description:
-      'Developing responsive and reusable interfaces with React and Next.js, with a focus on clean structure, usability and visual details.',
+      'Developing responsive and reusable interfaces while strengthening my understanding of modern frontend development and user-focused design.',
     focus: [
       'Responsive Interfaces',
       'Reusable Components',
       'Modern JavaScript',
       'Clean UI Implementation',
     ],
-    technologies: ['React.js', 'Next.js', 'JavaScript', 'Tailwind CSS'],
+    technologies: [
+      'React.js',
+      'Next.js',
+      'JavaScript',
+      'Tailwind CSS',
+    ],
   },
 
   {
@@ -43,14 +52,19 @@ const journey = [
     title: 'Project-Based Learning',
     subtitle: 'Turning ideas into working products',
     description:
-      'Applying what I learn by building practical projects that improve my understanding of frontend development, APIs and real-world application structure.',
+      'Applying what I learn through practical projects, focusing on real-world interfaces, component architecture, API integration and maintainable code.',
     focus: [
       'Real-world UI Development',
       'API Integration',
       'Component Architecture',
       'Problem Solving',
     ],
-    technologies: ['React.js', 'Next.js', 'REST APIs', 'Git'],
+    technologies: [
+      'React.js',
+      'Next.js',
+      'REST APIs',
+      'Git',
+    ],
   },
 
   {
@@ -59,14 +73,19 @@ const journey = [
     title: 'Full-Stack Development',
     subtitle: 'Growing beyond the frontend',
     description:
-      'Currently exploring backend development and the MERN stack to understand how complete web applications work from frontend to database.',
+      'Currently expanding my knowledge beyond frontend development by exploring backend technologies, databases and complete application architecture.',
     focus: [
       'Backend Fundamentals',
       'REST APIs',
       'Database Concepts',
       'Frontend–Backend Integration',
     ],
-    technologies: ['Node.js', 'Express.js', 'MongoDB', 'REST APIs'],
+    technologies: [
+      'Node.js',
+      'Express.js',
+      'MongoDB',
+      'Postman',
+    ],
   },
 ]
 
@@ -79,6 +98,7 @@ const currentFocus = [
 
 export default function Experience() {
   const sectionRef = useRef(null)
+
   const isInView = useInView(sectionRef, {
     once: true,
     amount: 0.1,
@@ -177,7 +197,7 @@ export default function Experience() {
         <div
           className="
             absolute
-            left-[32px]
+            left-1/2
             top-0
             bottom-0
             hidden
@@ -186,7 +206,6 @@ export default function Experience() {
             from-transparent
             via-[#4D8DFF]/10
             to-transparent
-            lg:left-1/2
             lg:block
           "
         />
@@ -306,7 +325,7 @@ export default function Experience() {
               duration: 0.6,
               delay: 0.2,
             }}
-            className="max-w-[380px]"
+            className="max-w-[400px]"
           >
 
             <p
@@ -317,9 +336,9 @@ export default function Experience() {
               "
             >
               I&apos;m an entry-level developer focused on
-              frontend development, building practical projects,
-              learning modern technologies and growing towards
-              full-stack development.
+              frontend development, building practical
+              projects and continuously expanding my skills
+              towards full-stack development.
             </p>
 
           </motion.div>
@@ -484,6 +503,18 @@ export default function Experience() {
                       {item.subtitle}
                     </p>
 
+                    {item.location && (
+                      <p
+                        className="
+                          mt-2
+                          text-[10px]
+                          text-white/20
+                        "
+                      >
+                        {item.location}
+                      </p>
+                    )}
+
                   </div>
 
                   {/* DESCRIPTION */}
@@ -644,7 +675,7 @@ export default function Experience() {
                               text-[#4D8DFF]/60
                             "
                           >
-                            What I&apos;m Building
+                            My Approach
                           </span>
 
                           <p
@@ -659,8 +690,8 @@ export default function Experience() {
                             I focus on understanding the
                             fundamentals first and then
                             applying them through practical
-                            projects and real interface
-                            implementations.
+                            projects, experimentation and
+                            real interface implementations.
                           </p>
 
                         </div>
@@ -677,7 +708,7 @@ export default function Experience() {
                               text-[#4D8DFF]/60
                             "
                           >
-                            Current Focus
+                            What I&apos;m Developing
                           </span>
 
                           <div className="mt-4 space-y-3">
@@ -818,6 +849,7 @@ export default function Experience() {
             >
               Growing one project
               <br />
+
               <span className="text-white/30">
                 at a time.
               </span>
@@ -839,7 +871,7 @@ export default function Experience() {
             >
               My current focus is strengthening my frontend
               skills while gradually moving towards full-stack
-              development. I&apos;m constantly learning,
+              development. I&apos;m continuously learning,
               experimenting and turning that knowledge into
               practical projects.
             </p>

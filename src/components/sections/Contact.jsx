@@ -1,4 +1,3 @@
-// src/components/sections/Contact.jsx
 'use client'
 
 import { useRef, useState } from 'react'
@@ -26,18 +25,86 @@ export default function Contact() {
     message: '',
   })
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [status, setStatus] = useState({
+    type: '',
+    message: '',
+  })
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+
+    // Remove previous status when user starts editing again
+    if (status.message) {
+      setStatus({
+        type: '',
+        message: '',
+      })
+    }
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
-    console.log('Form submitted:', formData)
+    if (isSubmitting) return
 
-    alert('Thank you for reaching out! I will get back to you soon.')
+    setIsSubmitting(true)
 
-    setFormData({
-      name: '',
-      email: '',
+    setStatus({
+      type: '',
       message: '',
     })
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message || 'Something went wrong. Please try again.'
+        )
+      }
+
+      setStatus({
+        type: 'success',
+        message: 'Message sent successfully. I will get back to you soon.',
+      })
+
+      setFormData({
+        name: '',
+        email: '',
+        message: '',
+      })
+      setTimeout(() => {
+  setStatus({
+    type: '',
+    message: '',
+  })
+}, 4000)
+    } catch (error) {
+      console.error('Contact form error:', error)
+
+      setStatus({
+        type: 'error',
+        message:
+          error.message ||
+          'Unable to send your message. Please try again.',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -56,12 +123,9 @@ export default function Contact() {
         lg:py-36
       "
     >
-      {/* =====================================================
-          BACKGROUND
-      ====================================================== */}
+      {/* BACKGROUND */}
 
       <div className="pointer-events-none absolute inset-0">
-        {/* Technical grid */}
         <div
           className="absolute inset-0 opacity-[0.025]"
           style={{
@@ -80,7 +144,6 @@ export default function Contact() {
           }}
         />
 
-        {/* Blue atmosphere */}
         <div className="absolute left-[-180px] top-[15%] h-[420px] w-[420px] rounded-full bg-[#2563EB]/[0.035] blur-[140px]" />
 
         <div className="absolute bottom-[-180px] right-[-140px] h-[450px] w-[450px] rounded-full bg-[#2563EB]/[0.035] blur-[150px]" />
@@ -90,9 +153,7 @@ export default function Contact() {
 
       <div className="relative z-10 mx-auto max-w-[1500px]">
 
-        {/* =====================================================
-            HEADER
-        ====================================================== */}
+        {/* HEADER */}
 
         <div
           className="
@@ -108,8 +169,6 @@ export default function Contact() {
             md:items-end
           "
         >
-          {/* Left */}
-
           <motion.div
             initial={{
               opacity: 0,
@@ -130,15 +189,8 @@ export default function Contact() {
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-8 bg-[#4D8DFF]" />
 
-              <span
-                className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.2em]
-                  text-white/35
-                "
-              >
-                 Contact
+              <span className="text-[10px] uppercase tracking-[0.2em] text-white/35">
+                Contact
               </span>
             </div>
 
@@ -160,8 +212,6 @@ export default function Contact() {
               </span>
             </h2>
           </motion.div>
-
-          {/* Right description */}
 
           <motion.div
             initial={{
@@ -189,15 +239,11 @@ export default function Contact() {
           </motion.div>
         </div>
 
-        {/* =====================================================
-            MAIN CONTENT
-        ====================================================== */}
+        {/* MAIN CONTENT */}
 
         <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
 
-          {/* =================================================
-              LEFT — CONTACT INFORMATION
-          ================================================== */}
+          {/* LEFT */}
 
           <motion.div
             initial={{
@@ -217,9 +263,6 @@ export default function Contact() {
               delay: 0.1,
             }}
           >
-
-            {/* Technical label */}
-
             <div className="mb-10 flex items-center justify-between border-b border-white/[0.07] pb-4">
               <div className="flex items-center gap-2">
                 <Terminal
@@ -228,24 +271,11 @@ export default function Contact() {
                   className="text-[#4D8DFF]"
                 />
 
-                <span
-                  className="
-                    text-[9px]
-                    uppercase
-                    tracking-[0.15em]
-                    text-white/30
-                  "
-                >
+                <span className="text-[9px] uppercase tracking-[0.15em] text-white/30">
                   contact.info
                 </span>
               </div>
-
-              <span className="font-mono text-[9px] text-white/15">
-                01
-              </span>
             </div>
-
-            {/* Intro */}
 
             <h3
               className="
@@ -281,11 +311,11 @@ export default function Contact() {
               into meaningful digital experiences.
             </p>
 
-            {/* Contact details */}
+            {/* CONTACT DETAILS */}
 
             <div className="mt-12 border-t border-white/[0.07]">
 
-              {/* Email */}
+              {/* EMAIL */}
 
               <div
                 className="
@@ -322,21 +352,16 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <span
-                      className="
-                        block
-                        text-[8px]
-                        uppercase
-                        tracking-[0.15em]
-                        text-white/20
-                      "
-                    >
+                    <span className="block text-[8px] uppercase tracking-[0.15em] text-white/20">
                       Email
                     </span>
 
-                    <span className="mt-1 block text-xs text-white/55">
+                    <a
+                      href="mailto:simranguatam@gmail.com"
+                      className="mt-1 block text-xs text-white/55 transition-colors hover:text-[#4D8DFF]"
+                    >
                       simranguatam@gmail.com
-                    </span>
+                    </a>
                   </div>
                 </div>
 
@@ -354,7 +379,7 @@ export default function Contact() {
                 />
               </div>
 
-              {/* Location */}
+              {/* LOCATION */}
 
               <div
                 className="
@@ -391,15 +416,7 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <span
-                      className="
-                        block
-                        text-[8px]
-                        uppercase
-                        tracking-[0.15em]
-                        text-white/20
-                      "
-                    >
+                    <span className="block text-[8px] uppercase tracking-[0.15em] text-white/20">
                       Location
                     </span>
 
@@ -423,36 +440,17 @@ export default function Contact() {
                 />
               </div>
 
-              {/* Availability */}
+              {/* STATUS */}
 
               <div className="flex items-center gap-4 py-5">
                 <span className="relative flex h-2 w-2">
-                  <span
-                    className="
-                      absolute
-                      inline-flex
-                      h-full
-                      w-full
-                      animate-ping
-                      rounded-full
-                      bg-[#4D8DFF]
-                      opacity-40
-                    "
-                  />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4D8DFF] opacity-40" />
 
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-[#4D8DFF]" />
                 </span>
 
                 <div>
-                  <span
-                    className="
-                      block
-                      text-[8px]
-                      uppercase
-                      tracking-[0.15em]
-                      text-white/20
-                    "
-                  >
+                  <span className="block text-[8px] uppercase tracking-[0.15em] text-white/20">
                     Status
                   </span>
 
@@ -463,8 +461,6 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Bottom statement */}
-
             <div className="mt-10 border-l border-[#4D8DFF]/30 pl-4">
               <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/25">
                 Curiosity → Craft → Experience
@@ -472,9 +468,7 @@ export default function Contact() {
             </div>
           </motion.div>
 
-          {/* =================================================
-              RIGHT — FORM
-          ================================================== */}
+          {/* RIGHT — FORM */}
 
           <motion.div
             initial={{
@@ -494,9 +488,6 @@ export default function Contact() {
               delay: 0.2,
             }}
           >
-
-            {/* Form technical frame */}
-
             <div
               className="
                 relative
@@ -506,7 +497,7 @@ export default function Contact() {
               "
             >
 
-              {/* Form header */}
+              {/* FORM HEADER */}
 
               <div
                 className="
@@ -526,31 +517,20 @@ export default function Contact() {
                     className="text-[#4D8DFF]"
                   />
 
-                  <span
-                    className="
-                      text-[9px]
-                      uppercase
-                      tracking-[0.15em]
-                      text-white/30
-                    "
-                  >
+                  <span className="text-[9px] uppercase tracking-[0.15em] text-white/30">
                     send.message
                   </span>
                 </div>
-
-                <span className="font-mono text-[9px] text-white/15">
-                  02
-                </span>
               </div>
 
-              {/* Form */}
+              {/* FORM */}
 
               <form
                 onSubmit={handleSubmit}
                 className="p-6 sm:p-8"
               >
 
-                {/* Name */}
+                {/* NAME */}
 
                 <motion.div
                   initial={{
@@ -568,33 +548,22 @@ export default function Contact() {
                   transition={{
                     delay: 0.35,
                   }}
-                  className="group"
                 >
                   <label
                     htmlFor="name"
-                    className="
-                      mb-3
-                      block
-                      text-[9px]
-                      uppercase
-                      tracking-[0.15em]
-                      text-white/25
-                    "
+                    className="mb-3 block text-[9px] uppercase tracking-[0.15em] text-white/25"
                   >
-                    01 / Name
+                    Name
                   </label>
 
                   <input
                     id="name"
+                    name="name"
                     type="text"
                     placeholder="Your name"
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        name: e.target.value,
-                      })
-                    }
+                    onChange={handleChange}
+                    autoComplete="name"
                     className="
                       w-full
                       border-b
@@ -614,7 +583,7 @@ export default function Contact() {
                   />
                 </motion.div>
 
-                {/* Email */}
+                {/* EMAIL */}
 
                 <motion.div
                   initial={{
@@ -632,33 +601,23 @@ export default function Contact() {
                   transition={{
                     delay: 0.42,
                   }}
-                  className="group mt-8"
+                  className="mt-8"
                 >
                   <label
                     htmlFor="email"
-                    className="
-                      mb-3
-                      block
-                      text-[9px]
-                      uppercase
-                      tracking-[0.15em]
-                      text-white/25
-                    "
+                    className="mb-3 block text-[9px] uppercase tracking-[0.15em] text-white/25"
                   >
-                    02 / Email
+                     Email
                   </label>
 
                   <input
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="your@email.com"
                     value={formData.email}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        email: e.target.value,
-                      })
-                    }
+                    onChange={handleChange}
+                    autoComplete="email"
                     className="
                       w-full
                       border-b
@@ -678,7 +637,8 @@ export default function Contact() {
                   />
                 </motion.div>
 
-                {/* Message */}
+
+                {/* MESSAGE */}
 
                 <motion.div
                   initial={{
@@ -694,35 +654,24 @@ export default function Contact() {
                       : {}
                   }
                   transition={{
-                    delay: 0.49,
+                    delay: 0.56,
                   }}
-                  className="group mt-8"
+                  className="mt-8"
                 >
                   <label
                     htmlFor="message"
-                    className="
-                      mb-3
-                      block
-                      text-[9px]
-                      uppercase
-                      tracking-[0.15em]
-                      text-white/25
-                    "
+                    className="mb-3 block text-[9px] uppercase tracking-[0.15em] text-white/25"
                   >
-                    03 / Message
+                     Message
                   </label>
 
                   <textarea
                     id="message"
+                    name="message"
                     rows={5}
                     placeholder="Tell me a little about your project..."
                     value={formData.message}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        message: e.target.value,
-                      })
-                    }
+                    onChange={handleChange}
                     className="
                       w-full
                       resize-none
@@ -744,7 +693,37 @@ export default function Contact() {
                   />
                 </motion.div>
 
-                {/* Submit */}
+                {/* STATUS */}
+
+                {status.message && (
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      y: 8,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    className={`
+                      mt-6
+                      border
+                      px-4
+                      py-3
+                      text-[10px]
+                      leading-5
+                      ${
+                        status.type === 'success'
+                          ? 'border-[#4D8DFF]/20 bg-[#4D8DFF]/[0.04] text-[#7CA7FF]'
+                          : 'border-red-400/20 bg-red-400/[0.04] text-red-300'
+                      }
+                    `}
+                  >
+                    {status.message}
+                  </motion.div>
+                )}
+
+                {/* SUBMIT */}
 
                 <motion.div
                   initial={{
@@ -760,13 +739,14 @@ export default function Contact() {
                       : {}
                   }
                   transition={{
-                    delay: 0.56,
+                    delay: 0.63,
                   }}
                   className="mt-10"
                 >
                   <MagneticButton
                     type="submit"
-                    className="
+                    disabled={isSubmitting}
+                    className={`
                       group
                       relative
                       inline-flex
@@ -789,26 +769,32 @@ export default function Contact() {
                       hover:border-[#4D8DFF]
                       hover:bg-[#4D8DFF]/[0.1]
                       hover:text-white
-                    "
+                      disabled:cursor-not-allowed
+                      disabled:opacity-50
+                    `}
                   >
                     <span className="relative z-10">
-                      Send Message
+                      {isSubmitting ? 'Sending...' : 'Send Message'}
                     </span>
 
-                    <ArrowUpRight
-                      size={15}
-                      strokeWidth={1.3}
-                      className="
-                        relative
-                        z-10
-                        transition-transform
-                        duration-300
-                        group-hover:-translate-y-1
-                        group-hover:translate-x-1
-                      "
-                    />
+                    {!isSubmitting && (
+                      <ArrowUpRight
+                        size={15}
+                        strokeWidth={1.3}
+                        className="
+                          relative
+                          z-10
+                          transition-transform
+                          duration-300
+                          group-hover:-translate-y-1
+                          group-hover:translate-x-1
+                        "
+                      />
+                    )}
 
-                    {/* Hover sweep */}
+                    {isSubmitting && (
+                      <span className="relative z-10 h-3.5 w-3.5 animate-spin rounded-full border border-white/20 border-t-[#4D8DFF]" />
+                    )}
 
                     <motion.span
                       className="
@@ -835,7 +821,7 @@ export default function Contact() {
                 </motion.div>
               </form>
 
-              {/* Footer */}
+              {/* FOOTER */}
 
               <div
                 className="
@@ -848,23 +834,16 @@ export default function Contact() {
                   py-4
                 "
               >
-                <span
-                  className="
-                    text-[8px]
-                    uppercase
-                    tracking-[0.12em]
-                    text-white/20
-                  "
-                >
+                <span className="text-[8px] uppercase tracking-[0.12em] text-white/20">
                   Response usually within 24–48h
                 </span>
 
                 <span className="font-mono text-[8px] text-[#4D8DFF]/50">
-                  READY
+                  {isSubmitting ? 'SENDING' : 'READY'}
                 </span>
               </div>
 
-              {/* Technical corner marks */}
+              {/* CORNER MARKS */}
 
               <span className="absolute -left-px -top-px h-4 w-4 border-l border-t border-[#4D8DFF]/50" />
               <span className="absolute -right-px -top-px h-4 w-4 border-r border-t border-[#4D8DFF]/50" />
@@ -874,9 +853,7 @@ export default function Contact() {
           </motion.div>
         </div>
 
-        {/* =====================================================
-            BOTTOM
-        ====================================================== */}
+        {/* BOTTOM */}
 
         <motion.div
           initial={{
@@ -910,14 +887,7 @@ export default function Contact() {
           "
         >
           <div>
-            <p
-              className="
-                text-[9px]
-                uppercase
-                tracking-[0.2em]
-                text-white/20
-              "
-            >
+            <p className="text-[9px] uppercase tracking-[0.2em] text-white/20">
               End of page
             </p>
 
@@ -929,15 +899,7 @@ export default function Contact() {
           <div className="flex items-center gap-3">
             <span className="h-1.5 w-1.5 rounded-full bg-[#4D8DFF]" />
 
-            <span
-              className="
-                font-mono
-                text-[8px]
-                uppercase
-                tracking-[0.15em]
-                text-white/25
-              "
-            >
+            <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-white/25">
               Let&apos;s create something
             </span>
           </div>
@@ -946,3 +908,4 @@ export default function Contact() {
     </section>
   )
 }
+
