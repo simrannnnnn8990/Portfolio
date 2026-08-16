@@ -1,476 +1,836 @@
-// src/components/sections/Loader.jsx
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+
+const stages = [
+  {
+   
+    text: "INITIALIZING",
+    accent: "THE INTERFACE",
+  },
+  {
+    
+    text: "ASSEMBLING",
+    accent: "THE EXPERIENCE",
+  },
+  {
+    
+    text: "SHAPING",
+    accent: "THE DETAILS",
+  },
+  {
+   
+    text: "REFINING",
+    accent: "THE CRAFT",
+  },
+  {
+    
+    text: "ALMOST",
+    accent: "READY",
+  },
+];
+
+const stairs = [
+  { width: "18%", delay: 0 },
+  { width: "28%", delay: 0.04 },
+  { width: "38%", delay: 0.08 },
+  { width: "48%", delay: 0.12 },
+  { width: "58%", delay: 0.16 },
+  { width: "68%", delay: 0.2 },
+  { width: "78%", delay: 0.24 },
+  { width: "88%", delay: 0.28 },
+];
 
 export default function Loader({ onComplete }) {
-  const [progress, setProgress] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
+  const [stage, setStage] = useState(0);
 
   useEffect(() => {
-    let timeout
+    const timers = [];
 
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
+    stages.forEach((_, index) => {
+      if (index === 0) return;
 
-          timeout = setTimeout(() => {
-            setIsLoading(false)
+      timers.push(
+        setTimeout(() => {
+          setStage(index);
+        }, index * 1700)
+      );
+    });
 
-            setTimeout(() => {
-              onComplete?.()
-            }, 450)
-          }, 300)
-
-          return 100
+    timers.push(
+      setTimeout(() => {
+        if (onComplete) {
+          onComplete();
         }
-
-        // Smooth, controlled progress
-        const increment =
-          prev < 60 ? 6 :
-          prev < 85 ? 3 :
-          1.5
-
-        return Math.min(prev + increment, 100)
-      })
-    }, 55)
+      }, 12000)
+    );
 
     return () => {
-      clearInterval(interval)
-      clearTimeout(timeout)
-    }
-  }, [onComplete])
+      timers.forEach(clearTimeout);
+    };
+  }, [onComplete]);
+
+  const progress = Math.min(96, (stage + 1) * 19);
 
   return (
     <AnimatePresence>
-      {isLoading && (
-        <motion.div
-          initial={{ opacity: 1 }}
-          exit={{
-            opacity: 0,
-            scale: 1.02,
-          }}
-          transition={{
-            duration: 0.7,
+      <motion.main
+        key="loader"
+        className="
+          fixed
+          inset-0
+          z-[9999]
+          overflow-hidden
+          bg-[#050b16]
+          text-white
+        "
+        initial={{
+          opacity: 1,
+        }}
+        exit={{
+          opacity: 0,
+          scale: 1.015,
+          transition: {
+            duration: 0.9,
             ease: [0.76, 0, 0.24, 1],
-          }}
-          className="
-            fixed
-            inset-0
-            z-[9998]
-            flex
-            items-center
-            justify-center
-            overflow-hidden
-            bg-[#050B16]
-            text-white
-          "
-        >
-          {/* =========================================
-              BACKGROUND
-          ========================================== */}
+          },
+        }}
+      >
+        {/* =====================================================
+            BACKGROUND
+        ====================================================== */}
 
-          <div className="pointer-events-none absolute inset-0">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          {/* BASE */}
 
-            {/* Technical grid */}
-            <div
-              className="
-                absolute
-                inset-0
-                opacity-[0.025]
-              "
-              style={{
-                backgroundImage: `
-                  linear-gradient(
-                    rgba(255,255,255,0.8) 1px,
-                    transparent 1px
-                  ),
-                  linear-gradient(
-                    90deg,
-                    rgba(255,255,255,0.8) 1px,
-                    transparent 1px
-                  )
-                `,
-                backgroundSize: '70px 70px',
-              }}
-            />
+          <div className="absolute inset-0 bg-[#050b16]" />
 
-            {/* Blue ambient glow */}
-            <motion.div
-              animate={{
-                scale: [1, 1.08, 1],
-                opacity: [0.25, 0.4, 0.25],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-              className="
-                absolute
-                left-1/2
-                top-1/2
-                h-[420px]
-                w-[420px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                bg-[#2563EB]/[0.055]
-                blur-[140px]
-              "
-            />
+          {/* BLUE CENTER ATMOSPHERE */}
 
-            {/* Small corner glow */}
-            <div
-              className="
-                absolute
-                -left-40
-                top-1/4
-                h-80
-                w-80
-                rounded-full
-                bg-[#2563EB]/[0.025]
-                blur-[120px]
-              "
-            />
+          <motion.div
+            className="
+              absolute
+              left-1/2
+              top-1/2
+              h-[65vh]
+              w-[75vw]
+              max-w-[1100px]
+              -translate-x-1/2
+              -translate-y-1/2
+              rounded-full
+              bg-[#4D8DFF]/[0.045]
+              blur-[120px]
+            "
+            animate={{
+              scale: [1, 1.06, 1],
+              opacity: [0.45, 0.75, 0.45],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
 
+          {/* UPPER BLUE ATMOSPHERE */}
+
+          <motion.div
+            className="
+              absolute
+              left-[-8%]
+              top-[-35%]
+              h-[70vh]
+              w-[55vw]
+              rounded-full
+              bg-[#4D8DFF]/[0.035]
+              blur-[110px]
+            "
+            animate={{
+              x: [0, 50, 0],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* LOWER BLUE ATMOSPHERE */}
+
+          <motion.div
+            className="
+              absolute
+              bottom-[-40%]
+              right-[-15%]
+              h-[70vh]
+              w-[55vw]
+              rounded-full
+              bg-[#4D8DFF]/[0.025]
+              blur-[130px]
+            "
+            animate={{
+              x: [0, -50, 0],
+              y: [0, -25, 0],
+              opacity: [0.25, 0.5, 0.25],
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* =================================================
+              ARCHITECTURAL GRID
+          ================================================== */}
+
+          <div className="absolute inset-0 opacity-[0.025]">
+            <div className="absolute left-0 right-0 top-[23%] h-px bg-white" />
+            <div className="absolute left-0 right-0 top-[50%] h-px bg-[#4D8DFF]" />
+            <div className="absolute left-0 right-0 top-[77%] h-px bg-white" />
+
+            <div className="absolute left-[17%] top-0 h-full w-px bg-white" />
+            <div className="absolute left-[83%] top-0 h-full w-px bg-white" />
           </div>
 
-          {/* =========================================
-              CONTENT
-          ========================================== */}
+          {/* =================================================
+              TOP BLUE STRIP
+              Comes from top before main reveal
+          ================================================== */}
 
-          <div className="relative z-10 w-full max-w-[420px] px-8">
+          <motion.div
+            className="
+              absolute
+              left-0
+              top-0
+              h-[1px]
+              w-full
+              origin-left
+              bg-[#4D8DFF]
+              shadow-[0_0_18px_rgba(77,141,255,0.8)]
+            "
+            initial={{
+              scaleX: 0,
+              opacity: 0,
+            }}
+            animate={{
+              scaleX: [0, 1, 1],
+              opacity: [0, 1, 0.35],
+            }}
+            transition={{
+              duration: 2.4,
+              times: [0, 0.65, 1],
+              ease: [0.76, 0, 0.24, 1],
+            }}
+          />
 
-            {/* Top metadata */}
+          {/* =================================================
+              TOP LIGHT SWEEP
+          ================================================== */}
 
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: -10,
-              }}
+          <motion.div
+            className="
+              absolute
+              left-[-35%]
+              top-[7%]
+              h-px
+              w-[35%]
+              bg-gradient-to-r
+              from-transparent
+              via-[#4D8DFF]
+              to-transparent
+              shadow-[0_0_18px_rgba(77,141,255,0.6)]
+            "
+            initial={{
+              x: "0vw",
+              opacity: 0,
+            }}
+            animate={{
+              x: "380vw",
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: 3.8,
+              delay: 0.5,
+              ease: "linear",
+            }}
+          />
+
+          {/* =================================================
+              CENTER HORIZONTAL BLUE LIGHT
+          ================================================== */}
+
+          <motion.div
+            className="
+              absolute
+              left-[-30%]
+              top-1/2
+              h-px
+              w-[40%]
+              bg-gradient-to-r
+              from-transparent
+              via-[#4D8DFF]/60
+              to-transparent
+              blur-[1px]
+            "
+            animate={{
+              x: ["0vw", "220vw"],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              repeatDelay: 3,
+              ease: "linear",
+            }}
+          />
+
+          {/* =================================================
+              VERTICAL BLUE LIGHT
+          ================================================== */}
+
+          <motion.div
+            className="
+              absolute
+              left-[30%]
+              top-[-30%]
+              h-[35%]
+              w-px
+              bg-gradient-to-b
+              from-transparent
+              via-[#4D8DFF]/40
+              to-transparent
+            "
+            animate={{
+              y: ["0vh", "170vh"],
+            }}
+            transition={{
+              duration: 11,
+              repeat: Infinity,
+              repeatDelay: 4,
+              ease: "linear",
+            }}
+          />
+
+          {/* =================================================
+              CORNER FRAME
+          ================================================== */}
+
+          <div
+            className="
+              absolute
+              left-6
+              top-24
+              h-12
+              w-12
+              border-l
+              border-t
+              border-[#4D8DFF]/[0.12]
+              sm:left-10
+            "
+          />
+
+          <div
+            className="
+              absolute
+              bottom-24
+              right-6
+              h-12
+              w-12
+              border-b
+              border-r
+              border-[#4D8DFF]/[0.12]
+              sm:right-10
+            "
+          />
+
+          {/* =================================================
+              AMBIENT POINTS
+          ================================================== */}
+
+          <div className="absolute left-[14%] top-[31%] h-[2px] w-[2px] rounded-full bg-[#4D8DFF]/50" />
+
+          <div className="absolute right-[19%] top-[38%] h-[2px] w-[2px] rounded-full bg-[#4D8DFF]/40" />
+
+          <div className="absolute left-[24%] bottom-[26%] h-[1px] w-[1px] rounded-full bg-[#4D8DFF]/60" />
+
+          <div className="absolute right-[28%] bottom-[21%] h-[2px] w-[2px] rounded-full bg-[#4D8DFF]/40" />
+
+          {/* =================================================
+              VIGNETTE
+          ================================================== */}
+
+          <div
+            className="
+              absolute
+              inset-0
+              bg-[radial-gradient(circle_at_center,transparent_32%,rgba(2,7,15,0.72)_100%)]
+            "
+          />
+        </div>
+
+        {/* =====================================================
+            TOP HEADER
+        ====================================================== */}
+
+        <div
+          className="
+            absolute
+            left-0
+            right-0
+            top-0
+            z-20
+            flex
+            items-center
+            justify-between
+            px-6
+            py-6
+            sm:px-10
+            lg:px-14
+          "
+        >
+          {/* <div className="flex items-center gap-4">
+            <motion.span
+              className="
+                h-px
+                w-8
+                bg-[#4D8DFF]
+                shadow-[0_0_10px_rgba(77,141,255,0.45)]
+              "
               animate={{
-                opacity: 1,
-                y: 0,
+                width: [24, 40, 24],
+                opacity: [0.45, 1, 0.45],
               }}
               transition={{
-                duration: 0.6,
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
               }}
+            />
+
+            <span
               className="
-                mb-8
-                flex
-                items-center
-                justify-between
-                text-[9px]
+                text-[10px]
+                font-medium
                 uppercase
-                tracking-[0.2em]
-                text-white/25
+                tracking-[0.42em]
+                text-white/45
+                sm:text-[11px]
               "
             >
-              <span>Portfolio</span>
+              Build something meaningful
+            </span>
+          </div> */}
+        </div>
 
-              <span className="flex items-center gap-2">
-                <span className="
-                  h-1.5
-                  w-1.5
-                  rounded-full
-                  bg-[#4D8DFF]
-                " />
+        {/* =====================================================
+            MAIN LOADER
+        ====================================================== */}
 
-                Frontend Developer
-              </span>
-            </motion.div>
+        <div className="relative flex h-full items-center justify-center">
+          <div className="relative flex w-full flex-col items-center">
 
-            {/* =====================================
-                LOGO / MARK
-            ====================================== */}
+            {/* =================================================
+                TOP STRIP → CENTRAL REVEAL
+            ================================================== */}
 
-            <div className="mb-10 flex justify-center">
+            <motion.div
+              className="
+                pointer-events-none
+                absolute
+                left-1/2
+                top-[18%]
+                h-px
+                w-[75%]
+                -translate-x-1/2
+                bg-gradient-to-r
+                from-transparent
+                via-[#4D8DFF]/30
+                to-transparent
+              "
+              initial={{
+                scaleX: 0,
+                opacity: 0,
+              }}
+              animate={{
+                scaleX: [0, 1, 1],
+                opacity: [0, 0.8, 0.25],
+              }}
+              transition={{
+                duration: 2.2,
+                delay: 1,
+                times: [0, 0.7, 1],
+                ease: [0.76, 0, 0.24, 1],
+              }}
+            />
 
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 0.8,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
-                transition={{
-                  duration: 0.7,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="relative"
-              >
+            {/* =================================================
+                STAIR SYSTEM
+            ================================================== */}
 
-                {/* Outer rotating ring */}
-
+            <div
+              className="
+                relative
+                flex
+                h-[240px]
+                w-full
+                flex-col
+                items-center
+                justify-center
+                gap-[7px]
+                sm:h-[290px]
+                lg:h-[330px]
+              "
+            >
+              {stairs.map((stair, index) => (
                 <motion.div
-                  animate={{
-                    rotate: 360,
-                  }}
-                  transition={{
-                    duration: 12,
-                    repeat: Infinity,
-                    ease: 'linear',
-                  }}
-                  className="
-                    absolute
-                    -inset-3
-                    rounded-full
-                    border
-                    border-[#4D8DFF]/10
-                    border-t-[#4D8DFF]/60
-                  "
-                />
-
-                {/* Main mark */}
-
-                <div
+                  key={index}
                   className="
                     relative
-                    flex
-                    h-20
-                    w-20
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-[#4D8DFF]/20
-                    bg-[#081120]
+                    h-[2px]
+                    overflow-hidden
+                    bg-white/[0.035]
                   "
+                  style={{
+                    width: stair.width,
+                  }}
+                  initial={{
+                    scaleX: 0,
+                    opacity: 0,
+                  }}
+                  animate={{
+                    scaleX: 1,
+                    opacity: 1,
+                  }}
+                  transition={{
+                    duration: 0.75,
+                    delay: 0.8 + stair.delay,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                 >
+                  {/* BLUE MAIN STRIP */}
 
-                  <span
+                  <motion.div
                     className="
-                      font-clash
-                      text-2xl
-                      font-semibold
-                      tracking-[-0.05em]
+                      absolute
+                      inset-y-0
+                      left-0
+                      w-full
+                      bg-[#4D8DFF]
+                      shadow-[0_0_12px_rgba(77,141,255,0.7)]
+                    "
+                    initial={{
+                      x: "-105%",
+                    }}
+                    animate={{
+                      x: "105%",
+                    }}
+                    transition={{
+                      duration: 1.2,
+                      delay: 1.15 + stair.delay,
+                      ease: [0.76, 0, 0.24, 1],
+                    }}
+                  />
+
+                  {/* WHITE-BLUE LIGHT PASS */}
+
+                  <motion.div
+                    className="
+                      absolute
+                      inset-y-0
+                      left-0
+                      w-[18%]
+                      bg-white/70
+                      blur-[2px]
+                    "
+                    animate={{
+                      x: ["-100%", "600%"],
+                    }}
+                    transition={{
+                      duration: 2.8,
+                      delay: 1.6 + index * 0.08,
+                      repeat: Infinity,
+                      repeatDelay: 1.2,
+                      ease: "linear",
+                    }}
+                  />
+                </motion.div>
+              ))}
+
+              {/* =================================================
+                  CENTRAL BLUE BEAM
+              ================================================== */}
+
+              <motion.div
+                className="
+                  absolute
+                  bottom-0
+                  left-1/2
+                  h-full
+                  w-px
+                  -translate-x-1/2
+                  origin-bottom
+                  bg-gradient-to-b
+                  from-transparent
+                  via-[#4D8DFF]/40
+                  to-[#4D8DFF]/5
+                  shadow-[0_0_12px_rgba(77,141,255,0.3)]
+                "
+                initial={{
+                  scaleY: 0,
+                  opacity: 0,
+                }}
+                animate={{
+                  scaleY: 1,
+                  opacity: 1,
+                }}
+                transition={{
+                  duration: 1.5,
+                  delay: 1.3,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              />
+            </div>
+
+            {/* =================================================
+                LOADING MESSAGE
+            ================================================== */}
+
+            <div
+              className="
+                relative
+                mt-4
+                flex
+                min-h-[125px]
+                flex-col
+                items-center
+                justify-center
+                sm:mt-8
+              "
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={stage}
+                  initial={{
+                    opacity: 0,
+                    y: 20,
+                    filter: "blur(8px)",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: -18,
+                    filter: "blur(6px)",
+                  }}
+                  transition={{
+                    duration: 0.55,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="text-center"
+                >
+                  <p
+                    className="
+                      text-[clamp(1.65rem,4vw,3.2rem)]
+                      font-light
+                      uppercase
+                      tracking-[0.24em]
                       text-white
                     "
                   >
-                    SG
-                  </span>
+                    {stages[stage].text}
+                  </p>
 
-                  {/* Center dot */}
+                  <p
+                    className="
+                      mt-2
+                      text-[clamp(1.05rem,2.2vw,1.6rem)]
+                      font-light
+                      uppercase
+                      tracking-[0.28em]
+                      text-[#4D8DFF]/60
+                    "
+                  >
+                    {stages[stage].accent}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
 
+              {/* =================================================
+                  STAGE DOTS
+              ================================================== */}
+
+              <div className="absolute bottom-0 flex items-center gap-3">
+                {[0, 1, 2, 3, 4].map((dot) => (
                   <motion.span
+                    key={dot}
+                    className="h-1 w-1 rounded-full bg-[#4D8DFF]"
                     animate={{
-                      scale: [1, 1.5, 1],
-                      opacity: [0.5, 1, 0.5],
+                      opacity:
+                        dot === stage
+                          ? [0.2, 1, 0.2]
+                          : 0.15,
+                      scale:
+                        dot === stage
+                          ? [0.8, 1.6, 0.8]
+                          : 0.8,
                     }}
                     transition={{
-                      duration: 2,
+                      duration: 1,
                       repeat: Infinity,
+                      ease: "easeInOut",
                     }}
-                    className="
-                      absolute
-                      right-2
-                      top-2
-                      h-1.5
-                      w-1.5
-                      rounded-full
-                      bg-[#4D8DFF]
-                    "
                   />
-
-                </div>
-
-              </motion.div>
-
+                ))}
+              </div>
             </div>
 
-            {/* =====================================
-                NAME
-            ====================================== */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: 15,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.25,
-                duration: 0.6,
-              }}
-              className="text-center"
-            >
-
-              <h1
-                className="
-                  font-clash
-                  text-2xl
-                  font-semibold
-                  tracking-[-0.03em]
-                  text-white
-                  sm:text-3xl
-                "
-              >
-                Simran Gautam
-              </h1>
-
-              <p
-                className="
-                  mt-2
-                  text-[9px]
-                  uppercase
-                  tracking-[0.25em]
-                  text-white/25
-                "
-              >
-                Building interfaces with code & curiosity
-              </p>
-
-            </motion.div>
-
-            {/* =====================================
+            {/* =================================================
                 PROGRESS
-            ====================================== */}
+            ================================================== */}
 
-            <div className="mt-12">
-
+            <div className="mt-10 w-[220px] sm:mt-12 sm:w-[300px]">
               <div className="mb-3 flex items-center justify-between">
-
                 <span
                   className="
-                    text-[9px]
+                    text-[8px]
                     uppercase
-                    tracking-[0.18em]
+                    tracking-[0.3em]
                     text-white/25
                   "
                 >
-                  Initializing
+                  Processing
                 </span>
 
                 <motion.span
-                  key={Math.floor(progress)}
-                  initial={{ opacity: 0.4 }}
-                  animate={{ opacity: 1 }}
+                  key={stage}
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
                   className="
                     font-mono
-                    text-[10px]
-                    text-[#4D8DFF]
+                    text-[9px]
+                    tracking-[0.2em]
+                    text-[#4D8DFF]/60
                   "
                 >
-                  {Math.floor(progress)
-                    .toString()
-                    .padStart(3, '0')}
-                  %
+                  {progress}%
                 </motion.span>
-
               </div>
 
-              {/* Progress track */}
+              {/* TRACK */}
 
-              <div
-                className="
-                  relative
-                  h-px
-                  w-full
-                  overflow-hidden
-                  bg-white/[0.08]
-                "
-              >
+              <div className="relative h-px w-full bg-white/[0.1]">
+                {/* BLUE PROGRESS */}
 
                 <motion.div
                   className="
                     absolute
                     left-0
                     top-0
-                    h-full
+                    h-px
                     bg-[#4D8DFF]
+                    shadow-[0_0_10px_rgba(77,141,255,0.7)]
                   "
+                  initial={{
+                    width: "0%",
+                  }}
                   animate={{
                     width: `${progress}%`,
                   }}
                   transition={{
-                    duration: 0.2,
-                    ease: 'easeOut',
+                    duration: 0.8,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
                 />
 
-                {/* Moving highlight */}
+                {/* PROGRESS NODE */}
 
                 <motion.div
-                  animate={{
-                    x: ['-100%', '400%'],
-                  }}
-                  transition={{
-                    duration: 1.8,
-                    repeat: Infinity,
-                    ease: 'linear',
-                  }}
                   className="
                     absolute
-                    top-0
-                    h-full
-                    w-20
-                    bg-gradient-to-r
-                    from-transparent
-                    via-white/40
-                    to-transparent
+                    top-1/2
+                    h-2
+                    w-2
+                    -translate-y-1/2
+                    rounded-full
+                    bg-[#4D8DFF]
+                    shadow-[0_0_14px_rgba(77,141,255,0.9)]
                   "
+                  animate={{
+                    left: `${progress}%`,
+                  }}
+                  transition={{
+                    duration: 0.8,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                 />
-
               </div>
-
             </div>
-
-            {/* =====================================
-                BOTTOM STATUS
-            ====================================== */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              transition={{
-                delay: 0.5,
-              }}
-              className="
-                mt-5
-                flex
-                items-center
-                justify-center
-                gap-2
-              "
-            >
-
-              <span
-                className="
-                  h-1
-                  w-1
-                  rounded-full
-                  bg-[#4D8DFF]
-                "
-              />
-
-              <span
-                className="
-                  text-[8px]
-                  uppercase
-                  tracking-[0.18em]
-                  text-white/20
-                "
-              >
-                Preparing the experience
-              </span>
-
-            </motion.div>
-
           </div>
-        </motion.div>
-      )}
+        </div>
+
+        {/* =====================================================
+            BOTTOM METADATA
+        ====================================================== */}
+
+        <div
+          className="
+            absolute
+            bottom-6
+            left-0
+            right-0
+            flex
+            items-center
+            justify-between
+            px-6
+            sm:px-10
+            lg:px-14
+          "
+        >
+          <span
+            className="
+              text-[8px]
+              uppercase
+              tracking-[0.28em]
+              text-white/20
+            "
+          >
+            Portfolio / 2026
+          </span>
+
+          {/* <span
+            className="
+              flex
+              items-center
+              gap-2
+              text-[8px]
+              uppercase
+              tracking-[0.28em]
+              text-white/20
+            "
+          >
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#4D8DFF]
+                shadow-[0_0_8px_rgba(77,141,255,0.7)]
+              "
+            />
+
+            Frontend Development
+          </span> */}
+        </div>
+      </motion.main>
     </AnimatePresence>
-  )
+  );
 }

@@ -1,24 +1,13 @@
+
+
 'use client'
 
-import { useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
-import {
-  ArrowUpRight,
-  Mail,
-  MapPin,
-  Send,
-  Terminal,
-} from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowUpRight, Mail, MapPin, Send, X } from 'lucide-react'
 import MagneticButton from '../ui/MagneticButton'
 
-export default function Contact() {
-  const sectionRef = useRef(null)
-
-  const isInView = useInView(sectionRef, {
-    once: true,
-    amount: 0.2,
-  })
-
+export default function Contact({ isOpen, onClose }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -31,6 +20,16 @@ export default function Contact() {
     message: '',
   })
 
+  useEffect(() => {
+    if (!isOpen) return
+
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
   const handleChange = (e) => {
     const { name, value } = e.target
 
@@ -39,13 +38,23 @@ export default function Contact() {
       [name]: value,
     }))
 
-    // Remove previous status when user starts editing again
     if (status.message) {
       setStatus({
         type: '',
         message: '',
       })
     }
+  }
+
+  const handleClose = () => {
+    if (isSubmitting) return
+
+    setStatus({
+      type: '',
+      message: '',
+    })
+
+    onClose()
   }
 
   const handleSubmit = async (e) => {
@@ -77,30 +86,32 @@ export default function Contact() {
         )
       }
 
-      setStatus({
-        type: 'success',
-        message: 'Message sent successfully. I will get back to you soon.',
-      })
-
       setFormData({
-        name: '',
-        email: '',
-        message: '',
-      })
-      setTimeout(() => {
+  name: '',
+  email: '',
+  message: '',
+})
+
+setStatus({
+  type: 'success',
+  message: 'Message sent successfully.',
+})
+
+setTimeout(() => {
   setStatus({
     type: '',
     message: '',
   })
-}, 4000)
+
+  onClose()
+}, 1200)
     } catch (error) {
       console.error('Contact form error:', error)
 
       setStatus({
         type: 'error',
         message:
-          error.message ||
-          'Unable to send your message. Please try again.',
+          error.message || 'Unable to send your message. Please try again.',
       })
     } finally {
       setIsSubmitting(false)
@@ -108,469 +119,169 @@ export default function Contact() {
   }
 
   return (
-    <section
-      ref={sectionRef}
-      id="contact"
-      className="
-        relative
-        overflow-hidden
-        bg-[#050B16]
-        px-6
-        py-28
-        text-white
-        sm:px-8
-        lg:px-12
-        lg:py-36
-      "
-    >
-      {/* BACKGROUND */}
-
-      <div className="pointer-events-none absolute inset-0">
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage: `
-              linear-gradient(
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              ),
-              linear-gradient(
-                90deg,
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              )
-            `,
-            backgroundSize: '72px 72px',
-          }}
-        />
-
-        <div className="absolute left-[-180px] top-[15%] h-[420px] w-[420px] rounded-full bg-[#2563EB]/[0.035] blur-[140px]" />
-
-        <div className="absolute bottom-[-180px] right-[-140px] h-[450px] w-[450px] rounded-full bg-[#2563EB]/[0.035] blur-[150px]" />
-
-        <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4D8DFF]/[0.015] blur-[120px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-[1500px]">
-
-        {/* HEADER */}
-
-        <div
-          className="
-            mb-16
-            flex
-            flex-col
-            justify-between
-            gap-8
-            border-b
-            border-white/[0.07]
-            pb-8
-            md:flex-row
-            md:items-end
-          "
-        >
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* BACKDROP */}
           <motion.div
-            initial={{
-              opacity: 0,
-              x: -20,
-            }}
-            animate={
-              isInView
-                ? {
-                    opacity: 1,
-                    x: 0,
-                  }
-                : {}
-            }
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={handleClose}
+            className="fixed inset-0 z-[90] bg-black/60 backdrop-blur-[6px]"
+          />
+
+          {/* DRAWER */}
+          <motion.aside
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
             transition={{
-              duration: 0.7,
+              type: 'spring',
+              stiffness: 260,
+              damping: 30,
             }}
+            className="
+  fixed
+  right-0
+  top-[88px]
+  z-[100]
+  flex
+  h-[calc(100dvh-88px)]
+  w-full
+  max-w-[620px]
+  flex-col
+  overflow-hidden
+  border-l
+  border-white/[0.08]
+  bg-[#050B16]
+  text-white
+  shadow-[-30px_0_80px_rgba(0,0,0,0.35)]
+"
           >
-            <div className="mb-5 flex items-center gap-3">
-              <span className="h-px w-8 bg-[#4D8DFF]" />
-
-              <span className="text-[10px] uppercase tracking-[0.2em] text-white/35">
-                Contact
-              </span>
-            </div>
-
-            <h2
-              className="
-                font-clash
-                text-4xl
-                font-semibold
-                tracking-[-0.04em]
-                sm:text-5xl
-                lg:text-6xl
-              "
-            >
-              Let&apos;s build
-              <br />
-
-              <span className="text-white/35">
-                something meaningful.
-              </span>
-            </h2>
-          </motion.div>
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={
-              isInView
-                ? {
-                    opacity: 1,
-                    y: 0,
-                  }
-                : {}
-            }
-            transition={{
-              delay: 0.15,
-              duration: 0.6,
-            }}
-            className="max-w-[330px]"
-          >
-            <p className="text-xs leading-6 text-white/35">
-              Have an idea, a project, or simply want to talk
-              frontend? I&apos;d love to hear what you&apos;re working on.
-            </p>
-          </motion.div>
-        </div>
-
-        {/* MAIN CONTENT */}
-
-        <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
-
-          {/* LEFT */}
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            animate={
-              isInView
-                ? {
-                    opacity: 1,
-                    y: 0,
-                  }
-                : {}
-            }
-            transition={{
-              duration: 0.8,
-              delay: 0.1,
-            }}
-          >
-            <div className="mb-10 flex items-center justify-between border-b border-white/[0.07] pb-4">
-              <div className="flex items-center gap-2">
-                <Terminal
-                  size={14}
-                  strokeWidth={1.3}
-                  className="text-[#4D8DFF]"
-                />
-
-                <span className="text-[9px] uppercase tracking-[0.15em] text-white/30">
-                  contact.info
-                </span>
-              </div>
-            </div>
-
-            <h3
-              className="
-                max-w-md
-                font-clash
-                text-2xl
-                font-medium
-                leading-tight
-                tracking-[-0.025em]
-                sm:text-3xl
-              "
-            >
-              Have something in mind?
-              <span className="text-white/30">
-                {' '}
-                Let&apos;s talk.
-              </span>
-            </h3>
-
-            <p
-              className="
-                mt-6
-                max-w-md
-                text-sm
-                leading-7
-                text-white/35
-                sm:text-[15px]
-                sm:leading-8
-              "
-            >
-              I&apos;m open to frontend development opportunities,
-              collaborations and interesting ideas that can turn
-              into meaningful digital experiences.
-            </p>
-
-            {/* CONTACT DETAILS */}
-
-            <div className="mt-12 border-t border-white/[0.07]">
-
-              {/* EMAIL */}
-
+            {/* BACKGROUND */}
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
               <div
-                className="
-                  group
-                  flex
-                  items-center
-                  justify-between
-                  border-b
-                  border-white/[0.07]
-                  py-5
-                "
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className="
-                      flex
-                      h-9
-                      w-9
-                      items-center
-                      justify-center
-                      border
-                      border-white/[0.08]
-                      bg-white/[0.02]
-                      transition-colors
-                      duration-300
-                      group-hover:border-[#4D8DFF]/30
-                    "
-                  >
-                    <Mail
-                      size={14}
-                      strokeWidth={1.3}
-                      className="text-white/35 transition-colors group-hover:text-[#4D8DFF]"
-                    />
-                  </div>
+                className="absolute inset-0 opacity-[0.025]"
+                style={{
+                  backgroundImage: `
+                    linear-gradient(
+                      rgba(255,255,255,0.7) 1px,
+                      transparent 1px
+                    ),
+                    linear-gradient(
+                      90deg,
+                      rgba(255,255,255,0.7) 1px,
+                      transparent 1px
+                    )
+                  `,
+                  backgroundSize: '72px 72px',
+                }}
+              />
 
-                  <div>
-                    <span className="block text-[8px] uppercase tracking-[0.15em] text-white/20">
-                      Email
-                    </span>
+              <div className="absolute right-[-180px] top-[15%] h-[420px] w-[420px] rounded-full bg-[#2563EB]/[0.06] blur-[130px]" />
 
-                    <a
-                      href="mailto:simranguatam@gmail.com"
-                      className="mt-1 block text-xs text-white/55 transition-colors hover:text-[#4D8DFF]"
-                    >
-                      simranguatam@gmail.com
-                    </a>
-                  </div>
-                </div>
-
-                <ArrowUpRight
-                  size={14}
-                  strokeWidth={1.2}
-                  className="
-                    text-white/15
-                    transition-all
-                    duration-300
-                    group-hover:-translate-y-1
-                    group-hover:translate-x-1
-                    group-hover:text-[#4D8DFF]
-                  "
-                />
-              </div>
-
-              {/* LOCATION */}
-
-              <div
-                className="
-                  group
-                  flex
-                  items-center
-                  justify-between
-                  border-b
-                  border-white/[0.07]
-                  py-5
-                "
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className="
-                      flex
-                      h-9
-                      w-9
-                      items-center
-                      justify-center
-                      border
-                      border-white/[0.08]
-                      bg-white/[0.02]
-                      transition-colors
-                      duration-300
-                      group-hover:border-[#4D8DFF]/30
-                    "
-                  >
-                    <MapPin
-                      size={14}
-                      strokeWidth={1.3}
-                      className="text-white/35 transition-colors group-hover:text-[#4D8DFF]"
-                    />
-                  </div>
-
-                  <div>
-                    <span className="block text-[8px] uppercase tracking-[0.15em] text-white/20">
-                      Location
-                    </span>
-
-                    <span className="mt-1 block text-xs text-white/55">
-                      Lucknow, India
-                    </span>
-                  </div>
-                </div>
-
-                <ArrowUpRight
-                  size={14}
-                  strokeWidth={1.2}
-                  className="
-                    text-white/15
-                    transition-all
-                    duration-300
-                    group-hover:-translate-y-1
-                    group-hover:translate-x-1
-                    group-hover:text-[#4D8DFF]
-                  "
-                />
-              </div>
-
-              {/* STATUS */}
-
-              <div className="flex items-center gap-4 py-5">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4D8DFF] opacity-40" />
-
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#4D8DFF]" />
-                </span>
-
-                <div>
-                  <span className="block text-[8px] uppercase tracking-[0.15em] text-white/20">
-                    Status
-                  </span>
-
-                  <span className="mt-1 block text-xs text-white/55">
-                    Available for opportunities
-                  </span>
-                </div>
-              </div>
+              <div className="absolute bottom-[-180px] left-[-140px] h-[400px] w-[400px] rounded-full bg-[#2563EB]/[0.035] blur-[130px]" />
             </div>
 
-            <div className="mt-10 border-l border-[#4D8DFF]/30 pl-4">
-              <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/25">
-                Curiosity → Craft → Experience
-              </p>
-            </div>
-          </motion.div>
+            {/* CONTENT */}
+            <div className="relative z-10 flex min-h-full flex-col">
+              
+          
+              {/* INTRO */}
+              {/* INTRO */}
+<div className="relative px-6 pb-5 pt-6 sm:px-8 sm:pt-7">
+  <button
+    type="button"
+    onClick={handleClose}
+    aria-label="Close contact form"
+    className="
+      group
+      absolute
+      right-6
+      top-5
+      flex
+      h-9
+      w-9
+      items-center
+      justify-center
+      border
+      border-white/[0.08]
+      bg-white/[0.02]
+      transition-all
+      duration-300
+      hover:border-[#4D8DFF]/40
+      hover:bg-[#4D8DFF]/[0.05]
+      sm:right-8
+    "
+  >
+    <X
+      size={16}
+      strokeWidth={1.3}
+      className="text-white/40 transition-colors group-hover:text-white"
+    />
+  </button>
 
-          {/* RIGHT — FORM */}
+  <motion.div
+    initial={{ opacity: 0, y: 15 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#4D8DFF]/70">
+      Let&apos;s talk
+    </p>
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: 35,
-            }}
-            animate={
-              isInView
-                ? {
-                    opacity: 1,
-                    x: 0,
-                  }
-                : {}
-            }
-            transition={{
-              duration: 0.8,
-              delay: 0.2,
-            }}
-          >
-            <div
-              className="
-                relative
-                border
-                border-white/[0.09]
-                bg-[#080F1C]
-              "
-            >
+    <h2 className="mt-3 max-w-lg font-clash text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+      Have something
+      <br />
+      <span className="text-white/30">
+        worth building?
+      </span>
+    </h2>
 
-              {/* FORM HEADER */}
-
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  border-b
-                  border-white/[0.07]
-                  px-5
-                  py-4
-                "
-              >
-                <div className="flex items-center gap-2">
-                  <Send
-                    size={13}
-                    strokeWidth={1.3}
-                    className="text-[#4D8DFF]"
-                  />
-
-                  <span className="text-[9px] uppercase tracking-[0.15em] text-white/30">
-                    send.message
-                  </span>
-                </div>
-              </div>
+    <p className="mt-3 max-w-md text-xs leading-6 text-white/35">
+      Tell me what you&apos;re working on, what you&apos;re
+      exploring, or simply say hello. I&apos;ll get back to you
+      as soon as I can.
+    </p>
+  </motion.div>
+</div>
 
               {/* FORM */}
-
               <form
                 onSubmit={handleSubmit}
-                className="p-6 sm:p-8"
+                className="px-6 pb-5 sm:px-8"
               >
-
                 {/* NAME */}
-
                 <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 10,
-                  }}
-                  animate={
-                    isInView
-                      ? {
-                          opacity: 1,
-                          y: 0,
-                        }
-                      : {}
-                  }
-                  transition={{
-                    delay: 0.35,
-                  }}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
                 >
                   <label
-                    htmlFor="name"
+                    htmlFor="contact-name"
                     className="mb-3 block text-[9px] uppercase tracking-[0.15em] text-white/25"
                   >
                     Name
                   </label>
 
                   <input
-                    id="name"
+                    id="contact-name"
                     name="name"
                     type="text"
                     placeholder="Your name"
                     value={formData.name}
                     onChange={handleChange}
                     autoComplete="name"
+                    required
                     className="
                       w-full
                       border-b
                       border-white/[0.1]
                       bg-transparent
                       px-0
-                      py-4
+                      py-3
                       text-sm
                       text-white
                       outline-none
@@ -579,52 +290,39 @@ export default function Contact() {
                       duration-300
                       focus:border-[#4D8DFF]
                     "
-                    required
                   />
                 </motion.div>
 
                 {/* EMAIL */}
-
                 <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 10,
-                  }}
-                  animate={
-                    isInView
-                      ? {
-                          opacity: 1,
-                          y: 0,
-                        }
-                      : {}
-                  }
-                  transition={{
-                    delay: 0.42,
-                  }}
-                  className="mt-8"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.16 }}
+                  className="mt-5"
                 >
                   <label
-                    htmlFor="email"
+                    htmlFor="contact-email"
                     className="mb-3 block text-[9px] uppercase tracking-[0.15em] text-white/25"
                   >
-                     Email
+                    Email
                   </label>
 
                   <input
-                    id="email"
+                    id="contact-email"
                     name="email"
                     type="email"
                     placeholder="your@email.com"
                     value={formData.email}
                     onChange={handleChange}
                     autoComplete="email"
+                    required
                     className="
                       w-full
                       border-b
                       border-white/[0.1]
                       bg-transparent
                       px-0
-                      py-4
+                      py-3
                       text-sm
                       text-white
                       outline-none
@@ -633,45 +331,31 @@ export default function Contact() {
                       duration-300
                       focus:border-[#4D8DFF]
                     "
-                    required
                   />
                 </motion.div>
 
-
                 {/* MESSAGE */}
-
                 <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 10,
-                  }}
-                  animate={
-                    isInView
-                      ? {
-                          opacity: 1,
-                          y: 0,
-                        }
-                      : {}
-                  }
-                  transition={{
-                    delay: 0.56,
-                  }}
-                  className="mt-8"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.22 }}
+                  className="mt-5"
                 >
                   <label
-                    htmlFor="message"
+                    htmlFor="contact-message"
                     className="mb-3 block text-[9px] uppercase tracking-[0.15em] text-white/25"
                   >
-                     Message
+                    Message
                   </label>
 
                   <textarea
-                    id="message"
+                    id="contact-message"
                     name="message"
-                    rows={5}
-                    placeholder="Tell me a little about your project..."
+                    rows={4}
+                    placeholder="Tell me a little about your idea..."
                     value={formData.message}
                     onChange={handleChange}
+                    required
                     className="
                       w-full
                       resize-none
@@ -679,7 +363,7 @@ export default function Contact() {
                       border-white/[0.1]
                       bg-transparent
                       px-0
-                      py-4
+                      py-3
                       text-sm
                       leading-7
                       text-white
@@ -689,95 +373,77 @@ export default function Contact() {
                       duration-300
                       focus:border-[#4D8DFF]
                     "
-                    required
                   />
                 </motion.div>
 
                 {/* STATUS */}
-
-                {status.message && (
-                  <motion.div
-                    initial={{
-                      opacity: 0,
-                      y: 8,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    className={`
-                      mt-6
-                      border
-                      px-4
-                      py-3
-                      text-[10px]
-                      leading-5
-                      ${
-                        status.type === 'success'
-                          ? 'border-[#4D8DFF]/20 bg-[#4D8DFF]/[0.04] text-[#7CA7FF]'
-                          : 'border-red-400/20 bg-red-400/[0.04] text-red-300'
-                      }
-                    `}
-                  >
-                    {status.message}
-                  </motion.div>
-                )}
+                <AnimatePresence mode="wait">
+                  {status.message && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      className={`
+                        mt-6
+                        border
+                        px-4
+                        py-3
+                        text-[10px]
+                        leading-5
+                        ${
+                          status.type === 'success'
+                            ? 'border-[#4D8DFF]/20 bg-[#4D8DFF]/[0.04] text-[#7CA7FF]'
+                            : 'border-red-400/20 bg-red-400/[0.04] text-red-300'
+                        }
+                      `}
+                    >
+                      {status.message}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* SUBMIT */}
-
                 <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 10,
-                  }}
-                  animate={
-                    isInView
-                      ? {
-                          opacity: 1,
-                          y: 0,
-                        }
-                      : {}
-                  }
-                  transition={{
-                    delay: 0.63,
-                  }}
-                  className="mt-10"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.28 }}
+                  className="mt-5"
                 >
                   <MagneticButton
                     type="submit"
                     disabled={isSubmitting}
-                    className={`
-                      group
-                      relative
-                      inline-flex
-                      w-full
-                      items-center
-                      justify-center
-                      gap-3
-                      overflow-hidden
-                      border
-                      border-[#4D8DFF]/40
-                      bg-[#4D8DFF]/[0.06]
-                      px-8
-                      py-4
-                      text-xs
-                      uppercase
-                      tracking-[0.15em]
-                      text-white/75
-                      transition-all
-                      duration-300
-                      hover:border-[#4D8DFF]
-                      hover:bg-[#4D8DFF]/[0.1]
-                      hover:text-white
-                      disabled:cursor-not-allowed
-                      disabled:opacity-50
-                    `}
-                  >
+                    className="
+  group
+  relative
+  inline-flex
+  w-full
+  items-center
+  justify-center
+  gap-3
+  overflow-hidden
+  border
+  border-[#4D8DFF]/40
+  bg-[#4D8DFF]/[0.06]
+  px-8
+  py-3.5
+  text-xs
+  uppercase
+  tracking-[0.15em]
+  text-white/75
+  transition-all
+  duration-300
+  hover:border-[#4D8DFF]
+  hover:bg-[#4D8DFF]/[0.1]
+  hover:text-white
+  disabled:cursor-not-allowed
+  disabled:opacity-50
+"
+>
                     <span className="relative z-10">
                       {isSubmitting ? 'Sending...' : 'Send Message'}
                     </span>
 
-                    {!isSubmitting && (
+                    {!isSubmitting ? (
                       <ArrowUpRight
                         size={15}
                         strokeWidth={1.3}
@@ -790,9 +456,7 @@ export default function Contact() {
                           group-hover:translate-x-1
                         "
                       />
-                    )}
-
-                    {isSubmitting && (
+                    ) : (
                       <span className="relative z-10 h-3.5 w-3.5 animate-spin rounded-full border border-white/20 border-t-[#4D8DFF]" />
                     )}
 
@@ -807,105 +471,50 @@ export default function Contact() {
                         via-[#4D8DFF]/10
                         to-transparent
                       "
-                      initial={{
-                        x: '-150%',
-                      }}
-                      whileHover={{
-                        x: '450%',
-                      }}
-                      transition={{
-                        duration: 0.7,
-                      }}
+                      initial={{ x: '-150%' }}
+                      whileHover={{ x: '450%' }}
+                      transition={{ duration: 0.7 }}
                     />
                   </MagneticButton>
                 </motion.div>
               </form>
 
-              {/* FOOTER */}
+              {/* CONTACT INFO */}
+              <div className="border-t border-white/[0.07] px-6 py-3 sm:px-8">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  
+                  <a
+                    href="mailto:simranguatam@gmail.com"
+                    className="group flex items-center gap-3"
+                  >
+                    <Mail
+                      size={14}
+                      strokeWidth={1.3}
+                      className="text-white/25 transition-colors group-hover:text-[#4D8DFF]"
+                    />
 
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  border-t
-                  border-white/[0.07]
-                  px-6
-                  py-4
-                "
-              >
-                <span className="text-[8px] uppercase tracking-[0.12em] text-white/20">
-                  Response usually within 24–48h
-                </span>
+                    <span className="text-[10px] text-white/35 transition-colors group-hover:text-white/70">
+                      simranguatam@gmail.com
+                    </span>
+                  </a>
 
-                <span className="font-mono text-[8px] text-[#4D8DFF]/50">
-                  {isSubmitting ? 'SENDING' : 'READY'}
-                </span>
+                  <div className="flex items-center gap-3">
+                    <MapPin
+                      size={14}
+                      strokeWidth={1.3}
+                      className="text-white/25"
+                    />
+
+                    <span className="text-[10px] text-white/25">
+                      Lucknow, India
+                    </span>
+                  </div>
+                </div>
               </div>
-
-              {/* CORNER MARKS */}
-
-              <span className="absolute -left-px -top-px h-4 w-4 border-l border-t border-[#4D8DFF]/50" />
-              <span className="absolute -right-px -top-px h-4 w-4 border-r border-t border-[#4D8DFF]/50" />
-              <span className="absolute -bottom-px -left-px h-4 w-4 border-b border-l border-[#4D8DFF]/50" />
-              <span className="absolute -bottom-px -right-px h-4 w-4 border-b border-r border-[#4D8DFF]/50" />
             </div>
-          </motion.div>
-        </div>
-
-        {/* BOTTOM */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={
-            isInView
-              ? {
-                  opacity: 1,
-                  y: 0,
-                }
-              : {}
-          }
-          transition={{
-            delay: 0.8,
-            duration: 0.6,
-          }}
-          className="
-            mt-24
-            flex
-            flex-col
-            items-start
-            justify-between
-            gap-5
-            border-t
-            border-white/[0.07]
-            pt-8
-            sm:flex-row
-            sm:items-center
-          "
-        >
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.2em] text-white/20">
-              End of page
-            </p>
-
-            <p className="mt-2 text-xs text-white/25">
-              Thanks for making it this far.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#4D8DFF]" />
-
-            <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-white/25">
-              Let&apos;s create something
-            </span>
-          </div>
-        </motion.div>
-      </div>
-    </section>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
   )
 }
-

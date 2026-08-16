@@ -1,260 +1,748 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Contact from "../sections/Contact";
 
 const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Work', href: '#work' },
-  { label: 'Contact', href: '#contact' },
-]
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Work", href: "#work" },
+  { label: "Contact", href: "#contact" },
+];
+
+const clamp = (value, min = 0, max = 1) =>
+  Math.min(Math.max(value, min), max);
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState('home')
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const [isContactOpen, setIsContactOpen] = useState(false);
+
+  /* ============================================================
+     SCROLL ENGINE
+     ============================================================ */
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 60)
+      if (ticking) return;
 
-      const sections = navLinks
-        .map((link) => document.querySelector(link.href))
-        .filter(Boolean)
+      ticking = true;
 
-      let currentSection = 'home'
+      window.requestAnimationFrame(() => {
+        /*
+         * 0px   → BIG CENTERED INTRO
+         * 420px → FINAL SMALL NAVBAR
+         */
 
-      sections.forEach((section) => {
-        const rect = section.getBoundingClientRect()
+        const progress = clamp(window.scrollY / 420);
 
-        if (rect.top <= window.innerHeight * 0.35) {
-          currentSection = section.id
-        }
-      })
+        setScrollProgress(progress);
 
-      setActiveSection(currentSection)
-    }
+        /* ======================================================
+           ACTIVE SECTION
+           ====================================================== */
 
-    handleScroll()
+        const sections = navLinks
+          .filter((link) => link.label !== "Contact")
+          .map((link) => document.querySelector(link.href))
+          .filter(Boolean);
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
+        let currentSection = "home";
+
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect();
+
+          if (rect.top <= window.innerHeight * 0.35) {
+            currentSection = section.id;
+          }
+        });
+
+        setActiveSection(currentSection);
+
+        ticking = false;
+      });
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  /* ============================================================
+     MOBILE BODY LOCK
+     ============================================================ */
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? 'hidden' : ''
+    document.body.style.overflow = isMenuOpen ? "hidden" : "";
 
     return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isMenuOpen])
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
+  /* ============================================================
+     LOGO TRANSFORMATION
+     ============================================================ */
+
+  const logoWidth = 520 - scrollProgress * 375;
+
+  const logoY = -scrollProgress * 4;
+
+  /* ============================================================
+     INTRO TEXT SCROLL TRANSFORMATION
+     ============================================================ */
+
+  const introTextProgress = clamp(
+    (scrollProgress - 0.15) / 0.43
+  );
+
+  const introTextOpacity = 1 - introTextProgress;
+
+  const introTextY = -introTextProgress * 24;
+
+  const introTextBlur = introTextProgress * 5;
+
+  /* ============================================================
+     NAVIGATION REVEAL
+     ============================================================ */
+
+  const navProgress = clamp(
+    (scrollProgress - 0.55) / 0.30
+  );
+
+  const navOpacity = navProgress;
+
+  const navY = (1 - navProgress) * 10;
+
+  const navX = (1 - navProgress) * 22;
+
+  /* ============================================================
+     AVAILABLE STATUS
+     ============================================================ */
+
+  const statusProgress = clamp(
+    (scrollProgress - 0.68) / 0.22
+  );
+
+  const statusX = (1 - statusProgress) * 12;
+
+  /* ============================================================
+     FINAL LOGO ALIGNMENT
+     ============================================================ */
+
+  const finalLogoOffset = scrollProgress * 3;
+
+  /* ============================================================
+     HEADER TOP POSITION
+     ============================================================ */
+
+  const headerPaddingTop =
+    34 - scrollProgress * 14;
+
+  /* ============================================================
+     INTRO SPACE
+     ============================================================ */
+
+  const introHeight =
+    typeof window !== "undefined"
+      ? window.innerHeight
+      : 900;
+
+  /* ============================================================
+     NAVIGATION HANDLERS
+     ============================================================ */
 
   const handleNavigation = (href) => {
-    setIsMenuOpen(false)
+    setIsMenuOpen(false);
 
-    const target = document.querySelector(href)
+    const target = document.querySelector(href);
 
-    if (!target) return
+    if (!target) return;
 
     target.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    })
-  }
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  const handleNavClick = (link) => {
+    if (link.label === "Contact") {
+      setIsMenuOpen(false);
+      setIsContactOpen(true);
+      return;
+    }
+
+    handleNavigation(link.href);
+  };
+
+  /* ============================================================
+     RENDER
+     ============================================================ */
 
   return (
     <>
-      {/* Desktop / Main Navigation */}
-      <motion.header
-        initial={{ opacity: 0, y: -24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.7,
-          ease: [0.22, 1, 0.36, 1],
-          delay: 0.8,
+      {/* ========================================================
+          INTRO VIEWPORT
+      ======================================================== */}
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none w-full"
+        style={{
+          height: `${introHeight}px`,
         }}
-        className="fixed left-0 right-0 top-0 z-[9997] pointer-events-none"
+      />
+
+      {/* ========================================================
+          FIXED NAVBAR / INTRO
+      ======================================================== */}
+
+      <motion.header
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.8,
+          delay: 0.25,
+        }}
+        className="
+          pointer-events-none
+          fixed
+          left-0
+          right-0
+          top-0
+          z-[9997]
+        "
       >
         <div
-          className={`
+          className="
+            pointer-events-auto
+            relative
             mx-auto
             flex
-            items-center
-            justify-between
-            transition-all
-            duration-500
-            pointer-events-auto
-            ${
-              isScrolled
-                ? `
-                  mt-4
-                  w-[calc(100%-2rem)]
-                  max-w-5xl
-                  rounded-full
-                  border
-                  border-white/[0.08]
-                  bg-[#07101f]/90
-                  px-5
-                  py-3
-                  shadow-[0_18px_60px_rgba(0,0,0,0.25)]
-                  backdrop-blur-xl
-                `
-                : `
-                  w-full
-                  border-b
-                  border-white/[0.06]
-                  bg-[#050b16]/20
-                  px-6
-                  py-5
-                  lg:px-12
-                  lg:py-6
-                `
-            }
-          `}
+            w-full
+            items-start
+            px-6
+            lg:px-12
+          "
+          style={{
+            paddingTop: `${headerPaddingTop}px`,
+          }}
         >
-          {/* Brand */}
-          <button
-            type="button"
-            onClick={() => handleNavigation('#home')}
-            aria-label="Go to homepage"
-            className="group relative flex items-center gap-2"
+          {/* ====================================================
+              INTRO / LOGO SYSTEM
+          ==================================================== */}
+
+          <motion.div
+            className="
+              absolute
+              left-1/2
+              top-0
+              z-30
+              flex
+              -translate-x-1/2
+              flex-col
+              items-center
+            "
+            animate={{
+              width: logoWidth,
+              x:
+                scrollProgress === 0
+                  ? "-50%"
+                  : `calc(-50vw + ${
+                      24 + scrollProgress * 24
+                    }px)`,
+              y: logoY + finalLogoOffset,
+            }}
+            transition={{
+              duration: 0.08,
+              ease: "linear",
+            }}
           >
-            <span className="font-clash text-[20px] font-semibold tracking-[-0.04em] text-white sm:text-[22px]">
-              Simran
-              <span className="text-[#4D8DFF]">.</span>
-            </span>
+            {/* ==================================================
+                LOGO
+                FIRST → BLUR REVEAL
+            ================================================== */}
 
-            <span
-              className="
-                absolute
-                -bottom-1
-                left-0
-                h-px
-                w-0
-                bg-[#4D8DFF]
-                transition-all
-                duration-300
-                group-hover:w-full
-              "
-            />
-          </button>
+            <motion.button
+  type="button"
+  onClick={() => handleNavigation("#home")}
+  aria-label="Go to homepage"
+  className="
+    group
+    relative
+    block
+    w-full
+    overflow-visible
+  "
+  initial={{
+    opacity: 0,
+    scale: 0.92,
+    filter: "blur(22px)",
+  }}
+  animate={{
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+  }}
+  transition={{
+    duration: 2.2,
+    delay: 0.25,
+    ease: [0.16, 1, 0.3, 1],
+  }}
+>
+  <img
+    src="/Simran LOGO.png"
+    alt="Simran Gautam"
+    draggable="false"
+    className="
+      block
+      h-auto
+      w-full
+      object-contain
+      transition-opacity
+      duration-300
+      group-hover:opacity-80
+    "
+  />
+</motion.button>
 
-          {/* Desktop Navigation */}
-          <nav
+            {/* ==================================================
+                SIMRAN GAUTAM
+
+                SIMRAN → FROM TOP
+                GAUTAM → FROM BOTTOM
+            ================================================== */}
+
+           <motion.div
+  className="
+    mt-2
+    flex
+    items-center
+    justify-center
+    whitespace-nowrap
+    overflow-hidden
+    text-center
+  "
+  initial={{
+    opacity: 1,
+  }}
+  animate={{
+    opacity: introTextOpacity,
+  }}
+  transition={{
+    duration: 0.08,
+    ease: "linear",
+  }}
+  style={{
+    pointerEvents:
+      introTextOpacity > 0.05
+        ? "auto"
+        : "none",
+  }}
+>
+  {/* SIMRAN — FROM ABOVE */}
+
+  <motion.span
+    initial={{
+      opacity: 0,
+      y: -90,
+      filter: "blur(12px)",
+    }}
+    animate={{
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+    }}
+    transition={{
+      duration: 1.4,
+      delay: 2.45,
+      ease: [0.16, 1, 0.3, 1],
+    }}
+    className="
+      text-[clamp(1.5rem,3vw,2.7rem)]
+      font-light
+      uppercase
+      tracking-[0.22em]
+      text-white
+    "
+  >
+    Simran
+  </motion.span>
+
+  <span className="w-[0.35em]" />
+
+  {/* GAUTAM — FROM BELOW */}
+
+  <motion.span
+    initial={{
+      opacity: 0,
+      y: 90,
+      filter: "blur(12px)",
+    }}
+    animate={{
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+    }}
+    transition={{
+      duration: 1.4,
+      delay: 2.45,
+      ease: [0.16, 1, 0.3, 1],
+    }}
+    className="
+      text-[clamp(1.5rem,3vw,2.7rem)]
+      font-light
+      uppercase
+      tracking-[0.22em]
+      text-white
+    "
+  >
+    Gautam
+  </motion.span>
+</motion.div>
+
+            {/* ==================================================
+                FRONTEND & CREATIVE DEVELOPER
+
+                COMES AFTER NAME
+            ================================================== */}
+
+            <motion.div
+  animate={{
+    opacity: introTextOpacity,
+    y: introTextY,
+    filter: `blur(${introTextBlur}px)`,
+  }}
+  transition={{
+    duration: 0.08,
+    ease: "linear",
+  }}
+  className="
+    mt-3
+    flex
+    items-center
+    justify-center
+    gap-3
+    whitespace-nowrap
+  "
+  style={{
+    pointerEvents:
+      introTextOpacity > 0.05
+        ? "auto"
+        : "none",
+  }}
+>
+  <motion.span
+    initial={{
+      opacity: 0,
+      scaleX: 0,
+      filter: "blur(6px)",
+    }}
+    animate={{
+      opacity: 1,
+      scaleX: 1,
+      filter: "blur(0px)",
+    }}
+    transition={{
+      duration: 0.9,
+      delay: 4.0,
+      ease: [0.16, 1, 0.3, 1],
+    }}
+    className="
+      h-px
+      w-10
+      shrink-0
+      origin-center
+      bg-[#4D8DFF]
+    "
+  />
+
+  <motion.span
+    initial={{
+      opacity: 0,
+      y: 15,
+      filter: "blur(8px)",
+    }}
+    animate={{
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+    }}
+    transition={{
+      duration: 1.1,
+      delay: 4.05,
+      ease: [0.16, 1, 0.3, 1],
+    }}
+    className="
+      text-[9px]
+      font-medium
+      uppercase
+      tracking-[0.22em]
+      text-white/45
+      lg:text-[10px]
+    "
+  >
+    Frontend &amp; Creative Developer
+  </motion.span>
+
+  <motion.span
+    initial={{
+      opacity: 0,
+      scaleX: 0,
+      filter: "blur(6px)",
+    }}
+    animate={{
+      opacity: 1,
+      scaleX: 1,
+      filter: "blur(0px)",
+    }}
+    transition={{
+      duration: 0.9,
+      delay: 4.0,
+      ease: [0.16, 1, 0.3, 1],
+    }}
+    className="
+      h-px
+      w-10
+      shrink-0
+      origin-center
+      bg-[#4D8DFF]
+    "
+  />
+</motion.div>
+          </motion.div>
+
+          {/* ====================================================
+              DESKTOP NAVIGATION
+          ==================================================== */}
+
+          <motion.nav
             aria-label="Main navigation"
-            className="hidden items-center gap-1 md:flex"
+            className="
+              ml-auto
+              hidden
+              items-center
+              gap-7
+              md:flex
+              lg:gap-10
+            "
+            style={{
+              opacity: navOpacity,
+              transform: `translate3d(${navX}px, 0, 0)`,
+              pointerEvents:
+                navOpacity > 0.05
+                  ? "auto"
+                  : "none",
+            }}
           >
-            {navLinks.map((link) => {
-              const isActive = activeSection === link.href.slice(1)
+            {navLinks.map((link, index) => {
+              const isContact =
+                link.label === "Contact";
+
+              const isActive =
+                !isContact &&
+                activeSection ===
+                  link.href.slice(1);
 
               return (
-                <button
+                <motion.button
                   key={link.href}
                   type="button"
-                  onClick={() => handleNavigation(link.href)}
+                  onClick={() =>
+                    handleNavClick(link)
+                  }
+                  initial={{
+                    opacity: 0,
+                    y: 8,
+                  }}
+                  animate={{
+                    opacity: navOpacity,
+                    y: 0,
+                  }}
+                  transition={{
+                    duration: 0.35,
+                    delay: index * 0.045,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                   className="
                     group
                     relative
                     flex
                     items-center
                     gap-2
-                    px-4
                     py-2
-                    text-[12px]
+                    text-[11px]
                     font-medium
-                    tracking-[0.08em]
                     uppercase
-                    transition-colors
-                    duration-300
+                    tracking-[0.12em]
                   "
                 >
-                  {/* Active indicator */}
+                  {/* ACTIVE DOT */}
+
                   <span
                     className={`
-                      h-1
-                      w-1
+                      h-[3px]
+                      w-[3px]
                       rounded-full
                       transition-all
                       duration-300
+
                       ${
                         isActive
-                          ? 'bg-[#4D8DFF] opacity-100'
-                          : 'bg-white opacity-0 group-hover:opacity-40'
+                          ? "bg-[#4D8DFF] opacity-100"
+                          : "bg-white opacity-0 group-hover:opacity-40"
                       }
                     `}
                   />
 
+                  {/* LABEL */}
+
                   <span
-                    className={
-                      isActive
-                        ? 'text-white'
-                        : 'text-white/45 group-hover:text-white/90'
-                    }
+                    className={`
+                      transition-colors
+                      duration-300
+
+                      ${
+                        isActive
+                          ? "text-white"
+                          : "text-white/45 group-hover:text-white"
+                      }
+                    `}
                   >
                     {link.label}
                   </span>
 
-                  {/* Hover line */}
+                  {/* UNDERLINE */}
+
                   <span
-                    className={`
+                    className="
                       absolute
                       bottom-0
-                      left-4
-                      right-4
+                      left-0
                       h-px
+                      w-full
                       origin-left
+                      scale-x-0
                       bg-[#4D8DFF]
                       transition-transform
-                      duration-300
-                      ${
-                        isActive
-                          ? 'scale-x-100'
-                          : 'scale-x-0 group-hover:scale-x-100'
-                      }
-                    `}
+                      duration-500
+                      ease-out
+                      group-hover:scale-x-100
+                    "
                   />
-                </button>
-              )
+                </motion.button>
+              );
             })}
-          </nav>
+          </motion.nav>
 
-          {/* Availability / Status */}
-          <div className="hidden items-center gap-2 lg:flex">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4D8DFF] opacity-40" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#4D8DFF]" />
+          {/* ====================================================
+              AVAILABLE
+
+              SAME LEVEL AS NAV LINKS
+          ==================================================== */}
+
+          <motion.div
+            className="
+              ml-8
+              hidden
+              self-center
+              items-center
+              gap-2
+              lg:flex
+            "
+            style={{
+              opacity: statusProgress,
+              transform: `translate3d(${statusX}px, 0, 0)`,
+              pointerEvents:
+                statusProgress > 0.05
+                  ? "auto"
+                  : "none",
+            }}
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span
+                className="
+                  absolute
+                  inline-flex
+                  h-full
+                  w-full
+                  animate-ping
+                  rounded-full
+                  bg-[#4D8DFF]
+                  opacity-40
+                "
+              />
+
+              <span
+                className="
+                  relative
+                  inline-flex
+                  h-1.5
+                  w-1.5
+                  rounded-full
+                  bg-[#4D8DFF]
+                "
+              />
             </span>
 
-            <span className="text-[10px] font-medium tracking-[0.12em] text-white/45 uppercase">
+            <span
+              className="
+                text-[9px]
+                font-medium
+                uppercase
+                tracking-[0.15em]
+                text-white/35
+              "
+            >
               Available
             </span>
-          </div>
+          </motion.div>
 
-          {/* Mobile Menu Button */}
-          <button
+          {/* ====================================================
+              MOBILE MENU
+          ==================================================== */}
+
+          <motion.button
             type="button"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
-            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            onClick={() =>
+              setIsMenuOpen((prev) => !prev)
+            }
+            aria-label={
+              isMenuOpen
+                ? "Close menu"
+                : "Open menu"
+            }
             aria-expanded={isMenuOpen}
             className="
-              group
+              ml-auto
               flex
               h-10
               w-10
+              shrink-0
               items-center
               justify-center
               rounded-full
               border
-              border-white/[0.08]
-              bg-white/[0.03]
+              border-white/[0.1]
+              bg-[#050b16]/60
+              backdrop-blur-md
               transition-all
               duration-300
               hover:border-[#4D8DFF]/40
-              hover:bg-[#4D8DFF]/[0.08]
               md:hidden
             "
           >
@@ -262,45 +750,94 @@ export default function Navbar() {
               <motion.span
                 animate={
                   isMenuOpen
-                    ? { rotate: 45, y: 5 }
-                    : { rotate: 0, y: 0 }
+                    ? {
+                        rotate: 45,
+                        y: 5,
+                      }
+                    : {
+                        rotate: 0,
+                        y: 0,
+                      }
                 }
-                transition={{ duration: 0.25 }}
-                className="h-px w-full origin-center bg-white"
+                transition={{
+                  duration: 0.25,
+                }}
+                className="
+                  h-px
+                  w-full
+                  origin-center
+                  bg-white
+                "
               />
 
               <motion.span
                 animate={
                   isMenuOpen
-                    ? { opacity: 0, x: 5 }
-                    : { opacity: 1, x: 0 }
+                    ? {
+                        opacity: 0,
+                        x: 5,
+                      }
+                    : {
+                        opacity: 1,
+                        x: 0,
+                      }
                 }
-                transition={{ duration: 0.2 }}
-                className="h-px w-full bg-white"
+                transition={{
+                  duration: 0.2,
+                }}
+                className="
+                  h-px
+                  w-full
+                  bg-white
+                "
               />
 
               <motion.span
                 animate={
                   isMenuOpen
-                    ? { rotate: -45, y: -5 }
-                    : { rotate: 0, y: 0 }
+                    ? {
+                        rotate: -45,
+                        y: -5,
+                      }
+                    : {
+                        rotate: 0,
+                        y: 0,
+                      }
                 }
-                transition={{ duration: 0.25 }}
-                className="h-px w-full origin-center bg-white"
+                transition={{
+                  duration: 0.25,
+                }}
+                className="
+                  h-px
+                  w-full
+                  origin-center
+                  bg-white
+                "
               />
             </div>
-          </button>
+          </motion.button>
         </div>
       </motion.header>
 
-      {/* Mobile Navigation */}
+      {/* ========================================================
+          MOBILE NAVIGATION
+      ======================================================== */}
+
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.35,
+            }}
             className="
               fixed
               inset-0
@@ -312,7 +849,8 @@ export default function Navbar() {
               md:hidden
             "
           >
-            {/* Subtle background grid */}
+            {/* GRID */}
+
             <div
               className="
                 pointer-events-none
@@ -332,11 +870,12 @@ export default function Navbar() {
                     transparent 1px
                   )
                 `,
-                backgroundSize: '48px 48px',
+                backgroundSize: "48px 48px",
               }}
             />
 
-            {/* Blue ambient light */}
+            {/* BLUE AMBIENT LIGHT */}
+
             <div
               className="
                 pointer-events-none
@@ -348,42 +887,118 @@ export default function Navbar() {
                 -translate-x-1/2
                 -translate-y-1/2
                 rounded-full
-                bg-[#2563EB]/[0.07]
+                bg-[#4D8DFF]/[0.07]
                 blur-[100px]
               "
             />
 
             <div className="relative w-full px-8">
-              {/* Menu label */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="mb-10 flex items-center gap-3"
-              >
-                <span className="h-px w-8 bg-[#4D8DFF]" />
+              {/* MOBILE LOGO */}
 
-                <span className="text-[10px] font-medium tracking-[0.2em] text-white/35 uppercase">
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  y: -15,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  duration: 0.5,
+                }}
+                className="mb-12"
+              >
+                <img
+                  src="/Simran LOGO.png"
+                  alt="Simran Gautam"
+                  className="
+                    h-auto
+                    w-[210px]
+                    object-contain
+                  "
+                />
+              </motion.div>
+
+              {/* LABEL */}
+
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  y: 10,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  delay: 0.1,
+                }}
+                className="
+                  mb-8
+                  flex
+                  items-center
+                  gap-3
+                "
+              >
+                <span
+                  className="
+                    h-px
+                    w-8
+                    bg-[#4D8DFF]
+                  "
+                />
+
+                <span
+                  className="
+                    text-[10px]
+                    font-medium
+                    uppercase
+                    tracking-[0.2em]
+                    text-white/35
+                  "
+                >
                   Navigation
                 </span>
               </motion.div>
 
-              {/* Links */}
+              {/* LINKS */}
+
               <nav className="flex flex-col">
                 {navLinks.map((link, index) => {
-                  const isActive = activeSection === link.href.slice(1)
+                  const isContact =
+                    link.label === "Contact";
+
+                  const isActive =
+                    !isContact &&
+                    activeSection ===
+                      link.href.slice(1);
 
                   return (
                     <motion.button
                       key={link.href}
                       type="button"
-                      onClick={() => handleNavigation(link.href)}
-                      initial={{ opacity: 0, x: -30 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      onClick={() =>
+                        handleNavClick(link)
+                      }
+                      initial={{
+                        opacity: 0,
+                        x: -30,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        x: 0,
+                      }}
                       transition={{
-                        delay: 0.12 + index * 0.07,
+                        delay:
+                          0.12 + index * 0.07,
                         duration: 0.45,
-                        ease: [0.22, 1, 0.36, 1],
+                        ease: [
+                          0.22,
+                          1,
+                          0.36,
+                          1,
+                        ],
                       }}
                       className="
                         group
@@ -396,20 +1011,25 @@ export default function Navbar() {
                         text-left
                       "
                     >
+                      {/* NUMBER */}
+
                       <span
                         className={`
                           text-[10px]
                           tracking-[0.12em]
                           transition-colors
+
                           ${
                             isActive
-                              ? 'text-[#4D8DFF]'
-                              : 'text-white/25'
+                              ? "text-[#4D8DFF]"
+                              : "text-white/25"
                           }
                         `}
                       >
                         0{index + 1}
                       </span>
+
+                      {/* LABEL */}
 
                       <span
                         className={`
@@ -419,15 +1039,18 @@ export default function Navbar() {
                           tracking-[-0.04em]
                           transition-all
                           duration-300
+
                           ${
                             isActive
-                              ? 'translate-x-2 text-white'
-                              : 'text-white/55 group-hover:translate-x-2 group-hover:text-white'
+                              ? "translate-x-2 text-white"
+                              : "text-white/55 group-hover:translate-x-2 group-hover:text-white"
                           }
                         `}
                       >
                         {link.label}
                       </span>
+
+                      {/* ARROW */}
 
                       <span
                         className={`
@@ -435,33 +1058,71 @@ export default function Navbar() {
                           text-lg
                           transition-all
                           duration-300
+
                           ${
                             isActive
-                              ? 'translate-x-0 text-[#4D8DFF] opacity-100'
-                              : '-translate-x-2 text-white/30 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'
+                              ? "translate-x-0 text-[#4D8DFF] opacity-100"
+                              : "-translate-x-2 text-white/30 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
                           }
                         `}
                       >
                         ↗
                       </span>
                     </motion.button>
-                  )
+                  );
                 })}
               </nav>
 
-              {/* Mobile footer */}
+              {/* MOBILE FOOTER */}
+
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="mt-10 flex items-center justify-between"
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                transition={{
+                  delay: 0.5,
+                }}
+                className="
+                  mt-10
+                  flex
+                  items-center
+                  justify-between
+                "
               >
-                <span className="text-[10px] tracking-[0.14em] text-white/25 uppercase">
+                <span
+                  className="
+                    text-[10px]
+                    uppercase
+                    tracking-[0.14em]
+                    text-white/25
+                  "
+                >
                   Frontend Developer
                 </span>
 
-                <span className="flex items-center gap-2 text-[10px] tracking-[0.12em] text-white/35 uppercase">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#4D8DFF]" />
+                <span
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                    text-[10px]
+                    uppercase
+                    tracking-[0.12em]
+                    text-white/35
+                  "
+                >
+                  <span
+                    className="
+                      h-1.5
+                      w-1.5
+                      rounded-full
+                      bg-[#4D8DFF]
+                    "
+                  />
+
                   Lucknow, India
                 </span>
               </motion.div>
@@ -469,6 +1130,15 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ========================================================
+          CONTACT DRAWER
+      ======================================================== */}
+
+      <Contact
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+      />
     </>
-  )
+  );
 }
