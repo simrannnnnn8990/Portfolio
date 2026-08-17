@@ -1,7 +1,12 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import {
+  motion,
+  useInView,
+  useScroll,
+  useTransform,
+} from 'framer-motion'
 
 const projects = [
   {
@@ -36,15 +41,31 @@ const projects = [
   },
 ]
 
+const ease = [0.22, 1, 0.36, 1]
+
 export default function Projects() {
   const sectionRef = useRef(null)
+  const [activeProject, setActiveProject] = useState(null)
 
   const isInView = useInView(sectionRef, {
     once: true,
-    amount: 0.12,
+    amount: 0.08,
   })
 
-  const [activeProject, setActiveProject] = useState(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  })
+
+  /*
+   * Very subtle scroll movement.
+   * No heavy parallax — keeps it premium.
+   */
+  const ambientY = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    [40, 0, -40]
+  )
 
   return (
     <section
@@ -53,187 +74,376 @@ export default function Projects() {
       className="
         relative
         overflow-hidden
-        bg-[#050B16]
+        bg-[#070D17]
         px-6
-        py-28
+        py-10
         text-white
         sm:px-8
+        sm:py-12
         lg:px-12
-        lg:py-36
+        lg:py-14
       "
     >
       {/* =====================================================
-          BACKGROUND — SAME LANGUAGE AS ABOUT
+          CLEAN ATMOSPHERIC BACKGROUND
+          NO GRID / NO PATTERN / NO NOISE
       ====================================================== */}
 
-      <div className="pointer-events-none absolute inset-0">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
-        {/* Technical Grid */}
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage: `
-              linear-gradient(
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              ),
-              linear-gradient(
-                90deg,
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              )
-            `,
-            backgroundSize: '72px 72px',
-          }}
-        />
+        {/* Large soft blue atmosphere */}
 
-        {/* Blue Ambient Glow */}
-        <div
+        <motion.div
+          style={{ y: ambientY }}
           className="
             absolute
-            left-[-160px]
-            top-[15%]
-            h-[380px]
-            w-[380px]
+            -left-[18%]
+            top-[8%]
+            h-[520px]
+            w-[520px]
             rounded-full
-            bg-[#2563EB]/[0.035]
-            blur-[130px]
+            bg-[#2563EB]/[0.045]
+            blur-[150px]
           "
         />
 
-        <div
+        <motion.div
+          style={{ y: ambientY }}
           className="
             absolute
-            bottom-[-180px]
-            right-[-150px]
-            h-[420px]
-            w-[420px]
+            -right-[15%]
+            top-[35%]
+            h-[560px]
+            w-[560px]
             rounded-full
-            bg-[#2563EB]/[0.035]
-            blur-[140px]
+            bg-[#60A5FA]/[0.035]
+            blur-[160px]
           "
         />
 
-        {/* Small center glow */}
+        {/* Very subtle center atmosphere */}
+
         <div
           className="
             absolute
             left-1/2
-            top-1/2
-            h-[300px]
-            w-[300px]
+            top-[42%]
+            h-[500px]
+            w-[500px]
             -translate-x-1/2
-            -translate-y-1/2
             rounded-full
-            bg-[#2563EB]/[0.015]
-            blur-[120px]
+            bg-[#3B82F6]/[0.018]
+            blur-[170px]
+          "
+        />
+
+        {/* Soft top light */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            scaleX: 0,
+          }}
+          whileInView={{
+            opacity: 1,
+            scaleX: 1,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            duration: 1.8,
+            ease,
+          }}
+          className="
+            absolute
+            left-[8%]
+            right-[8%]
+            top-0
+            h-px
+            origin-center
+            bg-gradient-to-r
+            from-transparent
+            via-[#60A5FA]/20
+            to-transparent
+          "
+        />
+
+        {/* Floating blue light */}
+
+        <motion.div
+          animate={{
+            y: [0, -20, 0],
+            x: [0, 8, 0],
+            opacity: [0.2, 0.42, 0.2],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="
+            absolute
+            right-[22%]
+            top-[18%]
+            h-1.5
+            w-1.5
+            rounded-full
+            bg-[#93C5FD]
+            shadow-[0_0_22px_rgba(147,197,253,0.65)]
+          "
+        />
+
+        {/* Another tiny light */}
+
+        <motion.div
+          animate={{
+            y: [0, 15, 0],
+            opacity: [0.1, 0.28, 0.1],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: 1,
+          }}
+          className="
+            absolute
+            bottom-[22%]
+            left-[15%]
+            h-1
+            w-1
+            rounded-full
+            bg-[#60A5FA]
+            shadow-[0_0_18px_rgba(96,165,250,0.6)]
           "
         />
       </div>
 
+      {/* =====================================================
+          CONTENT
+      ====================================================== */}
+
       <div className="relative z-10 mx-auto max-w-[1500px]">
 
         {/* =====================================================
-            SECTION HEADER — SAME AS ABOUT
+            HEADER
         ====================================================== */}
 
         <div
           className="
-            mb-16
+            mb-7
             flex
             flex-col
             justify-between
-            gap-8
+            gap-5
             border-b
             border-white/[0.07]
-            pb-8
+            pb-5
             md:flex-row
             md:items-end
           "
         >
-          {/* Left */}
+
+          {/* LEFT */}
+
           <motion.div
             initial={{
               opacity: 0,
-              x: -15,
+              y: 35,
+              filter: 'blur(10px)',
             }}
             animate={
               isInView
                 ? {
                     opacity: 1,
-                    x: 0,
+                    y: 0,
+                    filter: 'blur(0px)',
                   }
                 : {}
             }
             transition={{
-              duration: 0.6,
+              duration: 1.1,
+              ease,
             }}
           >
-            <div className="mb-5 flex items-center gap-3">
 
-              <span className="h-px w-8 bg-[#4D8DFF]" />
+            {/* Small label */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: -25,
+              }}
+              animate={
+                isInView
+                  ? {
+                      opacity: 1,
+                      x: 0,
+                    }
+                  : {}
+              }
+              transition={{
+                duration: 0.8,
+                delay: 0.1,
+                ease,
+              }}
+              className="
+                mb-3
+                flex
+                items-center
+                gap-3
+              "
+            >
+
+              <motion.span
+                initial={{
+                  width: 0,
+                }}
+                animate={
+                  isInView
+                    ? {
+                        width: 30,
+                      }
+                    : {}
+                }
+                transition={{
+                  duration: 0.8,
+                  delay: 0.15,
+                  ease,
+                }}
+                className="
+                  h-px
+                  bg-[#60A5FA]
+                  shadow-[0_0_12px_rgba(96,165,250,0.45)]
+                "
+              />
 
               <span
                 className="
-                  text-[10px]
+                  text-[9px]
                   uppercase
-                  tracking-[0.2em]
-                  text-white/35
+                  tracking-[0.22em]
+                  text-[#93C5FD]/45
                 "
               >
                 Selected Work
               </span>
+            </motion.div>
 
-            </div>
+            {/* Heading */}
 
             <motion.h2
               initial={{
                 opacity: 0,
-                y: 20,
+                y: 45,
+                rotateX: 20,
+                filter: 'blur(12px)',
               }}
               animate={
                 isInView
                   ? {
                       opacity: 1,
                       y: 0,
+                      rotateX: 0,
+                      filter: 'blur(0px)',
                     }
                   : {}
               }
               transition={{
-                duration: 0.7,
+                duration: 1.15,
+                delay: 0.12,
+                ease,
+              }}
+              style={{
+                perspective: '1000px',
               }}
               className="
                 font-clash
                 text-4xl
                 font-semibold
-                tracking-[-0.04em]
+                tracking-[-0.05em]
                 sm:text-5xl
                 lg:text-6xl
               "
             >
-              Work that
+              <span className="inline-block">
+                Work that
+              </span>
+
               <br />
 
-              <span className="text-white/35">
-                speaks for itself.
+              {/* ============================================
+                  FLIPPING TEXT
+              ============================================= */}
+
+              <span
+                className="
+                  relative
+                  inline-block
+                  overflow-hidden
+                  align-bottom
+                "
+                style={{
+                  perspective: '1000px',
+                }}
+              >
+                <motion.span
+                  initial={{
+                    opacity: 0,
+                    y: '110%',
+                    rotateX: -80,
+                  }}
+                  animate={
+                    isInView
+                      ? {
+                          opacity: 1,
+                          y: 0,
+                          rotateX: 0,
+                        }
+                      : {}
+                  }
+                  transition={{
+                    duration: 1.25,
+                    delay: 0.35,
+                    ease,
+                  }}
+                  className="
+                    inline-block
+                    origin-bottom
+                    text-white/35
+                  "
+                  style={{
+                    transformStyle: 'preserve-3d',
+                  }}
+                >
+                  speaks for itself.
+                </motion.span>
               </span>
             </motion.h2>
           </motion.div>
 
-          {/* Right */}
+          {/* RIGHT DESCRIPTION */}
+
           <motion.div
             initial={{
               opacity: 0,
+              x: 30,
+              filter: 'blur(8px)',
             }}
             animate={
               isInView
                 ? {
                     opacity: 1,
+                    x: 0,
+                    filter: 'blur(0px)',
                   }
                 : {}
             }
             transition={{
-              delay: 0.2,
+              duration: 1,
+              delay: 0.45,
+              ease,
             }}
             className="max-w-[310px]"
           >
@@ -255,30 +465,33 @@ export default function Projects() {
             PROJECT LIST
         ====================================================== */}
 
-        <div className="space-y-28">
+        <div className="space-y-9">
 
           {projects.map((project, index) => {
-            const isActive = activeProject === project.id
+            const isActive =
+              activeProject === project.id
 
             return (
               <motion.article
                 key={project.id}
                 initial={{
                   opacity: 0,
-                  y: 45,
+                  y: 55,
+                  filter: 'blur(8px)',
                 }}
-                animate={
-                  isInView
-                    ? {
-                        opacity: 1,
-                        y: 0,
-                      }
-                    : {}
-                }
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  filter: 'blur(0px)',
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.12,
+                }}
                 transition={{
-                  duration: 0.8,
-                  delay: 0.2 + index * 0.15,
-                  ease: [0.22, 1, 0.36, 1],
+                  duration: 1,
+                  delay: index * 0.08,
+                  ease,
                 }}
                 onMouseEnter={() =>
                   setActiveProject(project.id)
@@ -289,46 +502,74 @@ export default function Projects() {
                 className="group"
               >
 
-                {/* Project Header */}
+                {/* =================================================
+                    CATEGORY
+                ================================================== */}
 
-                <div className="mb-8 flex items-center gap-4">
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    x: -30,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    x: 0,
+                  }}
+                  viewport={{
+                    once: true,
+                    amount: 0.3,
+                  }}
+                  transition={{
+                    duration: 0.75,
+                    ease,
+                  }}
+                  className="
+                    mb-4
+                    flex
+                    items-center
+                    gap-4
+                  "
+                >
 
-                  <span
+                  <motion.div
+                    animate={{
+                      scaleX: isActive ? 1 : 0.75,
+                      opacity: isActive ? 1 : 0.4,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      ease,
+                    }}
                     className="
-                      font-mono
-                      text-[10px]
-                      text-[#4D8DFF]
-                    "
-                  >
-                    {project.id}
-                  </span>
-
-                  <div
-                    className={`
                       h-px
                       flex-1
-                      transition-colors
-                      duration-500
-                      ${
-                        isActive
-                          ? 'bg-[#4D8DFF]/30'
-                          : 'bg-white/[0.08]'
-                      }
-                    `}
+                      origin-left
+                      bg-gradient-to-r
+                      from-[#60A5FA]/40
+                      to-white/[0.05]
+                    "
                   />
 
-                  <span
+                  <motion.span
+                    animate={{
+                      opacity: isActive ? 1 : 0.35,
+                      letterSpacing: isActive
+                        ? '0.24em'
+                        : '0.18em',
+                      x: isActive ? -2 : 0,
+                    }}
+                    transition={{
+                      duration: 0.45,
+                    }}
                     className="
                       text-[9px]
                       uppercase
-                      tracking-[0.18em]
-                      text-white/25
+                      text-[#93C5FD]/45
                     "
                   >
                     {project.category}
-                  </span>
-
-                </div>
+                  </motion.span>
+                </motion.div>
 
                 {/* =================================================
                     PROJECT GRID
@@ -338,8 +579,8 @@ export default function Projects() {
                   className={`
                     grid
                     items-center
-                    gap-12
-                    lg:gap-20
+                    gap-7
+                    lg:gap-12
                     lg:grid-cols-[0.9fr_1.1fr]
                     ${
                       index % 2 !== 0
@@ -361,36 +602,93 @@ export default function Projects() {
                     }
                   >
 
+                    {/* TITLE */}
+
                     <motion.div
-                      animate={{
-                        x: isActive ? 7 : 0,
+                      initial={{
+                        opacity: 0,
+                        y: 45,
+                        rotateX: 25,
+                        filter: 'blur(10px)',
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                        rotateX: 0,
+                        filter: 'blur(0px)',
+                      }}
+                      viewport={{
+                        once: true,
+                        amount: 0.25,
                       }}
                       transition={{
-                        duration: 0.35,
+                        duration: 1,
+                        delay: 0.05,
+                        ease,
+                      }}
+                      animate={{
+                        x: isActive ? 6 : 0,
+                      }}
+                      style={{
+                        perspective: '1000px',
                       }}
                     >
-
                       <h3
                         className="
                           font-clash
                           text-4xl
                           font-semibold
-                          tracking-[-0.04em]
+                          tracking-[-0.05em]
                           sm:text-5xl
                           lg:text-6xl
                         "
                       >
                         {project.title}
-                        <span className="text-white/20">
-                          .
-                        </span>
-                      </h3>
 
+                        <motion.span
+                          animate={{
+                            opacity: isActive
+                              ? 0.7
+                              : 0.2,
+                            x: isActive ? 5 : 0,
+                          }}
+                          transition={{
+                            duration: 0.35,
+                          }}
+                          className="
+                            inline-block
+                            text-[#93C5FD]/35
+                          "
+                        >
+                          .
+                        </motion.span>
+                      </h3>
                     </motion.div>
 
-                    <p
+                    {/* DESCRIPTION */}
+
+                    <motion.p
+                      initial={{
+                        opacity: 0,
+                        y: 25,
+                        filter: 'blur(7px)',
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                        filter: 'blur(0px)',
+                      }}
+                      viewport={{
+                        once: true,
+                        amount: 0.3,
+                      }}
+                      transition={{
+                        duration: 0.9,
+                        delay: 0.15,
+                        ease,
+                      }}
                       className="
-                        mt-6
+                        mt-3
                         max-w-[600px]
                         text-sm
                         leading-7
@@ -400,18 +698,37 @@ export default function Projects() {
                       "
                     >
                       {project.description}
-                    </p>
+                    </motion.p>
 
-                    {/* Technologies */}
+                    {/* TECHNOLOGIES */}
 
-                    <div className="mt-8">
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        y: 20,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      viewport={{
+                        once: true,
+                        amount: 0.3,
+                      }}
+                      transition={{
+                        duration: 0.7,
+                        delay: 0.22,
+                        ease,
+                      }}
+                      className="mt-4"
+                    >
 
                       <div
                         className="
-                          mb-4
+                          mb-2.5
                           text-[9px]
                           uppercase
-                          tracking-[0.15em]
+                          tracking-[0.16em]
                           text-white/20
                         "
                       >
@@ -426,36 +743,44 @@ export default function Projects() {
                               key={technology}
                               initial={{
                                 opacity: 0,
-                                y: 8,
+                                y: 14,
+                                rotateX: -35,
+                                scale: 0.94,
                               }}
                               whileInView={{
                                 opacity: 1,
                                 y: 0,
+                                rotateX: 0,
+                                scale: 1,
                               }}
                               viewport={{
                                 once: true,
                               }}
                               transition={{
                                 delay:
-                                  index * 0.1 +
-                                  techIndex * 0.04,
+                                  0.25 +
+                                  techIndex * 0.07,
+                                duration: 0.55,
+                                ease,
                               }}
                               whileHover={{
-                                y: -2,
+                                y: -3,
+                                scale: 1.04,
                               }}
                               className="
                                 border
                                 border-white/[0.08]
-                                bg-white/[0.02]
+                                bg-[#0B1524]/80
                                 px-3
                                 py-2
                                 text-[9px]
                                 text-white/40
+                                backdrop-blur-sm
                                 transition-all
                                 duration-300
-                                hover:border-[#4D8DFF]/30
-                                hover:bg-[#4D8DFF]/[0.04]
-                                hover:text-white/75
+                                hover:border-[#60A5FA]/35
+                                hover:bg-[#60A5FA]/[0.06]
+                                hover:text-[#BFDBFE]/80
                               "
                             >
                               {technology}
@@ -464,11 +789,30 @@ export default function Projects() {
                         )}
 
                       </div>
-                    </div>
+                    </motion.div>
 
-                    {/* Features */}
+                    {/* FEATURES */}
 
-                    <div className="mt-9 border-t border-white/[0.07]">
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                      }}
+                      viewport={{
+                        once: true,
+                      }}
+                      transition={{
+                        duration: 0.7,
+                        delay: 0.28,
+                      }}
+                      className="
+                        mt-4
+                        border-t
+                        border-white/[0.07]
+                      "
+                    >
 
                       {project.features.map(
                         (feature, featureIndex) => (
@@ -476,7 +820,7 @@ export default function Projects() {
                             key={feature}
                             initial={{
                               opacity: 0,
-                              x: -10,
+                              x: -20,
                             }}
                             whileInView={{
                               opacity: 1,
@@ -487,8 +831,10 @@ export default function Projects() {
                             }}
                             transition={{
                               delay:
-                                0.2 +
-                                featureIndex * 0.08,
+                                0.3 +
+                                featureIndex * 0.1,
+                              duration: 0.6,
+                              ease,
                             }}
                             className="
                               flex
@@ -496,14 +842,25 @@ export default function Projects() {
                               gap-3
                               border-b
                               border-white/[0.07]
-                              py-3
+                              py-2.5
                             "
                           >
-                            <span
+
+                            <motion.span
+                              animate={{
+                                width: isActive
+                                  ? 28
+                                  : 18,
+                                opacity: isActive
+                                  ? 0.85
+                                  : 0.4,
+                              }}
+                              transition={{
+                                duration: 0.35,
+                              }}
                               className="
                                 h-px
-                                w-5
-                                bg-[#4D8DFF]/50
+                                bg-[#60A5FA]
                               "
                             />
 
@@ -515,24 +872,41 @@ export default function Projects() {
                             >
                               {feature}
                             </span>
+
                           </motion.div>
                         )
                       )}
 
-                    </div>
+                    </motion.div>
 
-                    {/* Explore */}
+                    {/* EXPLORE */}
 
-                    <div
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        y: 15,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      viewport={{
+                        once: true,
+                      }}
+                      transition={{
+                        duration: 0.65,
+                        delay: 0.45,
+                        ease,
+                      }}
                       className="
-                        mt-9
+                        mt-4
                         inline-flex
                         items-center
                         gap-3
                         text-[10px]
                         uppercase
                         tracking-[0.15em]
-                        text-[#4D8DFF]
+                        text-[#60A5FA]
                       "
                     >
 
@@ -540,37 +914,45 @@ export default function Projects() {
 
                         Explore project
 
-                        <span
-                          className={`
+                        <motion.span
+                          initial={{
+                            width: 0,
+                          }}
+                          animate={{
+                            width: isActive
+                              ? '100%'
+                              : 0,
+                          }}
+                          transition={{
+                            duration: 0.45,
+                          }}
+                          className="
                             absolute
                             -bottom-2
                             left-0
                             h-px
-                            bg-[#4D8DFF]
-                            transition-all
-                            duration-500
-                            ${
-                              isActive
-                                ? 'w-full'
-                                : 'w-0'
-                            }
-                          `}
+                            bg-[#60A5FA]
+                            shadow-[0_0_8px_rgba(96,165,250,0.4)]
+                          "
                         />
 
                       </span>
 
                       <motion.span
                         animate={{
-                          x: isActive ? 5 : 0,
+                          x: isActive ? 6 : 0,
+                          y: isActive ? -3 : 0,
+                          rotate: isActive ? -8 : 0,
                         }}
                         transition={{
-                          duration: 0.3,
+                          duration: 0.35,
+                          ease,
                         }}
                       >
                         ↗
                       </motion.span>
 
-                    </div>
+                    </motion.div>
                   </div>
 
                   {/* =================================================
@@ -587,59 +969,92 @@ export default function Projects() {
 
                     <div className="relative">
 
-                      {/* Project Number */}
-
                       <motion.div
-                        animate={{
-                          opacity: isActive ? 1 : 0.35,
-                          y: isActive ? -6 : 0,
+                        initial={{
+                          opacity: 0,
+                          scale: 0.91,
+                          y: 45,
+                          rotateX: 10,
+                          filter: 'blur(8px)',
                         }}
-                        className="
-                          absolute
-                          -top-8
-                          right-0
-                          z-20
-                          font-clash
-                          text-6xl
-                          font-semibold
-                          text-[#4D8DFF]/[0.07]
-                        "
-                      >
-                        {project.id}
-                      </motion.div>
-
-                      {/* Preview */}
-
-                      <motion.div
-                        animate={{
-                          y: isActive ? -7 : 0,
+                        whileInView={{
+                          opacity: 1,
+                          scale: 1,
+                          y: 0,
+                          rotateX: 0,
+                          filter: 'blur(0px)',
+                        }}
+                        viewport={{
+                          once: true,
+                          amount: 0.18,
                         }}
                         transition={{
-                          type: 'spring',
-                          stiffness: 180,
-                          damping: 22,
+                          duration: 1.15,
+                          delay:
+                            0.15 + index * 0.1,
+                          ease,
+                        }}
+                        animate={{
+                          y: isActive ? -6 : 0,
+                          scale: isActive
+                            ? 1.012
+                            : 1,
                         }}
                         className="relative"
                       >
 
-                        {/* Outer Frame */}
+                        {/* SOFT GLOW */}
 
-                        <div
+                        <motion.div
+                          animate={{
+                            opacity: isActive
+                              ? 0.45
+                              : 0.12,
+                            scale: isActive
+                              ? 1.05
+                              : 1,
+                          }}
+                          transition={{
+                            duration: 0.8,
+                            ease,
+                          }}
+                          className="
+                            absolute
+                            -inset-8
+                            rounded-[50px]
+                            bg-[#3B82F6]/[0.07]
+                            blur-[50px]
+                          "
+                        />
+
+                        {/* OUTER FRAME */}
+
+                        <motion.div
+                          animate={{
+                            scale: isActive
+                              ? 1.015
+                              : 1,
+                            opacity: isActive
+                              ? 1
+                              : 0.6,
+                          }}
+                          transition={{
+                            duration: 0.7,
+                            ease,
+                          }}
                           className={`
                             absolute
                             -inset-3
                             border
-                            transition-all
-                            duration-700
                             ${
                               isActive
-                                ? 'border-[#4D8DFF]/25'
+                                ? 'border-[#60A5FA]/30'
                                 : 'border-white/[0.05]'
                             }
                           `}
                         />
 
-                        {/* Browser */}
+                        {/* BROWSER */}
 
                         <div
                           className="
@@ -647,8 +1062,9 @@ export default function Projects() {
                             aspect-[16/10]
                             overflow-hidden
                             border
-                            border-white/[0.09]
-                            bg-[#080F1C]
+                            border-white/[0.10]
+                            bg-[#091321]
+                            shadow-[0_30px_90px_rgba(0,0,0,0.38)]
                           "
                         >
 
@@ -667,55 +1083,84 @@ export default function Projects() {
                               justify-between
                               border-b
                               border-white/[0.07]
-                              bg-[#07101D]/90
+                              bg-[#091321]/90
                               px-4
-                              backdrop-blur-md
+                              backdrop-blur-xl
                             "
                           >
 
                             <div className="flex items-center gap-1.5">
 
-                              <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
-                              <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
-                              <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
+                              <span className="
+                                h-1.5
+                                w-1.5
+                                rounded-full
+                                bg-white/15
+                              " />
+
+                              <span className="
+                                h-1.5
+                                w-1.5
+                                rounded-full
+                                bg-white/15
+                              " />
+
+                              <span className="
+                                h-1.5
+                                w-1.5
+                                rounded-full
+                                bg-white/15
+                              " />
 
                             </div>
 
-                            <span
+                            <motion.span
+                              animate={{
+                                opacity: isActive
+                                  ? 0.5
+                                  : 0.2,
+                                letterSpacing:
+                                  isActive
+                                    ? '0.2em'
+                                    : '0.12em',
+                              }}
+                              transition={{
+                                duration: 0.45,
+                              }}
                               className="
-                                text-[8px]
-                                tracking-[0.12em]
-                                text-white/20
                                 font-mono
+                                text-[8px]
+                                text-white/20
                               "
                             >
                               {project.title.toUpperCase()}
-                            </span>
+                            </motion.span>
 
                             <span
                               className="
-                                text-[8px]
-                                text-[#4D8DFF]/50
                                 font-mono
+                                text-[8px]
+                                text-[#60A5FA]/60
                               "
                             >
-                              {project.id}
+                              ↗
                             </span>
-
                           </div>
 
-                          {/* Image */}
+                          {/* IMAGE */}
 
                           <motion.img
                             src={project.image}
                             alt={`${project.title} project preview`}
                             loading="lazy"
                             animate={{
-                              scale: isActive ? 1.045 : 1,
+                              scale: isActive
+                                ? 1.055
+                                : 1,
                             }}
                             transition={{
-                              duration: 1,
-                              ease: [0.22, 1, 0.36, 1],
+                              duration: 1.4,
+                              ease,
                             }}
                             className="
                               absolute
@@ -727,50 +1172,56 @@ export default function Projects() {
                             "
                           />
 
-                          {/* Image Overlay */}
+                          {/* CINEMATIC OVERLAY */}
 
                           <motion.div
                             animate={{
-                              opacity: isActive ? 0.18 : 0.48,
+                              opacity: isActive
+                                ? 0.1
+                                : 0.4,
                             }}
                             transition={{
-                              duration: 0.5,
+                              duration: 0.7,
                             }}
                             className="
                               absolute
                               inset-0
-                              bg-[#050B16]
+                              bg-[#07101D]
                             "
                           />
 
-                          {/* Blue Tint */}
+                          {/* LIGHT BLUE WASH */}
 
-                          <div
+                          <motion.div
+                            animate={{
+                              opacity: isActive
+                                ? 0.12
+                                : 0.035,
+                            }}
+                            transition={{
+                              duration: 0.7,
+                            }}
                             className="
                               absolute
                               inset-0
-                              bg-[#2563EB]/[0.035]
+                              bg-[#60A5FA]
                               mix-blend-screen
                             "
                           />
 
-                          {/* Scan Animation */}
+                          {/* MOVING LIGHT */}
 
                           <motion.div
                             initial={{
-                              x: '-120%',
+                              x: '-130%',
                             }}
-                            animate={
-                              isActive
-                                ? {
-                                    x: '120%',
-                                  }
-                                : {
-                                    x: '-120%',
-                                  }
-                            }
+                            animate={{
+                              x: isActive
+                                ? '130%'
+                                : '-130%',
+                            }}
                             transition={{
-                              duration: 1.1,
+                              duration: 1.4,
                               ease: 'easeInOut',
                             }}
                             className="
@@ -781,14 +1232,24 @@ export default function Projects() {
                               w-1/3
                               bg-gradient-to-r
                               from-transparent
-                              via-[#4D8DFF]/[0.08]
+                              via-[#BFDBFE]/[0.13]
                               to-transparent
+                              blur-[2px]
                             "
                           />
 
-                          {/* Bottom Information */}
+                          {/* BOTTOM LABEL */}
 
-                          <div
+                          <motion.div
+                            animate={{
+                              opacity: isActive
+                                ? 0.7
+                                : 0.3,
+                              x: isActive ? 4 : 0,
+                            }}
+                            transition={{
+                              duration: 0.4,
+                            }}
                             className="
                               absolute
                               bottom-4
@@ -800,10 +1261,19 @@ export default function Projects() {
                               text-white/30
                             "
                           >
-                            FRONTEND / {project.id}
-                          </div>
+                            FRONTEND
+                          </motion.div>
 
-                          <div
+                          <motion.div
+                            animate={{
+                              opacity: isActive
+                                ? 0.95
+                                : 0.55,
+                              x: isActive ? -4 : 0,
+                            }}
+                            transition={{
+                              duration: 0.4,
+                            }}
                             className="
                               absolute
                               bottom-4
@@ -811,17 +1281,22 @@ export default function Projects() {
                               z-10
                               font-mono
                               text-[8px]
-                              text-[#4D8DFF]/60
+                              text-[#60A5FA]/70
                             "
                           >
                             VIEW ↗
-                          </div>
+                          </motion.div>
 
                         </div>
 
-                        {/* Corner Marks */}
+                        {/* CORNER MARKS */}
 
-                        <span
+                        <motion.span
+                          animate={{
+                            opacity: isActive
+                              ? 1
+                              : 0.4,
+                          }}
                           className="
                             absolute
                             -left-3
@@ -830,11 +1305,16 @@ export default function Projects() {
                             w-5
                             border-l
                             border-t
-                            border-[#4D8DFF]/50
+                            border-[#60A5FA]/60
                           "
                         />
 
-                        <span
+                        <motion.span
+                          animate={{
+                            opacity: isActive
+                              ? 1
+                              : 0.4,
+                          }}
                           className="
                             absolute
                             -right-3
@@ -843,11 +1323,16 @@ export default function Projects() {
                             w-5
                             border-r
                             border-t
-                            border-[#4D8DFF]/50
+                            border-[#60A5FA]/60
                           "
                         />
 
-                        <span
+                        <motion.span
+                          animate={{
+                            opacity: isActive
+                              ? 1
+                              : 0.4,
+                          }}
                           className="
                             absolute
                             -bottom-3
@@ -856,11 +1341,16 @@ export default function Projects() {
                             w-5
                             border-b
                             border-l
-                            border-[#4D8DFF]/50
+                            border-[#60A5FA]/60
                           "
                         />
 
-                        <span
+                        <motion.span
+                          animate={{
+                            opacity: isActive
+                              ? 1
+                              : 0.4,
+                          }}
                           className="
                             absolute
                             -bottom-3
@@ -869,7 +1359,7 @@ export default function Projects() {
                             w-5
                             border-b
                             border-r
-                            border-[#4D8DFF]/50
+                            border-[#60A5FA]/60
                           "
                         />
 
@@ -878,47 +1368,75 @@ export default function Projects() {
                   </div>
                 </div>
 
-                {/* Project Divider */}
+                {/* =================================================
+                    PROJECT DIVIDER
+                ================================================== */}
 
                 {index < projects.length - 1 && (
-                  <div className="mt-28 h-px bg-white/[0.07]" />
+                  <motion.div
+                    initial={{
+                      scaleX: 0,
+                      opacity: 0,
+                    }}
+                    whileInView={{
+                      scaleX: 1,
+                      opacity: 1,
+                    }}
+                    viewport={{
+                      once: true,
+                    }}
+                    transition={{
+                      duration: 0.9,
+                      delay: 0.15,
+                      ease,
+                    }}
+                    className="
+                      mt-9
+                      h-px
+                      origin-left
+                      bg-gradient-to-r
+                      from-[#60A5FA]/20
+                      via-white/[0.06]
+                      to-transparent
+                    "
+                  />
                 )}
-
               </motion.article>
             )
           })}
         </div>
 
         {/* =====================================================
-            BOTTOM STATEMENT — SAME AS ABOUT STYLE
+            BOTTOM STATEMENT
         ====================================================== */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 20,
+            y: 25,
+            filter: 'blur(6px)',
           }}
-          animate={
-            isInView
-              ? {
-                  opacity: 1,
-                  y: 0,
-                }
-              : {}
-          }
+          whileInView={{
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+          }}
+          viewport={{
+            once: true,
+          }}
           transition={{
-            delay: 0.7,
-            duration: 0.7,
+            duration: 0.9,
+            ease,
           }}
           className="
-            mt-28
+            mt-9
             flex
             flex-col
             justify-between
             gap-5
             border-t
             border-white/[0.07]
-            pt-8
+            pt-5
             md:flex-row
             md:items-center
           "
@@ -939,7 +1457,7 @@ export default function Projects() {
 
             <p
               className="
-                mt-2
+                mt-1.5
                 text-xs
                 text-white/20
               "
@@ -952,13 +1470,22 @@ export default function Projects() {
 
           <div className="flex items-center gap-3">
 
-            <span
+            <motion.span
+              animate={{
+                scale: [1, 1.35, 1],
+                opacity: [0.45, 1, 0.45],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
               className="
                 h-1.5
                 w-1.5
                 rounded-full
-                bg-[#4D8DFF]
-                animate-pulse
+                bg-[#60A5FA]
+                shadow-[0_0_12px_rgba(96,165,250,0.8)]
               "
             />
 
@@ -974,7 +1501,6 @@ export default function Projects() {
             </span>
 
           </div>
-
         </motion.div>
 
       </div>

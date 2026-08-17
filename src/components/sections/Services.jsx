@@ -134,11 +134,100 @@ const services = [
   },
 ]
 
+/* ---------------------------------------------------------
+   Animated service title
+--------------------------------------------------------- */
+
+function AnimatedTitle({ title, active }) {
+  const words = title.split(' ')
+
+  return (
+    <motion.div
+      className="overflow-hidden"
+      animate={{
+        x: active ? 8 : 0,
+      }}
+      transition={{
+        duration: 0.45,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <div className="flex flex-wrap gap-x-[0.28em]">
+        {words.map((word, index) => (
+          <motion.span
+            key={`${title}-${word}-${index}`}
+            initial={{
+              opacity: 0,
+              y: 24,
+              filter: 'blur(8px)',
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              filter: 'blur(0px)',
+            }}
+            transition={{
+              duration: 0.55,
+              delay: index * 0.045,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="inline-block"
+          >
+            {word}
+          </motion.span>
+        ))}
+      </div>
+    </motion.div>
+  )
+}
+
+/* ---------------------------------------------------------
+   Animated description
+--------------------------------------------------------- */
+
+function AnimatedDescription({ service }) {
+  return (
+    <AnimatePresence mode="wait">
+      <motion.p
+        key={service.id}
+        initial={{
+          opacity: 0,
+          y: 10,
+          filter: 'blur(5px)',
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          filter: 'blur(0px)',
+        }}
+        exit={{
+          opacity: 0,
+          y: -8,
+          filter: 'blur(5px)',
+        }}
+        transition={{
+          duration: 0.45,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="
+          max-w-[520px]
+          text-sm
+          leading-7
+          text-white/35
+        "
+      >
+        {service.description}
+      </motion.p>
+    </AnimatePresence>
+  )
+}
+
 export default function Services() {
   const sectionRef = useRef(null)
+
   const isInView = useInView(sectionRef, {
     once: true,
-    amount: 0.1,
+    amount: 0.08,
   })
 
   const [activeService, setActiveService] = useState(null)
@@ -152,135 +241,146 @@ export default function Services() {
         overflow-hidden
         bg-[#050B16]
         px-6
-        py-28
+        py-20
         text-white
         sm:px-8
         lg:px-12
-        lg:py-36
+        lg:py-24
       "
     >
+
       {/* =====================================================
-          BACKGROUND
+          VERY SUBTLE BACKGROUND
+          No grid / no large glow / no cards
       ====================================================== */}
 
-      <div className="pointer-events-none absolute inset-0">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
-        {/* Technical Grid */}
+        {/* Fine vertical architecture lines */}
+
         <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage: `
-              linear-gradient(
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              ),
-              linear-gradient(
-                90deg,
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              )
-            `,
-            backgroundSize: '72px 72px',
+          className="
+            absolute
+            inset-y-0
+            left-[8%]
+            w-px
+            bg-white/[0.025]
+          "
+        />
+
+        <div
+          className="
+            absolute
+            inset-y-0
+            right-[8%]
+            w-px
+            bg-white/[0.025]
+          "
+        />
+
+        {/* Moving scan line */}
+
+        <motion.div
+          initial={{ y: '-100%' }}
+          animate={
+            isInView
+              ? {
+                  y: '100%',
+                }
+              : {}
+          }
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            ease: 'linear',
           }}
-        />
-
-        {/* Ambient Blue Glow */}
-        <div
           className="
             absolute
-            left-[-180px]
-            top-[18%]
-            h-[420px]
-            w-[420px]
-            rounded-full
-            bg-[#2563EB]/[0.035]
-            blur-[140px]
+            left-[8%]
+            right-[8%]
+            h-px
+            bg-gradient-to-r
+            from-transparent
+            via-[#4D8DFF]/10
+            to-transparent
           "
         />
 
-        <div
-          className="
-            absolute
-            bottom-[-180px]
-            right-[-160px]
-            h-[440px]
-            w-[440px]
-            rounded-full
-            bg-[#2563EB]/[0.035]
-            blur-[150px]
-          "
-        />
+        {/* Tiny center light */}
 
-        <div
+        <motion.div
+          animate={{
+            opacity: [0.15, 0.3, 0.15],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
           className="
             absolute
             left-1/2
-            top-1/2
-            h-[300px]
-            w-[300px]
+            top-[42%]
+            h-px
+            w-24
             -translate-x-1/2
-            -translate-y-1/2
-            rounded-full
-            bg-[#2563EB]/[0.018]
-            blur-[120px]
+            bg-[#4D8DFF]/20
           "
         />
+
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1500px]">
+      <div className="relative z-10 mx-auto max-w-[1380px]">
 
         {/* =====================================================
             HEADER
         ====================================================== */}
 
-        <div
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 18,
+          }}
+          animate={
+            isInView
+              ? {
+                  opacity: 1,
+                  y: 0,
+                }
+              : {}
+          }
+          transition={{
+            duration: 0.65,
+          }}
           className="
-            mb-16
+            mb-10
             flex
             flex-col
-            justify-between
-            gap-8
+            gap-5
             border-b
-            border-white/[0.07]
-            pb-8
+            border-white/[0.06]
+            pb-7
             md:flex-row
             md:items-end
+            md:justify-between
           "
         >
 
-          {/* Left */}
+          <div>
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: -20,
-            }}
-            animate={
-              isInView
-                ? {
-                    opacity: 1,
-                    x: 0,
-                  }
-                : {}
-            }
-            transition={{
-              duration: 0.6,
-            }}
-          >
+            <div className="mb-4 flex items-center gap-3">
 
-            <div className="mb-5 flex items-center gap-3">
-
-              <span className="h-px w-8 bg-[#4D8DFF]" />
+              <span className="h-px w-7 bg-[#4D8DFF]/70" />
 
               <span
                 className="
-                  text-[10px]
+                  text-[9px]
                   uppercase
                   tracking-[0.2em]
-                  text-white/35
+                  text-white/30
                 "
               >
-                 What I Do
+                What I Do
               </span>
 
             </div>
@@ -300,33 +400,30 @@ export default function Services() {
               }
               transition={{
                 duration: 0.7,
-                delay: 0.1,
+                delay: 0.08,
+                ease: [0.22, 1, 0.36, 1],
               }}
               className="
                 font-clash
                 text-4xl
                 font-semibold
-                tracking-[-0.04em]
+                tracking-[-0.045em]
                 sm:text-5xl
-                lg:text-6xl
+                lg:text-[56px]
               "
             >
-              Things I
-              <br />
-
-              <span className="text-white/35">
+              Things I{' '}
+              <span className="text-white/30">
                 can build.
               </span>
             </motion.h2>
 
-          </motion.div>
+          </div>
 
-          {/* Right */}
-
-          <motion.div
+          <motion.p
             initial={{
               opacity: 0,
-              y: 15,
+              y: 12,
             }}
             animate={
               isInView
@@ -338,33 +435,28 @@ export default function Services() {
             }
             transition={{
               duration: 0.6,
-              delay: 0.2,
+              delay: 0.18,
             }}
-            className="max-w-[340px]"
+            className="
+              max-w-[330px]
+              text-xs
+              leading-6
+              text-white/30
+            "
           >
+            I&apos;m an entry-level developer focused on
+            building responsive interfaces, learning modern
+            technologies and turning ideas into working
+            web experiences.
+          </motion.p>
 
-            <p
-              className="
-                text-xs
-                leading-6
-                text-white/35
-              "
-            >
-              I&apos;m an entry-level developer focused on
-              building responsive interfaces, learning modern
-              technologies and turning ideas into working
-              web experiences.
-            </p>
-
-          </motion.div>
-
-        </div>
+        </motion.div>
 
         {/* =====================================================
-            SERVICES LIST
+            SERVICES
         ====================================================== */}
 
-        <div className="border-t border-white/[0.07]">
+        <div className="border-t border-white/[0.06]">
 
           {services.map((service, index) => {
             const isActive = activeService === service.id
@@ -374,7 +466,7 @@ export default function Services() {
                 key={service.id}
                 initial={{
                   opacity: 0,
-                  y: 30,
+                  y: 18,
                 }}
                 animate={
                   isInView
@@ -385,8 +477,8 @@ export default function Services() {
                     : {}
                 }
                 transition={{
-                  duration: 0.65,
-                  delay: 0.15 + index * 0.08,
+                  duration: 0.6,
+                  delay: 0.1 + index * 0.06,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 onMouseEnter={() =>
@@ -395,28 +487,37 @@ export default function Services() {
                 onMouseLeave={() =>
                   setActiveService(null)
                 }
-                className="group relative border-b border-white/[0.07]"
+                className="
+                  group
+                  relative
+                  border-b
+                  border-white/[0.06]
+                "
               >
 
                 {/* =================================================
-                    MAIN ROW
+                    MAIN SERVICE ROW
                 ================================================== */}
 
                 <div
                   className="
                     grid
-                    gap-8
-                    py-8
-                    lg:grid-cols-[90px_1fr_1.1fr_100px]
+                    gap-5
+                    py-6
+                    lg:grid-cols-[70px_1fr_1.1fr_80px]
                     lg:items-center
+                    lg:gap-8
                   "
                 >
 
-                  {/* Number */}
+                  {/* NUMBER */}
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
 
-                    <span
+                    <motion.span
+                      animate={{
+                        opacity: isActive ? 1 : 0.45,
+                      }}
                       className="
                         font-mono
                         text-[10px]
@@ -424,121 +525,132 @@ export default function Services() {
                       "
                     >
                       {service.id}
-                    </span>
+                    </motion.span>
 
-                    <span
-                      className={`
-                        hidden
-                        h-px
-                        w-8
-                        transition-all
-                        duration-500
-                        lg:block
-                        ${
-                          isActive
-                            ? 'bg-[#4D8DFF]/60'
-                            : 'bg-white/[0.08]'
-                        }
-                      `}
-                    />
-
-                  </div>
-
-                  {/* Title */}
-
-                  <div>
-
-                    <motion.h3
+                    <motion.span
                       animate={{
-                        x: isActive ? 8 : 0,
+                        width: isActive ? 22 : 0,
+                        opacity: isActive ? 0.7 : 0,
                       }}
                       transition={{
                         duration: 0.35,
                       }}
                       className="
-                        font-clash
-                        text-2xl
-                        font-semibold
-                        tracking-[-0.03em]
-                        text-white
-                        sm:text-3xl
+                        h-px
+                        bg-[#4D8DFF]
                       "
-                    >
-                      {service.title}
-                    </motion.h3>
-
-                    <span
-                      className="
-                        mt-2
-                        block
-                        text-[9px]
-                        uppercase
-                        tracking-[0.16em]
-                        text-white/20
-                      "
-                    >
-                      {service.shortTitle}
-                    </span>
+                    />
 
                   </div>
 
-                  {/* Description */}
+                  {/* =================================================
+                      TITLE
+                  ================================================== */}
+
+                  <div className="min-w-0">
+
+                    <motion.h3
+                      className="
+                        font-clash
+                        text-[25px]
+                        font-semibold
+                        leading-tight
+                        tracking-[-0.035em]
+                        text-white
+                        sm:text-[29px]
+                      "
+                    >
+                      <AnimatedTitle
+                        title={service.title}
+                        active={isActive}
+                      />
+                    </motion.h3>
+
+                    <AnimatePresence mode="wait">
+
+                      <motion.span
+                        key={service.id}
+                        initial={{
+                          opacity: 0,
+                          y: 5,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          y: 0,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          y: -5,
+                        }}
+                        transition={{
+                          duration: 0.3,
+                        }}
+                        className="
+                          mt-2
+                          block
+                          text-[9px]
+                          uppercase
+                          tracking-[0.14em]
+                          text-white/20
+                        "
+                      >
+                        {service.shortTitle}
+                      </motion.span>
+
+                    </AnimatePresence>
+
+                  </div>
+
+                  {/* =================================================
+                      DESCRIPTION + TECHNOLOGIES
+                  ================================================== */}
 
                   <div>
 
-                    <p
+                    <AnimatedDescription
+                      service={service}
+                    />
+
+                    <motion.div
+                      animate={{
+                        opacity: isActive ? 1 : 0.45,
+                        y: isActive ? 0 : 2,
+                      }}
+                      transition={{
+                        duration: 0.35,
+                      }}
                       className="
-                        max-w-[520px]
-                        text-sm
-                        leading-7
-                        text-white/35
+                        mt-3
+                        flex
+                        flex-wrap
+                        gap-x-3
+                        gap-y-1.5
                       "
                     >
-                      {service.description}
-                    </p>
-
-                    {/* Technology Tags */}
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-
                       {service.technologies.map(
                         (technology) => (
                           <span
                             key={technology}
                             className="
-                              border
-                              border-white/[0.07]
-                              bg-white/[0.015]
-                              px-2.5
-                              py-1.5
                               text-[8px]
                               uppercase
-                              tracking-[0.08em]
-                              text-white/25
-                              transition-all
-                              duration-300
-                              group-hover:border-[#4D8DFF]/25
-                              group-hover:text-white/45
+                              tracking-[0.07em]
+                              text-white/20
                             "
                           >
                             {technology}
                           </span>
                         )
                       )}
-
-                    </div>
+                    </motion.div>
 
                   </div>
 
-                  {/* Action */}
+                  {/* =================================================
+                      ACTION
+                  ================================================== */}
 
-                  <div
-                    className="
-                      flex
-                      items-center
-                      lg:justify-end
-                    "
-                  >
+                  <div className="flex lg:justify-end">
 
                     <motion.button
                       type="button"
@@ -550,7 +662,10 @@ export default function Services() {
                         )
                       }
                       whileHover={{
-                        x: 4,
+                        x: 5,
+                      }}
+                      transition={{
+                        duration: 0.25,
                       }}
                       className="
                         flex
@@ -558,12 +673,15 @@ export default function Services() {
                         gap-2
                         text-[9px]
                         uppercase
-                        tracking-[0.14em]
-                        text-[#4D8DFF]
+                        tracking-[0.13em]
+                        text-[#4D8DFF]/80
                       "
                     >
+
                       <span>
-                        {isActive ? 'Close' : 'Details'}
+                        {isActive
+                          ? 'Close'
+                          : 'Details'}
                       </span>
 
                       <motion.span
@@ -585,10 +703,11 @@ export default function Services() {
                 </div>
 
                 {/* =================================================
-                    EXPANDED DETAILS
+                    DETAILS
                 ================================================== */}
 
                 <AnimatePresence>
+
                   {isActive && (
                     <motion.div
                       initial={{
@@ -613,23 +732,39 @@ export default function Services() {
                       <div
                         className="
                           grid
-                          gap-8
+                          gap-6
                           border-t
-                          border-white/[0.05]
-                          py-7
-                          lg:grid-cols-[90px_1fr_1.1fr_100px]
+                          border-white/[0.04]
+                          py-6
+                          lg:grid-cols-[70px_1fr_1.1fr_80px]
+                          lg:gap-8
                         "
                       >
 
                         <div />
 
-                        <div>
+                        {/* APPROACH */}
+
+                        <motion.div
+                          initial={{
+                            opacity: 0,
+                            y: 10,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                          }}
+                          transition={{
+                            duration: 0.4,
+                            delay: 0.05,
+                          }}
+                        >
 
                           <span
                             className="
-                              text-[9px]
+                              text-[8px]
                               uppercase
-                              tracking-[0.16em]
+                              tracking-[0.15em]
                               text-[#4D8DFF]/60
                             "
                           >
@@ -638,7 +773,7 @@ export default function Services() {
 
                           <p
                             className="
-                              mt-3
+                              mt-2
                               max-w-[420px]
                               text-xs
                               leading-6
@@ -648,25 +783,50 @@ export default function Services() {
                             {service.details}
                           </p>
 
-                        </div>
+                        </motion.div>
 
-                        <div>
+                        {/* FOCUS */}
+
+                        <motion.div
+                          initial={{
+                            opacity: 0,
+                            y: 10,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                          }}
+                          transition={{
+                            duration: 0.4,
+                            delay: 0.1,
+                          }}
+                        >
 
                           <span
                             className="
-                              text-[9px]
+                              text-[8px]
                               uppercase
-                              tracking-[0.16em]
+                              tracking-[0.15em]
                               text-[#4D8DFF]/60
                             "
                           >
-                            What I Focus On
+                            Focus
                           </span>
 
-                          <div className="mt-3 space-y-2">
-
+                          <div
+                            className="
+                              mt-2
+                              flex
+                              flex-wrap
+                              gap-x-5
+                              gap-y-2
+                            "
+                          >
                             {service.capabilities.map(
-                              (capability, capabilityIndex) => (
+                              (
+                                capability,
+                                capabilityIndex
+                              ) => (
                                 <motion.div
                                   key={capability}
                                   initial={{
@@ -678,14 +838,16 @@ export default function Services() {
                                     x: 0,
                                   }}
                                   transition={{
+                                    duration: 0.3,
                                     delay:
+                                      0.12 +
                                       capabilityIndex *
-                                      0.06,
+                                        0.045,
                                   }}
                                   className="
                                     flex
                                     items-center
-                                    gap-3
+                                    gap-2
                                     text-xs
                                     text-white/30
                                   "
@@ -693,7 +855,7 @@ export default function Services() {
                                   <span
                                     className="
                                       h-px
-                                      w-5
+                                      w-3
                                       bg-[#4D8DFF]/50
                                     "
                                   />
@@ -702,10 +864,9 @@ export default function Services() {
                                 </motion.div>
                               )
                             )}
-
                           </div>
 
-                        </div>
+                        </motion.div>
 
                         <div />
 
@@ -713,9 +874,12 @@ export default function Services() {
 
                     </motion.div>
                   )}
+
                 </AnimatePresence>
 
-                {/* Active Indicator */}
+                {/* =================================================
+                    ACTIVE LINE
+                ================================================== */}
 
                 <motion.div
                   initial={{
@@ -725,14 +889,15 @@ export default function Services() {
                     scaleX: isActive ? 1 : 0,
                   }}
                   transition={{
-                    duration: 0.4,
+                    duration: 0.45,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
                   className="
                     absolute
                     bottom-0
                     left-0
                     h-px
-                    w-24
+                    w-20
                     origin-left
                     bg-[#4D8DFF]
                   "
@@ -745,75 +910,63 @@ export default function Services() {
         </div>
 
         {/* =====================================================
-            BOTTOM NOTE
+            BOTTOM
         ====================================================== */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 20,
           }}
           animate={
             isInView
               ? {
                   opacity: 1,
-                  y: 0,
                 }
               : {}
           }
           transition={{
-            delay: 0.8,
-            duration: 0.7,
+            delay: 0.7,
+            duration: 0.6,
           }}
           className="
-            mt-16
+            mt-8
             flex
             flex-col
-            justify-between
-            gap-6
-            border-t
-            border-white/[0.07]
-            pt-8
+            gap-3
+            pt-2
             md:flex-row
             md:items-center
+            md:justify-between
           "
         >
 
-          <div>
+          <p
+            className="
+              text-[9px]
+              uppercase
+              tracking-[0.16em]
+              text-white/20
+            "
+          >
+            Always learning. Always building.
+          </p>
 
-            <p
-              className="
-                text-[9px]
-                uppercase
-                tracking-[0.18em]
-                text-white/25
-              "
-            >
-              Always learning. Always building.
-            </p>
+          <div className="flex items-center gap-2">
 
-            <p
-              className="
-                mt-2
-                text-xs
-                text-white/20
-              "
-            >
-              Currently focused on frontend development
-              and growing into full-stack development.
-            </p>
-
-          </div>
-
-          <div className="flex items-center gap-3">
-
-            <span
+            <motion.span
+              animate={{
+                scale: [1, 1.25, 1],
+                opacity: [0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+              }}
               className="
                 h-1.5
                 w-1.5
                 rounded-full
                 bg-[#4D8DFF]
-                animate-pulse
               "
             />
 
@@ -821,8 +974,8 @@ export default function Services() {
               className="
                 text-[9px]
                 uppercase
-                tracking-[0.14em]
-                text-white/25
+                tracking-[0.13em]
+                text-white/20
               "
             >
               Open to opportunities

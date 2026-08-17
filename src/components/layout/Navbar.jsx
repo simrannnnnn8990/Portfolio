@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -21,6 +23,20 @@ export default function Navbar() {
   const [isContactOpen, setIsContactOpen] = useState(false);
 
   /* ============================================================
+     INITIAL PAGE REVEAL
+     ============================================================ */
+
+  const [introFinished, setIntroFinished] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setIntroFinished(true);
+    }, 3600);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  /* ============================================================
      SCROLL ENGINE
      ============================================================ */
 
@@ -33,18 +49,9 @@ export default function Navbar() {
       ticking = true;
 
       window.requestAnimationFrame(() => {
-        /*
-         * 0px   → BIG CENTERED INTRO
-         * 420px → FINAL SMALL NAVBAR
-         */
-
         const progress = clamp(window.scrollY / 420);
 
         setScrollProgress(progress);
-
-        /* ======================================================
-           ACTIVE SECTION
-           ====================================================== */
 
         const sections = navLinks
           .filter((link) => link.label !== "Contact")
@@ -54,6 +61,8 @@ export default function Navbar() {
         let currentSection = "home";
 
         sections.forEach((section) => {
+          if (!section) return;
+
           const rect = section.getBoundingClientRect();
 
           if (rect.top <= window.innerHeight * 0.35) {
@@ -94,9 +103,16 @@ export default function Navbar() {
      LOGO TRANSFORMATION
      ============================================================ */
 
-  const logoWidth = 520 - scrollProgress * 375;
+  const logoWidth = 520 - scrollProgress * 395;
 
-  const logoY = -scrollProgress * 4;
+  /*
+   * Initial position:
+   * slightly lower on the full intro screen.
+   *
+   * Final position:
+   * moves upward and becomes smaller while scrolling.
+   */
+  const logoY = 50 - scrollProgress * 65;
 
   /* ============================================================
      INTRO TEXT SCROLL TRANSFORMATION
@@ -121,8 +137,6 @@ export default function Navbar() {
   );
 
   const navOpacity = navProgress;
-
-  const navY = (1 - navProgress) * 10;
 
   const navX = (1 - navProgress) * 22;
 
@@ -159,7 +173,7 @@ export default function Navbar() {
       : 900;
 
   /* ============================================================
-     NAVIGATION HANDLERS
+     NAVIGATION
      ============================================================ */
 
   const handleNavigation = (href) => {
@@ -175,22 +189,170 @@ export default function Navbar() {
     });
   };
 
+  // const handleNavClick = (
+  //   link: (typeof navLinks)[number]
+  // ) => {
+  //   if (link.label === "Contact") {
+  //     setIsMenuOpen(false);
+  //     setIsContactOpen(true);
+  //     return;
+  //   }
+
+  //   handleNavigation(link.href);
+  // };
+
   const handleNavClick = (link) => {
-    if (link.label === "Contact") {
-      setIsMenuOpen(false);
-      setIsContactOpen(true);
-      return;
-    }
+  if (link.label === "Contact") {
+    setIsMenuOpen(false);
+    setIsContactOpen(true);
+    return;
+  }
 
-    handleNavigation(link.href);
-  };
-
-  /* ============================================================
-     RENDER
-     ============================================================ */
+  handleNavigation(link.href);
+};
 
   return (
     <>
+      {/* ========================================================
+          INITIAL PAGE REVEAL
+          DARK PANEL MOVES FROM BOTTOM → TOP
+      ======================================================== */}
+
+      <AnimatePresence>
+        {!introFinished && (
+          <motion.div
+            initial={{ y: 0 }}
+            animate={{
+              y: "-100%",
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              y: {
+                delay: 0.75,
+                duration: 1.35,
+                ease: [0.76, 0, 0.24, 1],
+              },
+              opacity: {
+                duration: 0.35,
+              },
+            }}
+            className="
+              fixed
+              inset-0
+              z-[10000]
+              overflow-hidden
+              bg-[#050b16]
+            "
+          >
+            {/* SUBTLE BLUE LIGHT */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.8,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              transition={{
+                duration: 1.4,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                pointer-events-none
+                absolute
+                left-1/2
+                top-1/2
+                h-[420px]
+                w-[420px]
+                -translate-x-1/2
+                -translate-y-1/2
+                rounded-full
+                bg-[#4D8DFF]/[0.045]
+                blur-[120px]
+              "
+            />
+
+            {/* SMALL LOADING LINE */}
+
+            <motion.div
+              initial={{
+                scaleX: 0,
+                opacity: 0,
+              }}
+              animate={{
+                scaleX: 1,
+                opacity: 1,
+              }}
+              transition={{
+                delay: 0.35,
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                absolute
+                bottom-10
+                left-1/2
+                h-px
+                w-16
+                -translate-x-1/2
+                origin-center
+                bg-[#4D8DFF]
+              "
+            />
+
+            {/* INTRO MARK */}
+
+            <div
+              className="
+                absolute
+                bottom-10
+                left-8
+                text-[9px]
+                font-medium
+                uppercase
+                tracking-[0.18em]
+                text-white/25
+                lg:left-12
+              "
+            >
+              Portfolio / 2026
+            </div>
+
+            <div
+              className="
+                absolute
+                bottom-10
+                right-8
+                flex
+                items-center
+                gap-2
+                text-[9px]
+                font-medium
+                uppercase
+                tracking-[0.18em]
+                text-white/25
+                lg:right-12
+              "
+            >
+              <span
+                className="
+                  h-1.5
+                  w-1.5
+                  rounded-full
+                  bg-[#4D8DFF]
+                "
+              />
+
+              Loading
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ========================================================
           INTRO VIEWPORT
       ======================================================== */}
@@ -243,7 +405,7 @@ export default function Navbar() {
           }}
         >
           {/* ====================================================
-              INTRO / LOGO SYSTEM
+              LOGO SYSTEM
           ==================================================== */}
 
           <motion.div
@@ -274,256 +436,246 @@ export default function Navbar() {
           >
             {/* ==================================================
                 LOGO
-                FIRST → BLUR REVEAL
             ================================================== */}
 
             <motion.button
-  type="button"
-  onClick={() => handleNavigation("#home")}
-  aria-label="Go to homepage"
-  className="
-    group
-    relative
-    block
-    w-full
-    overflow-visible
-  "
-  initial={{
-    opacity: 0,
-    scale: 0.92,
-    filter: "blur(22px)",
-  }}
-  animate={{
-    opacity: 1,
-    scale: 1,
-    filter: "blur(0px)",
-  }}
-  transition={{
-    duration: 2.2,
-    delay: 0.25,
-    ease: [0.16, 1, 0.3, 1],
-  }}
->
-  <img
-    src="/Simran LOGO.png"
-    alt="Simran Gautam"
-    draggable="false"
-    className="
-      block
-      h-auto
-      w-full
-      object-contain
-      transition-opacity
-      duration-300
-      group-hover:opacity-80
-    "
-  />
-</motion.button>
+              type="button"
+              onClick={() =>
+                handleNavigation("#home")
+              }
+              aria-label="Go to homepage"
+              className="
+                group
+                relative
+                block
+                w-full
+                overflow-visible
+              "
+              initial={{
+                opacity: 0,
+                scale: 0.88,
+                filter: "blur(24px)",
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                filter: "blur(0px)",
+              }}
+              transition={{
+                duration: 1.5,
+                delay: 1.85,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+            >
+              <img
+                src="/Simran LOGO.png"
+                alt="Simran Gautam"
+                draggable="false"
+                className="
+                  block
+                  h-auto
+                  w-full
+                  object-contain
+                  transition-opacity
+                  duration-300
+                  group-hover:opacity-80
+                "
+              />
+            </motion.button>
 
             {/* ==================================================
-                SIMRAN GAUTAM
-
-                SIMRAN → FROM TOP
-                GAUTAM → FROM BOTTOM
-            ================================================== */}
-
-           <motion.div
-  className="
-    mt-2
-    flex
-    items-center
-    justify-center
-    whitespace-nowrap
-    overflow-hidden
-    text-center
-  "
-  initial={{
-    opacity: 1,
-  }}
-  animate={{
-    opacity: introTextOpacity,
-  }}
-  transition={{
-    duration: 0.08,
-    ease: "linear",
-  }}
-  style={{
-    pointerEvents:
-      introTextOpacity > 0.05
-        ? "auto"
-        : "none",
-  }}
->
-  {/* SIMRAN — FROM ABOVE */}
-
-  <motion.span
-    initial={{
-      opacity: 0,
-      y: -90,
-      filter: "blur(12px)",
-    }}
-    animate={{
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-    }}
-    transition={{
-      duration: 1.4,
-      delay: 2.45,
-      ease: [0.16, 1, 0.3, 1],
-    }}
-    className="
-      text-[clamp(1.5rem,3vw,2.7rem)]
-      font-light
-      uppercase
-      tracking-[0.22em]
-      text-white
-    "
-  >
-    Simran
-  </motion.span>
-
-  <span className="w-[0.35em]" />
-
-  {/* GAUTAM — FROM BELOW */}
-
-  <motion.span
-    initial={{
-      opacity: 0,
-      y: 90,
-      filter: "blur(12px)",
-    }}
-    animate={{
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-    }}
-    transition={{
-      duration: 1.4,
-      delay: 2.45,
-      ease: [0.16, 1, 0.3, 1],
-    }}
-    className="
-      text-[clamp(1.5rem,3vw,2.7rem)]
-      font-light
-      uppercase
-      tracking-[0.22em]
-      text-white
-    "
-  >
-    Gautam
-  </motion.span>
-</motion.div>
-
-            {/* ==================================================
-                FRONTEND & CREATIVE DEVELOPER
-
-                COMES AFTER NAME
+                NAME
             ================================================== */}
 
             <motion.div
-  animate={{
-    opacity: introTextOpacity,
-    y: introTextY,
-    filter: `blur(${introTextBlur}px)`,
-  }}
-  transition={{
-    duration: 0.08,
-    ease: "linear",
-  }}
-  className="
-    mt-3
-    flex
-    items-center
-    justify-center
-    gap-3
-    whitespace-nowrap
-  "
-  style={{
-    pointerEvents:
-      introTextOpacity > 0.05
-        ? "auto"
-        : "none",
-  }}
->
-  <motion.span
-    initial={{
-      opacity: 0,
-      scaleX: 0,
-      filter: "blur(6px)",
-    }}
-    animate={{
-      opacity: 1,
-      scaleX: 1,
-      filter: "blur(0px)",
-    }}
-    transition={{
-      duration: 0.9,
-      delay: 4.0,
-      ease: [0.16, 1, 0.3, 1],
-    }}
-    className="
-      h-px
-      w-10
-      shrink-0
-      origin-center
-      bg-[#4D8DFF]
-    "
-  />
+              className="
+                -mt-16
+                flex
+                items-center
+                justify-center
+                whitespace-nowrap
+                overflow-hidden
+                text-center
+              "
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: introTextOpacity,
+              }}
+              transition={{
+                duration: 0.08,
+                ease: "linear",
+              }}
+              style={{
+                pointerEvents:
+                  introTextOpacity > 0.05
+                    ? "auto"
+                    : "none",
+              }}
+            >
+              {/* SIMRAN */}
 
-  <motion.span
-    initial={{
-      opacity: 0,
-      y: 15,
-      filter: "blur(8px)",
-    }}
-    animate={{
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-    }}
-    transition={{
-      duration: 1.1,
-      delay: 4.05,
-      ease: [0.16, 1, 0.3, 1],
-    }}
-    className="
-      text-[9px]
-      font-medium
-      uppercase
-      tracking-[0.22em]
-      text-white/45
-      lg:text-[10px]
-    "
-  >
-    Frontend &amp; Creative Developer
-  </motion.span>
+              <motion.span
+                initial={{
+                  opacity: 0,
+                  y: -70,
+                  filter: "blur(12px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                }}
+                transition={{
+                  duration: 1,
+                  delay: 2.75,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="
+                  text-[clamp(1.5rem,3vw,2.7rem)]
+                  font-light
+                  uppercase
+                  tracking-[0.22em]
+                  text-white
+                "
+              >
+                Simran
+              </motion.span>
 
-  <motion.span
-    initial={{
-      opacity: 0,
-      scaleX: 0,
-      filter: "blur(6px)",
-    }}
-    animate={{
-      opacity: 1,
-      scaleX: 1,
-      filter: "blur(0px)",
-    }}
-    transition={{
-      duration: 0.9,
-      delay: 4.0,
-      ease: [0.16, 1, 0.3, 1],
-    }}
-    className="
-      h-px
-      w-10
-      shrink-0
-      origin-center
-      bg-[#4D8DFF]
-    "
-  />
-</motion.div>
+              <span className="w-[0.35em]" />
+
+              {/* GAUTAM */}
+
+              <motion.span
+                initial={{
+                  opacity: 0,
+                  y: 70,
+                  filter: "blur(12px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                }}
+                transition={{
+                  duration: 1,
+                  delay: 2.75,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="
+                  text-[clamp(1.5rem,3vw,2.7rem)]
+                  font-light
+                  uppercase
+                  tracking-[0.22em]
+                  text-white
+                "
+              >
+                Gautam
+              </motion.span>
+            </motion.div>
+
+            {/* ==================================================
+                FRONTEND & CREATIVE DEVELOPER
+            ================================================== */}
+
+            <motion.div
+              animate={{
+                opacity: introTextOpacity,
+                y: introTextY,
+                filter: `blur(${introTextBlur}px)`,
+              }}
+              transition={{
+                duration: 0.08,
+                ease: "linear",
+              }}
+              className="
+                mt-3
+                flex
+                items-center
+                justify-center
+                gap-3
+                whitespace-nowrap
+              "
+              style={{
+                pointerEvents:
+                  introTextOpacity > 0.05
+                    ? "auto"
+                    : "none",
+              }}
+            >
+              <motion.span
+                initial={{
+                  opacity: 0,
+                  scaleX: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                  scaleX: 1,
+                }}
+                transition={{
+                  duration: 0.7,
+                  delay: 3.35,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="
+                  h-px
+                  w-10
+                  shrink-0
+                  bg-[#4D8DFF]
+                "
+              />
+
+              <motion.span
+                initial={{
+                  opacity: 0,
+                  y: 12,
+                  filter: "blur(8px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                }}
+                transition={{
+                  duration: 0.8,
+                  delay: 3.4,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="
+                  text-[9px]
+                  font-medium
+                  uppercase
+                  tracking-[0.22em]
+                  text-white/45
+                  lg:text-[10px]
+                "
+              >
+                Frontend &amp; Creative Developer
+              </motion.span>
+
+              <motion.span
+                initial={{
+                  opacity: 0,
+                  scaleX: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                  scaleX: 1,
+                }}
+                transition={{
+                  duration: 0.7,
+                  delay: 3.35,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="
+                  h-px
+                  w-10
+                  shrink-0
+                  bg-[#4D8DFF]
+                "
+              />
+            </motion.div>
           </motion.div>
 
           {/* ====================================================
@@ -591,8 +743,6 @@ export default function Navbar() {
                     tracking-[0.12em]
                   "
                 >
-                  {/* ACTIVE DOT */}
-
                   <span
                     className={`
                       h-[3px]
@@ -600,7 +750,6 @@ export default function Navbar() {
                       rounded-full
                       transition-all
                       duration-300
-
                       ${
                         isActive
                           ? "bg-[#4D8DFF] opacity-100"
@@ -609,13 +758,10 @@ export default function Navbar() {
                     `}
                   />
 
-                  {/* LABEL */}
-
                   <span
                     className={`
                       transition-colors
                       duration-300
-
                       ${
                         isActive
                           ? "text-white"
@@ -625,8 +771,6 @@ export default function Navbar() {
                   >
                     {link.label}
                   </span>
-
-                  {/* UNDERLINE */}
 
                   <span
                     className="
@@ -651,8 +795,6 @@ export default function Navbar() {
 
           {/* ====================================================
               AVAILABLE
-
-              SAME LEVEL AS NAV LINKS
           ==================================================== */}
 
           <motion.div
@@ -713,7 +855,7 @@ export default function Navbar() {
           </motion.div>
 
           {/* ====================================================
-              MOBILE MENU
+              MOBILE MENU BUTTON
           ==================================================== */}
 
           <motion.button
@@ -849,8 +991,6 @@ export default function Navbar() {
               md:hidden
             "
           >
-            {/* GRID */}
-
             <div
               className="
                 pointer-events-none
@@ -874,8 +1014,6 @@ export default function Navbar() {
               }}
             />
 
-            {/* BLUE AMBIENT LIGHT */}
-
             <div
               className="
                 pointer-events-none
@@ -893,8 +1031,6 @@ export default function Navbar() {
             />
 
             <div className="relative w-full px-8">
-              {/* MOBILE LOGO */}
-
               <motion.div
                 initial={{
                   opacity: 0,
@@ -919,8 +1055,6 @@ export default function Navbar() {
                   "
                 />
               </motion.div>
-
-              {/* LABEL */}
 
               <motion.div
                 initial={{
@@ -961,8 +1095,6 @@ export default function Navbar() {
                   Navigation
                 </span>
               </motion.div>
-
-              {/* LINKS */}
 
               <nav className="flex flex-col">
                 {navLinks.map((link, index) => {
@@ -1011,14 +1143,11 @@ export default function Navbar() {
                         text-left
                       "
                     >
-                      {/* NUMBER */}
-
                       <span
                         className={`
                           text-[10px]
                           tracking-[0.12em]
                           transition-colors
-
                           ${
                             isActive
                               ? "text-[#4D8DFF]"
@@ -1029,8 +1158,6 @@ export default function Navbar() {
                         0{index + 1}
                       </span>
 
-                      {/* LABEL */}
-
                       <span
                         className={`
                           font-clash
@@ -1039,7 +1166,6 @@ export default function Navbar() {
                           tracking-[-0.04em]
                           transition-all
                           duration-300
-
                           ${
                             isActive
                               ? "translate-x-2 text-white"
@@ -1050,15 +1176,12 @@ export default function Navbar() {
                         {link.label}
                       </span>
 
-                      {/* ARROW */}
-
                       <span
                         className={`
                           ml-auto
                           text-lg
                           transition-all
                           duration-300
-
                           ${
                             isActive
                               ? "translate-x-0 text-[#4D8DFF] opacity-100"
@@ -1072,8 +1195,6 @@ export default function Navbar() {
                   );
                 })}
               </nav>
-
-              {/* MOBILE FOOTER */}
 
               <motion.div
                 initial={{
