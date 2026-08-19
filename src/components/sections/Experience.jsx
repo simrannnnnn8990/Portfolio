@@ -116,22 +116,48 @@ export default function Experience() {
     <section
       ref={sectionRef}
       id="journey"
-      className="relative overflow-hidden bg-[#050B16] text-white"
+      className="
+        relative
+        overflow-hidden
+        bg-[#050B16]
+        text-white
+      "
     >
-      {/* =====================================================
-          SIMPLE BACKGROUND
-          No patterns / no grid
-      ===================================================== */}
+      {/* BACKGROUND */}
 
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[-18%] top-[18%] h-[420px] w-[420px] rounded-full bg-[#4D8DFF]/[0.02] blur-[150px]" />
+        <div
+          className="
+            absolute
+            left-[-18%]
+            top-[18%]
+            h-[300px]
+            w-[300px]
+            rounded-full
+            bg-[#4D8DFF]/[0.02]
+            blur-[120px]
+            sm:h-[420px]
+            sm:w-[420px]
+            sm:blur-[150px]
+          "
+        />
 
-        <div className="absolute bottom-[-15%] right-[-12%] h-[450px] w-[450px] rounded-full bg-[#4D8DFF]/[0.018] blur-[160px]" />
+        <div
+          className="
+            absolute
+            bottom-[-10%]
+            right-[-12%]
+            h-[320px]
+            w-[320px]
+            rounded-full
+            bg-[#4D8DFF]/[0.018]
+            blur-[130px]
+            sm:h-[450px]
+            sm:w-[450px]
+            sm:blur-[160px]
+          "
+        />
       </div>
-
-      {/* =====================================================
-          MAIN
-      ===================================================== */}
 
       <div className="relative z-10">
 
@@ -143,22 +169,32 @@ export default function Experience() {
           className="
             mx-auto
             flex
-            min-h-[62vh]
+            min-h-[70vh]
             max-w-[1500px]
             flex-col
             justify-center
-            px-6
+            px-5
             py-16
+            sm:min-h-[62vh]
             sm:px-8
+            sm:py-20
+            lg:min-h-[62vh]
             lg:px-12
+            lg:py-16
           "
         >
-          <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div
+            className="
+              grid
+              gap-10
+              lg:grid-cols-[1.2fr_0.8fr]
+              lg:items-end
+            "
+          >
 
             {/* LEFT */}
 
             <div>
-
               <motion.div
                 initial={{
                   opacity: 0,
@@ -175,23 +211,30 @@ export default function Experience() {
                 transition={{
                   duration: 0.8,
                 }}
-                className="mb-5 flex items-center gap-3"
+                className="
+                  mb-5
+                  flex
+                  items-center
+                  gap-3
+                "
               >
-                <span className="h-px w-7 bg-[#4D8DFF]" />
+                <span className="h-px w-6 bg-[#4D8DFF] sm:w-7" />
 
                 <span
                   className="
-                    text-[9px]
+                    text-[8px]
                     uppercase
-                    tracking-[0.22em]
+                    tracking-[0.2em]
                     text-[#4D8DFF]/70
+                    sm:text-[9px]
+                    sm:tracking-[0.22em]
                   "
                 >
                   My Journey
                 </span>
               </motion.div>
 
-              {/* SMALLER MAIN HEADING */}
+              {/* MAIN HEADING */}
 
               <div className="overflow-hidden">
                 <motion.h2
@@ -210,11 +253,12 @@ export default function Experience() {
                   }}
                   className="
                     font-clash
-                    text-[clamp(2.4rem,4.8vw,4.8rem)]
+                    text-[clamp(2.5rem,11vw,4.8rem)]
                     font-semibold
                     leading-[0.86]
                     tracking-[-0.055em]
                     text-white
+                    sm:text-[clamp(3rem,7vw,4.8rem)]
                   "
                 >
                   Learning.
@@ -239,17 +283,17 @@ export default function Experience() {
                   }}
                   className="
                     font-clash
-                    text-[clamp(2.4rem,4.8vw,4.8rem)]
+                    text-[clamp(2.5rem,11vw,4.8rem)]
                     font-semibold
                     leading-[0.86]
                     tracking-[-0.055em]
                     text-[#4D8DFF]
+                    sm:text-[clamp(3rem,7vw,4.8rem)]
                   "
                 >
                   Building.
                 </motion.h2>
               </div>
-
             </div>
 
             {/* RIGHT */}
@@ -270,13 +314,18 @@ export default function Experience() {
                 duration: 0.8,
                 delay: 0.25,
               }}
-              className="max-w-[390px] lg:justify-self-end"
+              className="
+                max-w-[390px]
+                lg:justify-self-end
+              "
             >
               <p
                 className="
-                  text-xs
-                  leading-7
+                  text-[11px]
+                  leading-6
                   text-white/40
+                  sm:text-xs
+                  sm:leading-7
                 "
               >
                 I&apos;m an entry-level developer focused on
@@ -287,20 +336,24 @@ export default function Experience() {
 
               <div
                 className="
-                  mt-6
+                  mt-5
                   flex
                   items-center
                   gap-3
-                  text-[9px]
+                  text-[8px]
                   uppercase
-                  tracking-[0.18em]
+                  tracking-[0.16em]
                   text-white/25
+                  sm:mt-6
+                  sm:text-[9px]
+                  sm:tracking-[0.18em]
                 "
               >
                 <span
                   className="
                     h-1.5
                     w-1.5
+                    shrink-0
                     rounded-full
                     bg-[#4D8DFF]
                     shadow-[0_0_14px_rgba(77,141,255,0.5)]
@@ -310,12 +363,11 @@ export default function Experience() {
                 Scroll to explore
               </div>
             </motion.div>
-
           </div>
         </div>
 
         {/* =================================================
-            JOURNEY SCROLL
+            JOURNEY
         ================================================= */}
 
         <div className="relative">
@@ -338,9 +390,10 @@ export default function Experience() {
           className="
             mx-auto
             max-w-[1500px]
-            px-6
-            py-20
+            px-5
+            py-14
             sm:px-8
+            sm:py-20
             lg:px-12
           "
         >
@@ -363,16 +416,23 @@ export default function Experience() {
             className="
               border-t
               border-white/[0.07]
-              pt-9
+              pt-7
+              sm:pt-9
             "
           >
-            <div className="grid gap-10 lg:grid-cols-[1fr_1.5fr]">
+            <div
+              className="
+                grid
+                gap-8
+                lg:grid-cols-[1fr_1.5fr]
+                lg:gap-10
+              "
+            >
 
               {/* LEFT */}
 
               <div>
                 <div className="flex items-center gap-3">
-
                   <span
                     className="
                       h-1.5
@@ -385,22 +445,23 @@ export default function Experience() {
 
                   <span
                     className="
-                      text-[9px]
+                      text-[8px]
                       uppercase
-                      tracking-[0.18em]
+                      tracking-[0.16em]
                       text-[#4D8DFF]/75
+                      sm:text-[9px]
+                      sm:tracking-[0.18em]
                     "
                   >
                     Currently Learning
                   </span>
-
                 </div>
 
                 <h3
                   className="
                     mt-4
                     font-clash
-                    text-[clamp(1.8rem,3vw,3rem)]
+                    text-[clamp(1.8rem,8vw,3rem)]
                     font-semibold
                     leading-[0.95]
                     tracking-[-0.045em]
@@ -421,9 +482,11 @@ export default function Experience() {
                 <p
                   className="
                     max-w-[620px]
-                    text-sm
-                    leading-7
+                    text-[11px]
+                    leading-6
                     text-white/35
+                    sm:text-sm
+                    sm:leading-7
                   "
                 >
                   My current focus is strengthening my frontend
@@ -435,10 +498,11 @@ export default function Experience() {
 
                 <div
                   className="
-                    mt-6
+                    mt-5
                     flex
                     flex-wrap
                     gap-2
+                    sm:mt-6
                   "
                 >
                   {currentFocus.map((focus) => (
@@ -447,16 +511,18 @@ export default function Experience() {
                       className="
                         border
                         border-white/[0.08]
-                        px-3
+                        px-2.5
                         py-2
-                        text-[9px]
+                        text-[8px]
                         uppercase
-                        tracking-[0.08em]
+                        tracking-[0.07em]
                         text-white/35
                         transition-all
                         duration-300
                         hover:border-[#4D8DFF]/35
                         hover:text-[#4D8DFF]
+                        sm:px-3
+                        sm:text-[9px]
                       "
                     >
                       {focus}
@@ -464,7 +530,6 @@ export default function Experience() {
                   ))}
                 </div>
               </div>
-
             </div>
           </motion.div>
 
@@ -472,7 +537,7 @@ export default function Experience() {
 
           <div
             className="
-              mt-14
+              mt-10
               flex
               flex-col
               justify-between
@@ -480,23 +545,25 @@ export default function Experience() {
               border-t
               border-white/[0.05]
               pt-6
+              sm:mt-14
               md:flex-row
               md:items-center
             "
           >
             <p
               className="
-                text-[9px]
+                text-[8px]
                 uppercase
-                tracking-[0.16em]
+                tracking-[0.14em]
                 text-white/20
+                sm:text-[9px]
+                sm:tracking-[0.16em]
               "
             >
               Always learning. Always building.
             </p>
 
             <div className="flex items-center gap-3">
-
               <span
                 className="
                   h-1.5
@@ -509,20 +576,19 @@ export default function Experience() {
 
               <span
                 className="
-                  text-[9px]
+                  text-[8px]
                   uppercase
-                  tracking-[0.14em]
+                  tracking-[0.12em]
                   text-[#4D8DFF]/60
+                  sm:text-[9px]
+                  sm:tracking-[0.14em]
                 "
               >
                 Open to opportunities
               </span>
-
             </div>
           </div>
-
         </div>
-
       </div>
     </section>
   );
@@ -624,8 +690,10 @@ function JourneyItem({
     <div
       className="
         relative
-        h-[82vh]
-        min-h-[600px]
+        h-[100svh]
+        min-h-[680px]
+        sm:h-[82vh]
+        sm:min-h-[600px]
       "
     >
       <div
@@ -633,10 +701,12 @@ function JourneyItem({
           sticky
           top-0
           flex
-          h-screen
-          min-h-[600px]
+          h-[100svh]
+          min-h-[680px]
           items-center
           overflow-hidden
+          sm:h-screen
+          sm:min-h-[600px]
         "
       >
 
@@ -670,7 +740,7 @@ function JourneyItem({
             mx-auto
             w-full
             max-w-[1500px]
-            px-6
+            px-5
             sm:px-8
             lg:px-12
           "
@@ -680,10 +750,11 @@ function JourneyItem({
 
           <div
             className="
-              mb-6
+              mb-5
               flex
               items-center
               justify-between
+              sm:mb-6
             "
           >
             <motion.div
@@ -693,15 +764,16 @@ function JourneyItem({
               className="
                 flex
                 items-center
-                gap-3
+                gap-2.5
+                sm:gap-3
               "
             >
-
               <span
                 className="
                   font-mono
-                  text-[10px]
+                  text-[9px]
                   text-[#4D8DFF]
+                  sm:text-[10px]
                 "
               >
                 [{item.id}]
@@ -710,22 +782,24 @@ function JourneyItem({
               <span
                 className="
                   h-px
-                  w-7
+                  w-5
                   bg-[#4D8DFF]/35
+                  sm:w-7
                 "
               />
 
               <span
                 className="
-                  text-[9px]
+                  text-[8px]
                   uppercase
-                  tracking-[0.2em]
+                  tracking-[0.16em]
                   text-white/30
+                  sm:text-[9px]
+                  sm:tracking-[0.2em]
                 "
               >
                 {item.label}
               </span>
-
             </motion.div>
 
             <span
@@ -742,7 +816,7 @@ function JourneyItem({
             </span>
           </div>
 
-          {/* SMALL JOURNEY HEADING */}
+          {/* JOURNEY HEADING */}
 
           <motion.div
             style={{
@@ -754,11 +828,12 @@ function JourneyItem({
               className="
                 max-w-[900px]
                 font-clash
-                text-[clamp(2.15rem,4.2vw,4.3rem)]
+                text-[clamp(2rem,9vw,4.3rem)]
                 font-semibold
-                leading-[0.88]
+                leading-[0.9]
                 tracking-[-0.055em]
                 text-white
+                sm:text-[clamp(2.4rem,6vw,4.3rem)]
               "
             >
               {item.title}
@@ -769,9 +844,11 @@ function JourneyItem({
 
           <div
             className="
-              mt-6
+              mt-5
               grid
-              gap-7
+              gap-5
+              sm:mt-6
+              sm:gap-7
               lg:grid-cols-[1fr_1fr]
             "
           >
@@ -779,10 +856,12 @@ function JourneyItem({
             <div>
               <p
                 className="
-                  text-[10px]
+                  text-[9px]
                   uppercase
-                  tracking-[0.16em]
+                  tracking-[0.13em]
                   text-[#4D8DFF]/75
+                  sm:text-[10px]
+                  sm:tracking-[0.16em]
                 "
               >
                 {item.subtitle}
@@ -792,8 +871,9 @@ function JourneyItem({
                 <p
                   className="
                     mt-2
-                    text-[10px]
+                    text-[9px]
                     text-white/20
+                    sm:text-[10px]
                   "
                 >
                   {item.location}
@@ -805,27 +885,31 @@ function JourneyItem({
               <p
                 className="
                   max-w-[540px]
-                  text-sm
-                  leading-7
+                  text-[11px]
+                  leading-6
                   text-white/35
+                  sm:text-sm
+                  sm:leading-7
                 "
               >
                 {item.description}
               </p>
             </div>
-
           </div>
 
           {/* DETAILS */}
 
           <div
             className="
-              mt-7
+              mt-6
               grid
-              gap-8
+              gap-6
               border-t
               border-white/[0.07]
-              pt-6
+              pt-5
+              sm:mt-7
+              sm:gap-8
+              sm:pt-6
               md:grid-cols-[1fr_1fr]
             "
           >
@@ -833,13 +917,14 @@ function JourneyItem({
             {/* FOCUS */}
 
             <div>
-
               <span
                 className="
-                  text-[9px]
+                  text-[8px]
                   uppercase
-                  tracking-[0.18em]
+                  tracking-[0.15em]
                   text-[#4D8DFF]/70
+                  sm:text-[9px]
+                  sm:tracking-[0.18em]
                 "
               >
                 What I&apos;m Developing
@@ -847,9 +932,10 @@ function JourneyItem({
 
               <div
                 className="
-                  mt-4
+                  mt-3
                   grid
                   gap-2
+                  sm:mt-4
                   sm:grid-cols-2
                 "
               >
@@ -859,17 +945,21 @@ function JourneyItem({
                     className="
                       flex
                       items-center
-                      gap-3
-                      text-xs
+                      gap-2.5
+                      text-[10px]
+                      leading-5
                       text-white/30
+                      sm:gap-3
+                      sm:text-xs
                     "
                   >
                     <span
                       className="
                         h-px
-                        w-5
+                        w-4
                         shrink-0
                         bg-[#4D8DFF]/45
+                        sm:w-5
                       "
                     />
 
@@ -877,19 +967,19 @@ function JourneyItem({
                   </div>
                 ))}
               </div>
-
             </div>
 
             {/* TECHNOLOGIES */}
 
             <div>
-
               <span
                 className="
-                  text-[9px]
+                  text-[8px]
                   uppercase
-                  tracking-[0.18em]
+                  tracking-[0.15em]
                   text-[#4D8DFF]/70
+                  sm:text-[9px]
+                  sm:tracking-[0.18em]
                 "
               >
                 Technologies
@@ -897,10 +987,12 @@ function JourneyItem({
 
               <div
                 className="
-                  mt-4
+                  mt-3
                   flex
                   flex-wrap
-                  gap-2
+                  gap-1.5
+                  sm:mt-4
+                  sm:gap-2
                 "
               >
                 {item.technologies.map((technology) => (
@@ -910,42 +1002,45 @@ function JourneyItem({
                       border
                       border-white/[0.08]
                       bg-white/[0.015]
-                      px-3
-                      py-2
-                      text-[9px]
+                      px-2.5
+                      py-1.5
+                      text-[8px]
                       uppercase
-                      tracking-[0.08em]
+                      tracking-[0.06em]
                       text-white/30
                       transition-colors
                       duration-300
                       hover:border-[#4D8DFF]/35
                       hover:text-[#4D8DFF]
+                      sm:px-3
+                      sm:py-2
+                      sm:text-[9px]
+                      sm:tracking-[0.08em]
                     "
                   >
                     {technology}
                   </span>
                 ))}
               </div>
-
             </div>
-
           </div>
 
           {/* BOTTOM */}
 
           <div
             className="
-              mt-7
+              mt-6
               flex
               items-center
               gap-3
+              sm:mt-7
             "
           >
-
             <span
               className="
                 h-1.5
                 w-1.5
+                shrink-0
                 rounded-full
                 bg-[#4D8DFF]
                 shadow-[0_0_12px_rgba(77,141,255,0.6)]
@@ -954,19 +1049,19 @@ function JourneyItem({
 
             <span
               className="
-                text-[9px]
+                text-[8px]
                 uppercase
-                tracking-[0.18em]
+                tracking-[0.15em]
                 text-[#4D8DFF]/55
+                sm:text-[9px]
+                sm:tracking-[0.18em]
               "
             >
               Keep scrolling
             </span>
-
           </div>
 
         </motion.div>
-
       </div>
     </div>
   );

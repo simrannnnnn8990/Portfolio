@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -21,12 +19,11 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [introFinished, setIntroFinished] = useState(false);
 
   /* ============================================================
      INITIAL PAGE REVEAL
-     ============================================================ */
-
-  const [introFinished, setIntroFinished] = useState(false);
+  ============================================================ */
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -38,7 +35,7 @@ export default function Navbar() {
 
   /* ============================================================
      SCROLL ENGINE
-     ============================================================ */
+  ============================================================ */
 
   useEffect(() => {
     let ticking = false;
@@ -89,7 +86,7 @@ export default function Navbar() {
 
   /* ============================================================
      MOBILE BODY LOCK
-     ============================================================ */
+  ============================================================ */
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "";
@@ -100,23 +97,43 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   /* ============================================================
-     LOGO TRANSFORMATION
-     ============================================================ */
+     LOGO SETTLE PROGRESS
 
-  const logoWidth = 520 - scrollProgress * 395;
+     Logo reaches its FINAL navbar position before
+     navbar background becomes blue.
+  ============================================================ */
+
+  const logoProgress = clamp(scrollProgress / 0.82);
 
   /*
-   * Initial position:
-   * slightly lower on the full intro screen.
-   *
-   * Final position:
-   * moves upward and becomes smaller while scrolling.
+   * Background starts changing ONLY AFTER logo has settled.
    */
-  const logoY = 50 - scrollProgress * 65;
+  const navbarProgress = clamp(
+    (scrollProgress - 0.82) / 0.12
+  );
+
+  const navbarIsBlue = navbarProgress > 0.05;
 
   /* ============================================================
-     INTRO TEXT SCROLL TRANSFORMATION
-     ============================================================ */
+     LOGO TRANSFORMATION
+  ============================================================ */
+
+  const logoWidth = 520 - logoProgress * 395;
+
+  const logoY = 50 - logoProgress * 62;
+
+  /*
+   * IMPORTANT:
+   * Final desktop position has almost ZERO left margin.
+   */
+  const desktopLogoX =
+    logoProgress === 0
+      ? "-50%"
+      : `calc(-50vw + 2px)`;
+
+  /* ============================================================
+     INTRO TEXT
+  ============================================================ */
 
   const introTextProgress = clamp(
     (scrollProgress - 0.15) / 0.43
@@ -130,7 +147,7 @@ export default function Navbar() {
 
   /* ============================================================
      NAVIGATION REVEAL
-     ============================================================ */
+  ============================================================ */
 
   const navProgress = clamp(
     (scrollProgress - 0.55) / 0.30
@@ -142,7 +159,7 @@ export default function Navbar() {
 
   /* ============================================================
      AVAILABLE STATUS
-     ============================================================ */
+  ============================================================ */
 
   const statusProgress = clamp(
     (scrollProgress - 0.68) / 0.22
@@ -151,21 +168,11 @@ export default function Navbar() {
   const statusX = (1 - statusProgress) * 12;
 
   /* ============================================================
-     FINAL LOGO ALIGNMENT
-     ============================================================ */
-
-  const finalLogoOffset = scrollProgress * 3;
-
-  /* ============================================================
-     HEADER TOP POSITION
-     ============================================================ */
+     HEADER
+  ============================================================ */
 
   const headerPaddingTop =
-    34 - scrollProgress * 14;
-
-  /* ============================================================
-     INTRO SPACE
-     ============================================================ */
+    34 - logoProgress * 14;
 
   const introHeight =
     typeof window !== "undefined"
@@ -173,8 +180,8 @@ export default function Navbar() {
       : 900;
 
   /* ============================================================
-     NAVIGATION
-     ============================================================ */
+     NAVIGATION HANDLERS
+  ============================================================ */
 
   const handleNavigation = (href) => {
     setIsMenuOpen(false);
@@ -189,33 +196,20 @@ export default function Navbar() {
     });
   };
 
-  // const handleNavClick = (
-  //   link: (typeof navLinks)[number]
-  // ) => {
-  //   if (link.label === "Contact") {
-  //     setIsMenuOpen(false);
-  //     setIsContactOpen(true);
-  //     return;
-  //   }
-
-  //   handleNavigation(link.href);
-  // };
-
   const handleNavClick = (link) => {
-  if (link.label === "Contact") {
-    setIsMenuOpen(false);
-    setIsContactOpen(true);
-    return;
-  }
+    if (link.label === "Contact") {
+      setIsMenuOpen(false);
+      setIsContactOpen(true);
+      return;
+    }
 
-  handleNavigation(link.href);
-};
+    handleNavigation(link.href);
+  };
 
   return (
     <>
       {/* ========================================================
           INITIAL PAGE REVEAL
-          DARK PANEL MOVES FROM BOTTOM → TOP
       ======================================================== */}
 
       <AnimatePresence>
@@ -246,7 +240,7 @@ export default function Navbar() {
               bg-[#050b16]
             "
           >
-            {/* SUBTLE BLUE LIGHT */}
+            {/* BLUE LIGHT */}
 
             <motion.div
               initial={{
@@ -276,7 +270,7 @@ export default function Navbar() {
               "
             />
 
-            {/* SMALL LOADING LINE */}
+            {/* LOADING LINE */}
 
             <motion.div
               initial={{
@@ -304,7 +298,7 @@ export default function Navbar() {
               "
             />
 
-            {/* INTRO MARK */}
+            {/* LEFT MARK */}
 
             <div
               className="
@@ -321,6 +315,8 @@ export default function Navbar() {
             >
               Portfolio / 2026
             </div>
+
+            {/* RIGHT MARK */}
 
             <div
               className="
@@ -366,7 +362,7 @@ export default function Navbar() {
       />
 
       {/* ========================================================
-          FIXED NAVBAR / INTRO
+          FIXED HEADER
       ======================================================== */}
 
       <motion.header
@@ -389,16 +385,45 @@ export default function Navbar() {
           z-[9997]
         "
       >
+        {/* ======================================================
+            NAVBAR BACKGROUND
+        ====================================================== */}
+
+        <motion.div
+          className="
+            absolute
+            inset-x-0
+            top-0
+            h-[75px]
+          "
+          animate={{
+            backgroundColor: navbarIsBlue
+              ? "#4D8DFF"
+              : "rgba(5, 11, 22, 0)",
+          }}
+          transition={{
+            duration: 0.35,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        />
+
+        {/* ======================================================
+            NAVBAR CONTENT
+        ====================================================== */}
+
         <div
           className="
             pointer-events-auto
             relative
             mx-auto
             flex
+            h-[75px]
             w-full
             items-start
-            px-6
-            lg:px-12
+            px-5
+            sm:px-6
+            lg:px-10
+            xl:px-12
           "
           style={{
             paddingTop: `${headerPaddingTop}px`,
@@ -411,23 +436,23 @@ export default function Navbar() {
           <motion.div
             className="
               absolute
-              left-1/2
               top-0
               z-30
               flex
-              -translate-x-1/2
               flex-col
               items-center
             "
+            style={{
+              left: isMenuOpen ? 0 : "50%",
+            }}
             animate={{
-              width: logoWidth,
-              x:
-                scrollProgress === 0
-                  ? "-50%"
-                  : `calc(-50vw + ${
-                      24 + scrollProgress * 24
-                    }px)`,
-              y: logoY + finalLogoOffset,
+              /*
+               * When menu opens:
+               * ONE logo only + flush to left.
+               */
+              width: isMenuOpen ? 76 : logoWidth,
+              x: isMenuOpen ? 0 : desktopLogoX,
+              y: isMenuOpen ? 0 : logoY,
             }}
             transition={{
               duration: 0.08,
@@ -514,8 +539,6 @@ export default function Navbar() {
                     : "none",
               }}
             >
-              {/* SIMRAN */}
-
               <motion.span
                 initial={{
                   opacity: 0,
@@ -544,8 +567,6 @@ export default function Navbar() {
               </motion.span>
 
               <span className="w-[0.35em]" />
-
-              {/* GAUTAM */}
 
               <motion.span
                 initial={{
@@ -576,7 +597,7 @@ export default function Navbar() {
             </motion.div>
 
             {/* ==================================================
-                FRONTEND & CREATIVE DEVELOPER
+                ROLE
             ================================================== */}
 
             <motion.div
@@ -752,7 +773,7 @@ export default function Navbar() {
                       duration-300
                       ${
                         isActive
-                          ? "bg-[#4D8DFF] opacity-100"
+                          ? "bg-white opacity-100"
                           : "bg-white opacity-0 group-hover:opacity-40"
                       }
                     `}
@@ -765,7 +786,7 @@ export default function Navbar() {
                       ${
                         isActive
                           ? "text-white"
-                          : "text-white/45 group-hover:text-white"
+                          : "text-white/60 group-hover:text-white"
                       }
                     `}
                   >
@@ -781,7 +802,7 @@ export default function Navbar() {
                       w-full
                       origin-left
                       scale-x-0
-                      bg-[#4D8DFF]
+                      bg-white
                       transition-transform
                       duration-500
                       ease-out
@@ -824,7 +845,7 @@ export default function Navbar() {
                   w-full
                   animate-ping
                   rounded-full
-                  bg-[#4D8DFF]
+                  bg-white
                   opacity-40
                 "
               />
@@ -836,7 +857,7 @@ export default function Navbar() {
                   h-1.5
                   w-1.5
                   rounded-full
-                  bg-[#4D8DFF]
+                  bg-white
                 "
               />
             </span>
@@ -847,7 +868,7 @@ export default function Navbar() {
                 font-medium
                 uppercase
                 tracking-[0.15em]
-                text-white/35
+                text-white/70
               "
             >
               Available
@@ -869,7 +890,7 @@ export default function Navbar() {
                 : "Open menu"
             }
             aria-expanded={isMenuOpen}
-            className="
+            className={`
               ml-auto
               flex
               h-10
@@ -879,14 +900,16 @@ export default function Navbar() {
               justify-center
               rounded-full
               border
-              border-white/[0.1]
-              bg-[#050b16]/60
-              backdrop-blur-md
               transition-all
               duration-300
-              hover:border-[#4D8DFF]/40
               md:hidden
-            "
+              ${
+                navbarIsBlue
+                  ? "border-white/30 bg-white/10"
+                  : "border-white/[0.1] bg-[#050b16]/60"
+              }
+              backdrop-blur-md
+            `}
           >
             <div className="flex w-4 flex-col gap-[5px]">
               <motion.span
@@ -995,29 +1018,6 @@ export default function Navbar() {
               className="
                 pointer-events-none
                 absolute
-                inset-0
-                opacity-[0.035]
-              "
-              style={{
-                backgroundImage: `
-                  linear-gradient(
-                    rgba(255,255,255,0.8) 1px,
-                    transparent 1px
-                  ),
-                  linear-gradient(
-                    90deg,
-                    rgba(255,255,255,0.8) 1px,
-                    transparent 1px
-                  )
-                `,
-                backgroundSize: "48px 48px",
-              }}
-            />
-
-            <div
-              className="
-                pointer-events-none
-                absolute
                 left-1/2
                 top-1/2
                 h-[320px]
@@ -1031,30 +1031,7 @@ export default function Navbar() {
             />
 
             <div className="relative w-full px-8">
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  y: -15,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  duration: 0.5,
-                }}
-                className="mb-12"
-              >
-                <img
-                  src="/Simran LOGO.png"
-                  alt="Simran Gautam"
-                  className="
-                    h-auto
-                    w-[210px]
-                    object-contain
-                  "
-                />
-              </motion.div>
+              {/* NAVIGATION LABEL */}
 
               <motion.div
                 initial={{
@@ -1095,6 +1072,8 @@ export default function Navbar() {
                   Navigation
                 </span>
               </motion.div>
+
+              {/* MOBILE LINKS */}
 
               <nav className="flex flex-col">
                 {navLinks.map((link, index) => {
@@ -1195,6 +1174,8 @@ export default function Navbar() {
                   );
                 })}
               </nav>
+
+              {/* FOOTER */}
 
               <motion.div
                 initial={{

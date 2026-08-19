@@ -1,239 +1,336 @@
+"use client";
 
-'use client'
-
-import { useRef } from 'react'
-import { motion } from 'framer-motion'
-import {
-  ArrowUpRight,
-  Braces,
-  Code2,
-  Database,
-  GitBranch,
-  Layers3,
-  MonitorSmartphone,
-  Sparkles,
-  Terminal,
-  Send,
-} from 'lucide-react'
+import { motion } from "framer-motion";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 
 const skills = [
   {
-    title: 'Frontend Development',
+    title: "Frontend Development",
     description:
-      'Building responsive interfaces with component-driven architecture and modern React patterns.',
-    technologies: ['React', 'Next.js', 'JavaScript', 'TypeScript'],
-    icon: Code2,
+      "Building responsive interfaces with component-driven architecture and modern React patterns.",
+    technologies: ["React", "Next.js", "JavaScript", "TypeScript"],
   },
   {
-    title: 'Interface & Styling',
+    title: "Interface & Styling",
     description:
-      'Translating visual systems into clean, responsive and consistent user interfaces.',
-    technologies: ['Tailwind CSS', 'CSS3', 'Responsive UI', 'Design Systems'],
-    icon: MonitorSmartphone,
+      "Translating visual systems into clean, responsive and consistent user interfaces.",
+    technologies: [
+      "Tailwind CSS",
+      "CSS3",
+      "Responsive UI",
+      "Design Systems",
+    ],
   },
   {
-    title: 'Motion & Interaction',
+    title: "Motion & Interaction",
     description:
-      'Creating purposeful interactions and transitions that make interfaces feel responsive.',
-    technologies: ['Framer Motion', 'GSAP', 'ScrollTrigger', 'Micro-interactions'],
-    icon: Sparkles,
+      "Creating purposeful interactions and transitions that make interfaces feel responsive.",
+    technologies: [
+      "Framer Motion",
+      "GSAP",
+      "ScrollTrigger",
+      "Micro-interactions",
+    ],
   },
-]
+];
 
 const tools = [
   {
-    name: 'Git',
-    category: 'Version Control',
-    icon: GitBranch,
+    name: "React",
+    category: "Frontend",
+    logo: "https://cdn.simpleicons.org/react/ffffff",
   },
   {
-    name: 'Vercel',
-    category: 'Deployment',
-    icon: Layers3,
+    name: "Next.js",
+    category: "Framework",
+    logo: "https://cdn.simpleicons.org/nextdotjs/ffffff",
   },
   {
-    name: 'Node.js',
-    category: 'Runtime',
-    icon: Terminal,
+    name: "JavaScript",
+    category: "Language",
+    logo: "https://cdn.simpleicons.org/javascript/ffffff",
   },
   {
-    name: 'MongoDB',
-    category: 'Database',
-    icon: Database,
+    name: "TypeScript",
+    category: "Language",
+    logo: "https://cdn.simpleicons.org/typescript/ffffff",
   },
   {
-    name: 'REST APIs',
-    category: 'Integration',
-    icon: Braces,
+    name: "Tailwind CSS",
+    category: "Styling",
+    logo: "https://cdn.simpleicons.org/tailwindcss/ffffff",
   },
   {
-    name: 'Postman',
-    category: 'API Testing',
-    icon: Send,
+    name: "Git",
+    category: "Version Control",
+    logo: "https://cdn.simpleicons.org/git/ffffff",
   },
-]
+  {
+    name: "Vercel",
+    category: "Deployment",
+    logo: "https://cdn.simpleicons.org/vercel/ffffff",
+  },
+  {
+    name: "Node.js",
+    category: "Runtime",
+    logo: "https://cdn.simpleicons.org/nodedotjs/ffffff",
+  },
+  {
+    name: "MongoDB",
+    category: "Database",
+    logo: "https://cdn.simpleicons.org/mongodb/ffffff",
+  },
+  {
+    name: "Postman",
+    category: "API Testing",
+    logo: "https://cdn.simpleicons.org/postman/ffffff",
+  },
+];
 
 const headingWords = [
-  {
-    text: 'What',
-    muted: false,
-  },
-  {
-    text: 'I',
-    muted: false,
-  },
-  {
-    text: 'work',
-    muted: false,
-  },
-  {
-    text: 'with.',
-    muted: true,
-  },
-]
+  { text: "What", blue: false },
+  { text: "I", blue: false },
+  { text: "work", blue: true },
+  { text: "with.", blue: false },
+];
 
 const headingContainer = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.15,
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
     },
   },
-}
+};
 
 const headingWord = {
   hidden: {
     opacity: 0,
-    y: 70,
-    rotateX: -85,
-    filter: 'blur(8px)',
+    y: 45,
+    rotateX: -70,
+    filter: "blur(7px)",
   },
   visible: {
     opacity: 1,
     y: 0,
     rotateX: 0,
-    filter: 'blur(0px)',
+    filter: "blur(0px)",
     transition: {
-      duration: 0.95,
+      duration: 0.8,
       ease: [0.16, 1, 0.3, 1],
     },
   },
+};
+
+function ToolItem({ tool }) {
+  return (
+    <div
+      className="
+        group
+        relative
+        flex
+        min-w-[150px]
+        shrink-0
+        flex-col
+        items-center
+        justify-center
+        px-7
+        py-8
+        sm:min-w-[175px]
+        sm:px-9
+        lg:min-w-[190px]
+      "
+    >
+      <div
+        className="
+          pointer-events-none
+          absolute
+          left-1/2
+          top-1/2
+          h-24
+          w-24
+          -translate-x-1/2
+          -translate-y-1/2
+          rounded-full
+          bg-[#4D8DFF]/0
+          blur-3xl
+          transition-all
+          duration-500
+          group-hover:bg-[#4D8DFF]/20
+        "
+      />
+
+      <motion.div
+        whileHover={{
+          y: -6,
+          scale: 1.08,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="
+          relative
+          z-10
+          flex
+          h-16
+          w-16
+          items-center
+          justify-center
+          sm:h-[70px]
+          sm:w-[70px]
+          lg:h-20
+          lg:w-20
+        "
+      >
+        <img
+          src={tool.logo}
+          alt={`${tool.name} logo`}
+          draggable="false"
+          className="
+            h-11
+            w-11
+            object-contain
+            opacity-80
+            transition-all
+            duration-300
+            group-hover:scale-110
+            group-hover:opacity-100
+            sm:h-12
+            sm:w-12
+            lg:h-14
+            lg:w-14
+          "
+        />
+      </motion.div>
+
+      <span
+        className="
+          relative
+          z-10
+          mt-4
+          text-[10px]
+          font-medium
+          uppercase
+          tracking-[0.12em]
+          text-white/45
+          transition-colors
+          duration-300
+          group-hover:text-white
+          sm:text-[11px]
+        "
+      >
+        {tool.name}
+      </span>
+
+      <span
+        className="
+          relative
+          z-10
+          mt-1
+          text-[8px]
+          uppercase
+          tracking-[0.1em]
+          text-white/20
+          group-hover:text-[#4D8DFF]
+        "
+      >
+        {tool.category}
+      </span>
+    </div>
+  );
 }
 
 export default function Skills() {
-  const sectionRef = useRef(null)
+  const marqueeTools = [...tools, ...tools];
 
   return (
     <section
-      ref={sectionRef}
       id="skills"
       className="
-        relative
-        overflow-hidden
-        bg-[#050B16]
-        px-6
-        py-28
-        text-white
-        sm:px-8
-        lg:px-12
-        lg:py-36
-      "
+  relative
+  overflow-hidden
+  bg-[#050B16]
+  px-6
+  pt-0
+  pb-20
+  text-white
+  sm:px-8
+  sm:pt-2
+  sm:pb-24
+  lg:px-12
+  lg:pt-0
+  lg:pb-28
+"
     >
-      {/* =====================================================
-          BACKGROUND
-      ====================================================== */}
+      {/* BACKGROUND */}
 
       <div className="pointer-events-none absolute inset-0">
-
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage: `
-              linear-gradient(
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              ),
-              linear-gradient(
-                90deg,
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              )
-            `,
-            backgroundSize: '72px 72px',
-          }}
-        />
-
         <motion.div
           animate={{
-            opacity: [0.25, 0.5, 0.25],
+            opacity: [0.15, 0.3, 0.15],
             scale: [1, 1.08, 1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="
-            absolute
-            left-[20%]
-            top-[20%]
-            h-[300px]
-            w-[300px]
-            rounded-full
-            bg-[#2563EB]/[0.035]
-            blur-[120px]
-          "
-        />
-
-        <motion.div
-          animate={{
-            opacity: [0.15, 0.35, 0.15],
-            x: [0, 25, 0],
           }}
           transition={{
             duration: 9,
             repeat: Infinity,
-            ease: 'easeInOut',
+            ease: "easeInOut",
           }}
           className="
             absolute
-            bottom-[-120px]
-            right-[10%]
-            h-[350px]
-            w-[350px]
+            left-[10%]
+            top-[-180px]
+            h-[450px]
+            w-[450px]
             rounded-full
-            bg-[#2563EB]/[0.03]
-            blur-[130px]
+            bg-[#4D8DFF]/[0.045]
+            blur-[140px]
           "
         />
 
+        <motion.div
+          animate={{
+            opacity: [0.1, 0.22, 0.1],
+            x: [0, 30, 0],
+          }}
+          transition={{
+            duration: 11,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="
+            absolute
+            bottom-[-220px]
+            right-[5%]
+            h-[450px]
+            w-[450px]
+            rounded-full
+            bg-[#4D8DFF]/[0.035]
+            blur-[150px]
+          "
+        />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1500px]">
 
-        {/* ===================================================
-            HEADER
-        ==================================================== */}
+        {/* HEADER */}
 
         <div
           className="
-            mb-16
-            flex
-            flex-col
-            justify-between
-            gap-10
-            border-b
-            border-white/[0.07]
-            pb-10
-            md:flex-row
-            md:items-end
-          "
+  mb-6
+  flex
+  flex-col
+  justify-between
+  gap-6
+  border-b
+  border-white/[0.07]
+  pb-6
+  md:flex-row
+  md:items-end
+"
         >
-
           <div>
-
-            {/* Section label */}
 
             <motion.div
               initial={{
@@ -250,30 +347,14 @@ export default function Skills() {
               }}
               transition={{
                 duration: 0.7,
-                ease: [0.22, 1, 0.36, 1],
               }}
-              className="mb-7 flex items-center gap-3"
+              className="mb-5 flex items-center gap-3"
             >
-              <motion.span
-                initial={{
-                  width: 0,
-                }}
-                whileInView={{
-                  width: 32,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.7,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="h-px bg-[#4D8DFF]"
-              />
+              <span className="h-px w-7 bg-[#4D8DFF]" />
 
               <span
                 className="
-                  text-[10px]
+                  text-[9px]
                   uppercase
                   tracking-[0.2em]
                   text-white/35
@@ -282,10 +363,6 @@ export default function Skills() {
                 Skills
               </span>
             </motion.div>
-
-            {/* =================================================
-                CREATIVE MAIN HEADING
-            ================================================= */}
 
             <motion.h2
               variants={headingContainer}
@@ -299,32 +376,30 @@ export default function Skills() {
                 perspective: 1000,
               }}
               className="
-                max-w-[1100px]
-                overflow-visible
-                font-clash
-                text-[4.2rem]
-                font-semibold
-                leading-[0.82]
-                tracking-[-0.065em]
-                sm:text-[5.5rem]
-                md:text-[6.5rem]
-                lg:text-[8rem]
-                xl:text-[8.8rem]
-              "
+  max-w-[800px]
+  font-clash
+  text-[2.5rem]
+  font-semibold
+  leading-[0.9]
+  tracking-[-0.055em]
+  sm:text-[3.2rem]
+  md:text-[3.8rem]
+  lg:text-[4.5rem]
+  xl:text-[4.8rem]
+"
             >
               {headingWords.map((word) => (
                 <motion.span
                   key={word.text}
                   variants={headingWord}
                   className={`
-                    mr-[0.18em]
+                    mr-[0.15em]
                     inline-block
                     origin-bottom
-                    will-change-transform
                     ${
-                      word.muted
-                        ? 'text-white/20'
-                        : 'text-white'
+                      word.blue
+                        ? "text-[#4D8DFF]"
+                        : "text-white"
                     }
                   `}
                 >
@@ -332,8 +407,6 @@ export default function Skills() {
                 </motion.span>
               ))}
             </motion.h2>
-
-            {/* tiny motion accent */}
 
             <motion.div
               initial={{
@@ -348,25 +421,23 @@ export default function Skills() {
                 once: true,
               }}
               transition={{
-                delay: 0.75,
+                delay: 0.6,
                 duration: 0.8,
-                ease: [0.22, 1, 0.36, 1],
               }}
               className="
-                mt-8
+                mt-6
                 h-px
-                w-24
+                w-20
                 origin-left
-                bg-[#4D8DFF]/60
+                bg-[#4D8DFF]/70
               "
             />
-
           </div>
 
-          <motion.div
+          <motion.p
             initial={{
               opacity: 0,
-              y: 20,
+              y: 15,
             }}
             whileInView={{
               opacity: 1,
@@ -376,213 +447,115 @@ export default function Skills() {
               once: true,
             }}
             transition={{
-              delay: 0.35,
               duration: 0.7,
             }}
-            className="max-w-[330px]"
+            className="
+              max-w-[320px]
+              text-xs
+              leading-6
+              text-white/35
+            "
           >
-            <p
-              className="
-                text-xs
-                leading-6
-                text-white/35
-              "
-            >
-              A practical toolkit built around frontend engineering,
-              interface design and thoughtful interaction.
-            </p>
-          </motion.div>
-
+            A practical toolkit built around frontend
+            engineering, interface design and thoughtful
+            interaction.
+          </motion.p>
         </div>
 
-        {/* ===================================================
-            CORE SKILLS
-        ==================================================== */}
+        {/* CORE SKILLS */}
 
         <div className="border-t border-white/[0.07]">
 
-          {skills.map((skill, index) => {
-            const Icon = skill.icon
+          {skills.map((skill, index) => (
+            <motion.div
+              key={skill.title}
+              initial={{
+                opacity: 0,
+                y: 30,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+                amount: 0.2,
+              }}
+              transition={{
+                duration: 0.7,
+                delay: index * 0.1,
+              }}
+              className="
+                group
+                grid
+                gap-7
+                border-b
+                border-white/[0.07]
+                py-9
+                md:grid-cols-[0.9fr_1.1fr]
+                md:items-center
+              "
+            >
+              <div>
+                <h3
+                  className="
+                    font-clash
+                    text-lg
+                    font-medium
+                    tracking-[-0.02em]
+                    text-white/80
+                    transition-colors
+                    duration-300
+                    group-hover:text-white
+                    sm:text-xl
+                  "
+                >
+                  {skill.title}
+                </h3>
 
-            return (
-              <motion.div
-                key={skill.title}
-                initial={{
-                  opacity: 0,
-                  y: 35,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                  amount: 0.2,
-                }}
-                transition={{
-                  duration: 0.7,
-                  delay: index * 0.1,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="
-                  group
-                  grid
-                  gap-8
-                  border-b
-                  border-white/[0.07]
-                  py-10
-                  md:grid-cols-[0.9fr_1.1fr_40px]
-                  md:items-center
-                "
-              >
+                <p
+                  className="
+                    mt-2
+                    max-w-[450px]
+                    text-xs
+                    leading-6
+                    text-white/30
+                  "
+                >
+                  {skill.description}
+                </p>
+              </div>
 
-                {/* Title */}
-
-                <div className="flex items-start gap-5">
-
-                  <motion.div
-                    whileHover={{
-                      rotate: 8,
-                      scale: 1.08,
-                    }}
-                    transition={{
-                      duration: 0.35,
-                    }}
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
+                {skill.technologies.map((technology) => (
+                  <span
+                    key={technology}
                     className="
-                      flex
-                      h-11
-                      w-11
-                      shrink-0
-                      items-center
-                      justify-center
-                      border
-                      border-white/[0.08]
-                      bg-white/[0.02]
-                      transition-all
+                      text-[9px]
+                      uppercase
+                      tracking-[0.08em]
+                      text-white/25
+                      transition-colors
                       duration-300
-                      group-hover:border-[#4D8DFF]/30
-                      group-hover:bg-[#4D8DFF]/[0.05]
+                      group-hover:text-[#4D8DFF]/75
                     "
                   >
-                    <Icon
-                      size={17}
-                      strokeWidth={1.3}
-                      className="
-                        text-white/35
-                        transition-colors
-                        duration-300
-                        group-hover:text-[#4D8DFF]
-                      "
-                    />
-                  </motion.div>
-
-                  <div>
-
-                    <h3
-                      className="
-                        font-clash
-                        text-xl
-                        font-medium
-                        tracking-[-0.02em]
-                        text-white/80
-                        transition-colors
-                        duration-300
-                        group-hover:text-white
-                      "
-                    >
-                      {skill.title}
-                    </h3>
-
-                    <p
-                      className="
-                        mt-2
-                        max-w-[420px]
-                        text-xs
-                        leading-6
-                        text-white/30
-                      "
-                    >
-                      {skill.description}
-                    </p>
-
-                  </div>
-
-                </div>
-
-                {/* Technologies */}
-
-                <div className="flex flex-wrap gap-2">
-
-                  {skill.technologies.map((technology, techIndex) => (
-                    <motion.span
-                      key={technology}
-                      initial={{
-                        opacity: 0,
-                        y: 8,
-                      }}
-                      whileInView={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      viewport={{
-                        once: true,
-                      }}
-                      transition={{
-                        delay: index * 0.08 + techIndex * 0.05,
-                        duration: 0.45,
-                      }}
-                      className="
-                        border
-                        border-white/[0.08]
-                        bg-white/[0.02]
-                        px-3
-                        py-2
-                        text-[9px]
-                        text-white/40
-                        transition-all
-                        duration-300
-                        group-hover:border-white/[0.12]
-                        group-hover:text-white/60
-                      "
-                    >
-                      {technology}
-                    </motion.span>
-                  ))}
-
-                </div>
-
-                {/* Arrow */}
-
-                <ArrowUpRight
-                  size={17}
-                  strokeWidth={1.2}
-                  className="
-                    hidden
-                    text-white/15
-                    transition-all
-                    duration-300
-                    group-hover:-translate-y-1
-                    group-hover:translate-x-1
-                    group-hover:text-[#4D8DFF]
-                    md:block
-                  "
-                />
-
-              </motion.div>
-            )
-          })}
+                    {technology}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
 
         </div>
 
-        {/* ===================================================
-            TOOLKIT
-        ==================================================== */}
+        {/* TOOLKIT */}
 
-        <div className="mt-24">
+        <div className="mt-8">
 
           <div
             className="
-              mb-8
+              mb-7
               flex
               items-end
               justify-between
@@ -591,24 +564,8 @@ export default function Skills() {
               pb-5
             "
           >
-
             <div>
-
-              <motion.span
-                initial={{
-                  opacity: 0,
-                  x: -15,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  x: 0,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.6,
-                }}
+              <span
                 className="
                   text-[9px]
                   uppercase
@@ -617,36 +574,21 @@ export default function Skills() {
                 "
               >
                 Toolkit
-              </motion.span>
+              </span>
 
-              <motion.h3
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.65,
-                }}
+              <h3
                 className="
                   mt-2
                   font-clash
-                  text-2xl
+                  text-xl
                   font-medium
                   tracking-[-0.025em]
                   text-white/80
-                  sm:text-3xl
+                  sm:text-2xl
                 "
               >
-                Supporting tools.
-              </motion.h3>
-
+                Tools I use.
+              </h3>
             </div>
 
             <span
@@ -661,118 +603,135 @@ export default function Skills() {
             >
               Everyday workflow
             </span>
-
           </div>
+
+          {/* MARQUEE */}
 
           <div
             className="
-              grid
-              grid-cols-2
-              border-l
-              border-t
+              relative
+              overflow-hidden
+              border-y
               border-white/[0.07]
-              sm:grid-cols-3
-              lg:grid-cols-6
             "
           >
 
-            {tools.map((tool, index) => {
-              const Icon = tool.icon
+            {/* LEFT FADE */}
 
-              return (
-                <motion.div
-                  key={tool.name}
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  viewport={{
-                    once: true,
-                  }}
-                  transition={{
-                    delay: index * 0.06,
-                    duration: 0.5,
-                  }}
-                  whileHover={{
-                    backgroundColor: 'rgba(255,255,255,0.025)',
-                    y: -3,
-                  }}
-                  className="
-                    group
-                    border-b
-                    border-r
-                    border-white/[0.07]
-                    p-5
-                    transition-colors
-                    duration-300
-                  "
-                >
+            <div
+              className="
+                pointer-events-none
+                absolute
+                left-0
+                top-0
+                z-20
+                h-full
+                w-16
+                bg-gradient-to-r
+                from-[#050B16]
+                to-transparent
+                sm:w-28
+              "
+            />
 
-                  <div
-                    className="
-                      mb-8
-                      flex
-                      items-center
-                      justify-between
-                    "
-                  >
+            {/* RIGHT FADE */}
 
-                    <Icon
-                      size={17}
-                      strokeWidth={1.25}
-                      className="
-                        text-white/25
-                        transition-colors
-                        duration-300
-                        group-hover:text-[#4D8DFF]
-                      "
-                    />
+            <div
+              className="
+                pointer-events-none
+                absolute
+                right-0
+                top-0
+                z-20
+                h-full
+                w-16
+                bg-gradient-to-l
+                from-[#050B16]
+                to-transparent
+                sm:w-28
+              "
+            />
 
-                  </div>
-
-                  <h4
-                    className="
-                      text-sm
-                      font-medium
-                      text-white/60
-                      transition-colors
-                      duration-300
-                      group-hover:text-white
-                    "
-                  >
-                    {tool.name}
-                  </h4>
-
-                  <p
-                    className="
-                      mt-1
-                      text-[9px]
-                      text-white/20
-                    "
-                  >
-                    {tool.category}
-                  </p>
-
-                </motion.div>
-              )
-            })}
-
+            <motion.div
+              className="flex w-max"
+              animate={{
+                x: ["0%", "-50%"],
+              }}
+              transition={{
+                duration: 28,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            >
+              {marqueeTools.map((tool, index) => (
+                <ToolItem
+                  key={`${tool.name}-${index}`}
+                  tool={tool}
+                />
+              ))}
+            </motion.div>
           </div>
 
+          <div className="mt-5 flex items-center justify-between">
+
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-1.5 w-1.5">
+                <span
+                  className="
+                    absolute
+                    inline-flex
+                    h-full
+                    w-full
+                    animate-ping
+                    rounded-full
+                    bg-[#4D8DFF]
+                    opacity-40
+                  "
+                />
+
+                <span
+                  className="
+                    relative
+                    inline-flex
+                    h-1.5
+                    w-1.5
+                    rounded-full
+                    bg-[#4D8DFF]
+                  "
+                />
+              </span>
+
+              <span
+                className="
+                  text-[8px]
+                  uppercase
+                  tracking-[0.15em]
+                  text-white/20
+                "
+              >
+                Technologies
+              </span>
+            </div>
+
+            <span
+              className="
+                text-[8px]
+                uppercase
+                tracking-[0.15em]
+                text-white/15
+              "
+            >
+              Moving continuously
+            </span>
+          </div>
         </div>
 
-        {/* ===================================================
-            BOTTOM STATEMENT
-        ==================================================== */}
+        {/* BOTTOM */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 30,
+            y: 25,
           }}
           whileInView={{
             opacity: 1,
@@ -785,7 +744,7 @@ export default function Skills() {
             duration: 0.7,
           }}
           className="
-            mt-16
+            mt-14
             flex
             flex-col
             gap-5
@@ -797,7 +756,6 @@ export default function Skills() {
             sm:justify-between
           "
         >
-
           <div className="flex items-center gap-3">
 
             <motion.span
@@ -807,7 +765,7 @@ export default function Skills() {
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: 'easeInOut',
+                ease: "easeInOut",
               }}
               className="
                 flex
@@ -837,7 +795,6 @@ export default function Skills() {
             >
               Always learning. Always refining.
             </span>
-
           </div>
 
           <a
@@ -870,11 +827,8 @@ export default function Skills() {
               "
             />
           </a>
-
         </motion.div>
-
       </div>
     </section>
-  )
+  );
 }
-

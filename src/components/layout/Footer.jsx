@@ -2,41 +2,90 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowUpRight } from 'lucide-react'
+import {
+  ArrowUpRight,
+  Mail,
+} from 'lucide-react'
 import Contact from '../sections/Contact'
 
 const socials = [
   {
     label: 'GitHub',
     href: 'https://github.com/simrannnnnn8990',
+    type: 'github',
   },
   {
     label: 'LinkedIn',
     href: 'https://www.linkedin.com/in/simran-gautam-793b89303?utm_source=share_via&utm_content=profile&utm_medium=member_android',
+    type: 'linkedin',
   },
   {
     label: 'Email',
     href: 'mailto:simranguatam@gmail.com',
+    type: 'email',
   },
 ]
 
 /* ============================================================
-   FLOATING PARTICLES
+   REAL BRAND LOGOS
 ============================================================ */
 
-const sparkleParticles = [
-  { left: '7%', top: '22%', size: 3, delay: 0 },
-  { left: '15%', top: '70%', size: 2, delay: 0.8 },
-  { left: '24%', top: '35%', size: 3, delay: 1.4 },
-  { left: '33%', top: '76%', size: 2, delay: 0.4 },
-  { left: '42%', top: '18%', size: 3, delay: 1.1 },
-  { left: '51%', top: '68%', size: 2, delay: 1.8 },
-  { left: '60%', top: '28%', size: 2, delay: 0.6 },
-  { left: '69%', top: '77%', size: 3, delay: 1.5 },
-  { left: '77%', top: '17%', size: 2, delay: 0.3 },
-  { left: '84%', top: '48%', size: 3, delay: 1.2 },
-  { left: '91%', top: '25%', size: 2, delay: 0.7 },
-]
+function GitHubIcon({ className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.084-.73.084-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.435.375.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+    </svg>
+  )
+}
+
+function LinkedInIcon({ className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V8.999h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.287zM5.337 7.433a2.063 2.063 0 1 1 0-4.126 2.063 2.063 0 0 1 0 4.126zM7.119 20.452H3.554V8.999h3.565v11.453zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" />
+    </svg>
+  )
+}
+
+function SocialIcon({ type }) {
+  if (type === 'github') {
+    return <GitHubIcon className="h-[14px] w-[14px]" />
+  }
+
+  if (type === 'linkedin') {
+    return <LinkedInIcon className="h-[14px] w-[14px]" />
+  }
+
+  return <Mail size={14} strokeWidth={1.5} />
+}
+
+/* ============================================================
+   ANIMATION
+============================================================ */
+
+const reveal = {
+  hidden: {
+    opacity: 0,
+    y: 22,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+}
 
 export default function Footer() {
   const [isContactOpen, setIsContactOpen] = useState(false)
@@ -52,106 +101,18 @@ export default function Footer() {
           min-h-screen
           overflow-hidden
           bg-[#050B16]
-          px-6
-          py-10
+          px-5
+          py-8
           text-white
           sm:px-8
           lg:px-12
+          lg:py-10
         "
       >
-        {/* ========================================================
-            SIMPLE BACKGROUND
-            NO GRID / NO PATTERN
-        ======================================================== */}
 
-        <div className="pointer-events-none absolute inset-0">
-
-          {/* Bottom blue glow */}
-          <div
-            className="
-              absolute
-              bottom-[-260px]
-              left-1/2
-              h-[500px]
-              w-[500px]
-              -translate-x-1/2
-              rounded-full
-              bg-[#2563EB]/[0.05]
-              blur-[150px]
-            "
-          />
-
-          {/* Center subtle glow */}
-          <motion.div
-            className="
-              absolute
-              left-1/2
-              top-[52%]
-              h-[320px]
-              w-[320px]
-              -translate-x-1/2
-              -translate-y-1/2
-              rounded-full
-              bg-[#4D8DFF]/[0.035]
-              blur-[120px]
-            "
-            animate={{
-              scale: [1, 1.12, 1],
-              opacity: [0.3, 0.55, 0.3],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-
-          {/* ======================================================
-              FLOATING WHITE PARTICLES
-          ====================================================== */}
-
-          <div className="absolute inset-0 overflow-hidden">
-            {sparkleParticles.map((particle, index) => (
-              <motion.span
-                key={`particle-${index}`}
-                className="
-                  absolute
-                  rounded-full
-                  bg-white
-                  shadow-[0_0_10px_rgba(255,255,255,0.65)]
-                "
-                style={{
-                  left: particle.left,
-                  top: particle.top,
-                  width: `${particle.size}px`,
-                  height: `${particle.size}px`,
-                }}
-                animate={{
-                  y: [0, -35, -70, -110, -145],
-                  x: [
-                    0,
-                    index % 2 === 0 ? 5 : -5,
-                    index % 2 === 0 ? -3 : 4,
-                    index % 2 === 0 ? 3 : -2,
-                    0,
-                  ],
-                  opacity: [0, 0.12, 0.6, 0.2, 0],
-                  scale: [0.3, 0.8, 1.2, 0.7, 0.2],
-                }}
-                transition={{
-                  duration: 5 + (index % 4),
-                  delay: particle.delay,
-                  repeat: Infinity,
-                  ease: 'easeOut',
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* ========================================================
+        {/* =====================================================
             MAIN CONTAINER
-        ======================================================== */}
+        ====================================================== */}
 
         <div
           className="
@@ -159,46 +120,65 @@ export default function Footer() {
             z-10
             mx-auto
             flex
-            min-h-[calc(100vh-5rem)]
+            min-h-[calc(100vh-4rem)]
             max-w-[1500px]
             flex-col
+            sm:min-h-[calc(100vh-5rem)]
           "
         >
 
-          {/* ======================================================
+          {/* ===================================================
               MAIN CONTENT
-          ====================================================== */}
+          ==================================================== */}
 
-          <div className="flex flex-1 flex-col justify-center">
+          <div
+            className="
+              flex
+              flex-1
+              flex-col
+              justify-center
+              py-10
+              sm:py-14
+              lg:py-8
+            "
+          >
 
-            {/* ====================================================
+            {/* =================================================
                 INTRO
-            ==================================================== */}
+            ================================================= */}
 
             <motion.div
-              initial={{
-                opacity: 0,
-                y: 15,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
+              variants={reveal}
+              initial="hidden"
+              whileInView="visible"
               viewport={{
                 once: true,
                 amount: 0.3,
               }}
-              transition={{
-                duration: 0.65,
-              }}
-              className="mb-4 max-w-md"
+              className="mb-7 max-w-md sm:mb-9"
             >
+              {/* <div className="mb-4 flex items-center gap-3">
+                <span className="h-px w-7 bg-[#4D8DFF]" />
+
+                <span
+                  className="
+                    text-[9px]
+                    uppercase
+                    tracking-[0.2em]
+                    text-[#4D8DFF]/75
+                  "
+                >
+                  Let&apos;s connect
+                </span>
+              </div> */}
+
               <p
                 className="
-                  text-[13px]
+                  text-[12px]
                   leading-6
-                  text-white/45
-                  sm:text-[14px]
+                  text-white/40
+                  sm:text-[13px]
+                  md:text-[14px]
                 "
               >
                 Have an idea worth building?
@@ -207,86 +187,57 @@ export default function Footer() {
               </p>
             </motion.div>
 
-            {/* ====================================================
-                CONNECT SECTION
-            ==================================================== */}
+            {/* =================================================
+                CONNECT
+            ================================================= */}
 
             <div
               className="
                 relative
-                overflow-hidden
                 border-y
-                border-white/[0.07]
-                py-10
-                sm:py-12
-                lg:py-14
+                border-white/[0.08]
+                py-12
+                sm:py-16
+                md:py-20
+                lg:py-24
               "
             >
 
-              {/* Subtle center light */}
+              {/* subtle horizontal accent */}
 
               <motion.div
-                className="
-                  pointer-events-none
-                  absolute
-                  left-1/2
-                  top-1/2
-                  h-[250px]
-                  w-[250px]
-                  -translate-x-1/2
-                  -translate-y-1/2
-                  rounded-full
-                  bg-[#4D8DFF]/[0.045]
-                  blur-[105px]
-                "
-                animate={{
-                  scale: [1, 1.12, 1],
-                  opacity: [0.2, 0.5, 0.2],
+                initial={{
+                  scaleX: 0,
+                  opacity: 0,
+                }}
+                whileInView={{
+                  scaleX: 1,
+                  opacity: 1,
+                }}
+                viewport={{
+                  once: true,
                 }}
                 transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
+                  duration: 1,
+                  ease: [0.22, 1, 0.36, 1],
                 }}
+                className="
+                  absolute
+                  left-0
+                  top-0
+                  h-px
+                  w-24
+                  origin-left
+                  bg-[#4D8DFF]/60
+                "
               />
 
-              {/* ==================================================
-                  CONNECT WORD
-              ================================================== */}
+              <div className="relative flex flex-col items-center">
 
-              <div
-                className="
-                  relative
-                  z-10
-                  flex
-                  flex-col
-                  items-center
-                "
-              >
+                {/* CONNECT WORD */}
 
-                <div
-                  className="
-                    relative
-                    flex
-                    items-center
-                    justify-center
-                    text-center
-                  "
-                >
-
+                <div className="relative flex items-center justify-center">
                   {letters.map((letter, index) => {
-
-                    /*
-                      Alternating entrance:
-                      C -> from top
-                      o -> from bottom
-                      n -> from top
-                      n -> from bottom
-                      e -> from top
-                      c -> from bottom
-                      t -> from top
-                    */
-
                     const fromTop = index % 2 === 0
 
                     return (
@@ -294,16 +245,14 @@ export default function Footer() {
                         key={`${letter}-${index}`}
                         initial={{
                           opacity: 0,
-                          y: fromTop ? -100 : 100,
-                          rotate: fromTop ? -7 : 7,
-                          scale: 0.88,
-                          filter: 'blur(4px)',
+                          y: fromTop ? -80 : 80,
+                          rotate: fromTop ? -5 : 5,
+                          filter: 'blur(5px)',
                         }}
                         whileInView={{
                           opacity: 1,
                           y: 0,
                           rotate: index % 2 === 0 ? -1 : 1,
-                          scale: 1,
                           filter: 'blur(0px)',
                         }}
                         viewport={{
@@ -311,26 +260,23 @@ export default function Footer() {
                           amount: 0.35,
                         }}
                         transition={{
-                          duration: 0.9,
-                          delay: index * 0.075,
+                          duration: 0.85,
+                          delay: index * 0.065,
                           ease: [0.22, 1, 0.36, 1],
                         }}
                         className="
-                          relative
                           inline-block
-                          text-[clamp(3.5rem,11vw,7.5rem)]
+                          text-[clamp(3.5rem,16vw,8rem)]
                           font-semibold
                           leading-[0.78]
+                          tracking-[-0.08em]
                           text-white
+                          sm:text-[clamp(4.5rem,12vw,9rem)]
+                          md:text-[clamp(5rem,10vw,9.5rem)]
                         "
                         style={{
-                          /*
-                            Modern clean font.
-                            No handwritten/script font.
-                          */
                           fontFamily:
                             'Inter, Helvetica Neue, Arial, sans-serif',
-                          letterSpacing: '-0.075em',
                         }}
                       >
                         {letter}
@@ -338,9 +284,7 @@ export default function Footer() {
                     )
                   })}
 
-                  {/* =================================================
-                      BLUE UNDERLINE
-                  ================================================= */}
+                  {/* BLUE LINE */}
 
                   <motion.span
                     initial={{
@@ -348,37 +292,33 @@ export default function Footer() {
                       opacity: 0,
                     }}
                     whileInView={{
-                      width: '58%',
+                      width: '55%',
                       opacity: 1,
                     }}
                     viewport={{
                       once: true,
                     }}
                     transition={{
-                      delay: 0.9,
-                      duration: 0.75,
+                      delay: 0.75,
+                      duration: 0.8,
                       ease: [0.22, 1, 0.36, 1],
                     }}
                     className="
                       absolute
                       bottom-[-10px]
-                      left-[21%]
+                      left-[23%]
                       h-[2px]
-                      rotate-[-2deg]
-                      rounded-full
-                      bg-[#4D8DFF]/70
+                      bg-[#4D8DFF]/75
                     "
                   />
                 </div>
 
-                {/* =================================================
-                    WITH ME
-                ================================================= */}
+                {/* WITH ME */}
 
                 <motion.div
                   initial={{
                     opacity: 0,
-                    y: 18,
+                    y: 15,
                   }}
                   whileInView={{
                     opacity: 1,
@@ -388,114 +328,41 @@ export default function Footer() {
                     once: true,
                   }}
                   transition={{
-                    delay: 0.6,
+                    delay: 0.55,
                     duration: 0.7,
                   }}
                   className="
-                    relative
-                    mt-6
+                    mt-7
                     flex
                     items-center
                     gap-3
+                    sm:mt-8
+                    sm:gap-4
                   "
                 >
+                  <span className="h-px w-7 bg-[#4D8DFF]/35 sm:w-10" />
 
                   <span
                     className="
-                      h-px
-                      w-7
-                      bg-[#4D8DFF]/40
-                      sm:w-10
-                    "
-                  />
-
-                  <span
-                    className="
-                      text-[17px]
+                      text-[14px]
                       font-medium
-                      leading-none
-                      tracking-[-0.03em]
-                      text-white/75
-                      sm:text-[20px]
+                      tracking-[-0.025em]
+                      text-white/65
+                      sm:text-[17px]
                     "
-                    style={{
-                      fontFamily:
-                        'Inter, Helvetica Neue, Arial, sans-serif',
-                    }}
                   >
                     with me
                   </span>
 
-                  <span
-                    className="
-                      h-px
-                      w-7
-                      bg-[#4D8DFF]/40
-                      sm:w-10
-                    "
-                  />
+                  <span className="h-px w-7 bg-[#4D8DFF]/35 sm:w-10" />
                 </motion.div>
-
-                {/* =================================================
-                    LEFT SPARKLE
-                ================================================= */}
-
-                <motion.span
-                  className="
-                    pointer-events-none
-                    absolute
-                    left-[17%]
-                    top-[18%]
-                    text-[13px]
-                    text-white/55
-                  "
-                  animate={{
-                    rotate: [0, 90, 180, 270, 360],
-                    opacity: [0.2, 0.9, 0.25, 0.7, 0.2],
-                    scale: [0.8, 1.15, 0.8, 1.05, 0.8],
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                >
-                  ✦
-                </motion.span>
-
-                {/* =================================================
-                    RIGHT SPARKLE
-                ================================================= */}
-
-                <motion.span
-                  className="
-                    pointer-events-none
-                    absolute
-                    right-[17%]
-                    bottom-[17%]
-                    text-[10px]
-                    text-[#4D8DFF]/65
-                  "
-                  animate={{
-                    rotate: [0, -90, -180, -270, -360],
-                    opacity: [0.15, 0.8, 0.2, 0.65, 0.15],
-                    scale: [0.7, 1.25, 0.7, 1.05, 0.7],
-                  }}
-                  transition={{
-                    duration: 4.5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                >
-                  ✦
-                </motion.span>
 
               </div>
             </div>
 
-            {/* ====================================================
+            {/* =================================================
                 CTA
-            ==================================================== */}
+            ================================================= */}
 
             <motion.div
               initial={{
@@ -515,13 +382,14 @@ export default function Footer() {
                 duration: 0.65,
               }}
               className="
-                mt-5
+                mt-7
                 flex
                 flex-col
-                gap-4
-                sm:flex-row
-                sm:items-center
-                sm:justify-between
+                gap-7
+                sm:mt-9
+                md:flex-row
+                md:items-center
+                md:justify-between
               "
             >
 
@@ -530,10 +398,11 @@ export default function Footer() {
               <div className="max-w-sm">
                 <p
                   className="
-                    text-[13px]
+                    text-[12px]
                     leading-6
-                    text-white/40
-                    sm:text-[14px]
+                    text-white/35
+                    sm:text-[13px]
+                    md:text-[14px]
                   "
                 >
                   Good interfaces start with good conversations.
@@ -556,37 +425,41 @@ export default function Footer() {
                 className="
                   group
                   inline-flex
-                  w-fit
+                  w-full
                   items-center
-                  gap-4
+                  justify-center
+                  gap-3
                   border
-                  border-[#4D8DFF]/40
-                  bg-[#4D8DFF]/[0.045]
+                  border-white/[0.12]
+                  bg-white/[0.025]
                   px-6
-                  py-3.5
-                  text-[11px]
+                  py-4
+                  text-[10px]
                   font-medium
-                  tracking-[0.11em]
-                  text-white/80
+                  uppercase
+                  tracking-[0.14em]
+                  text-white/70
                   transition-all
                   duration-300
-                  hover:border-[#4D8DFF]
-                  hover:bg-[#4D8DFF]/[0.09]
+                  hover:border-[#4D8DFF]/60
+                  hover:bg-[#4D8DFF]/[0.06]
                   hover:text-white
+                  sm:w-fit
+                  sm:px-7
                 "
               >
-                <span>
-                  Get in touch
-                </span>
+                <span>Get in touch</span>
 
                 <ArrowUpRight
                   size={15}
                   strokeWidth={1.3}
                   className="
-                    transition-transform
+                    text-white/40
+                    transition-all
                     duration-300
                     group-hover:-translate-y-1
                     group-hover:translate-x-1
+                    group-hover:text-[#4D8DFF]
                   "
                 />
               </motion.button>
@@ -594,9 +467,9 @@ export default function Footer() {
             </motion.div>
           </div>
 
-          {/* ======================================================
-              SOCIAL LINKS
-          ====================================================== */}
+          {/* ===================================================
+              SOCIAL / STATUS
+          ==================================================== */}
 
           <motion.div
             initial={{
@@ -616,8 +489,9 @@ export default function Footer() {
             }}
             className="
               border-t
-              border-white/[0.07]
-              py-4
+              border-white/[0.08]
+              py-5
+              sm:py-6
             "
           >
 
@@ -625,7 +499,7 @@ export default function Footer() {
               className="
                 flex
                 flex-col
-                gap-3
+                gap-6
                 sm:flex-row
                 sm:items-center
                 sm:justify-between
@@ -639,8 +513,8 @@ export default function Footer() {
                   flex
                   flex-wrap
                   items-center
-                  gap-x-7
-                  gap-y-3
+                  gap-3
+                  sm:gap-4
                 "
               >
                 {socials.map((social) => (
@@ -659,29 +533,45 @@ export default function Footer() {
                     }
                     className="
                       group
-                      flex
+                      inline-flex
                       items-center
-                      gap-2
-                      text-[12px]
+                      gap-2.5
+                      border
+                      border-white/[0.07]
+                      bg-white/[0.015]
+                      px-3
+                      py-2.5
+                      text-[9px]
                       font-medium
                       uppercase
-                      tracking-[0.10em]
-                      text-white/75
+                      tracking-[0.1em]
+                      text-white/45
                       transition-all
                       duration-300
+                      hover:border-white/[0.15]
+                      hover:bg-white/[0.035]
                       hover:text-white
+                      sm:px-3.5
                     "
                   >
-
-                    <span>
-                      {social.label}
+                    <span
+                      className="
+                        text-white/35
+                        transition-colors
+                        duration-300
+                        group-hover:text-[#4D8DFF]
+                      "
+                    >
+                      <SocialIcon type={social.type} />
                     </span>
 
+                    <span>{social.label}</span>
+
                     <ArrowUpRight
-                      size={13}
+                      size={11}
                       strokeWidth={1.3}
                       className="
-                        text-white/40
+                        text-white/20
                         transition-all
                         duration-300
                         group-hover:-translate-y-0.5
@@ -689,30 +579,14 @@ export default function Footer() {
                         group-hover:text-[#4D8DFF]
                       "
                     />
-
                   </a>
                 ))}
               </div>
 
               {/* AVAILABLE STATUS */}
 
-              <div
-                className="
-                  flex
-                  items-center
-                  gap-3
-                "
-              >
-
-                <span
-                  className="
-                    relative
-                    flex
-                    h-1.5
-                    w-1.5
-                  "
-                >
-
+              <div className="flex items-center gap-3">
+                <span className="relative flex h-1.5 w-1.5">
                   <span
                     className="
                       absolute
@@ -736,36 +610,37 @@ export default function Footer() {
                       bg-[#4D8DFF]
                     "
                   />
-
                 </span>
 
                 <span
                   className="
-                    text-[10px]
+                    text-[8px]
                     font-medium
                     uppercase
-                    tracking-[0.11em]
-                    text-white/55
+                    tracking-[0.12em]
+                    text-white/40
+                    sm:text-[9px]
                   "
                 >
                   Available for opportunities
                 </span>
-
               </div>
 
             </div>
           </motion.div>
 
-          {/* ======================================================
+          {/* ===================================================
               BOTTOM
-          ====================================================== */}
+          ==================================================== */}
 
           <div
             className="
               flex
               flex-col
               gap-2
-              pt-3
+              border-t
+              border-white/[0.04]
+              py-4
               sm:flex-row
               sm:items-center
               sm:justify-between
@@ -774,11 +649,12 @@ export default function Footer() {
 
             <p
               className="
-                text-[8px]
+                text-[7px]
                 font-medium
                 uppercase
                 tracking-[0.12em]
-                text-white/25
+                text-white/20
+                sm:text-[8px]
               "
             >
               © 2026 Simran Gautam
@@ -786,11 +662,12 @@ export default function Footer() {
 
             <p
               className="
-                text-[8px]
+                text-[7px]
                 font-medium
                 uppercase
                 tracking-[0.12em]
-                text-white/25
+                text-white/20
+                sm:text-[8px]
               "
             >
               Designed & built with intention
@@ -798,11 +675,12 @@ export default function Footer() {
 
             <p
               className="
-                text-[8px]
+                text-[7px]
                 font-medium
                 uppercase
                 tracking-[0.12em]
-                text-white/25
+                text-white/20
+                sm:text-[8px]
               "
             >
               Lucknow, India
@@ -813,9 +691,9 @@ export default function Footer() {
         </div>
       </footer>
 
-      {/* ==========================================================
+      {/* =======================================================
           CONTACT DRAWER
-      ========================================================== */}
+      ======================================================== */}
 
       <Contact
         isOpen={isContactOpen}

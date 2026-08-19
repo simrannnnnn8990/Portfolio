@@ -7,6 +7,7 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion'
+import { ArrowUpRight } from 'lucide-react'
 
 const projects = [
   {
@@ -15,7 +16,11 @@ const projects = [
     category: 'CONTENT WRITING PLATFORM',
     description:
       'A responsive content writing platform focused on a clean interface, reusable UI components, and a smooth user experience.',
-    technologies: ['Next.js', 'React.js', 'Tailwind CSS'],
+    technologies: [
+      'Next.js',
+      'React.js',
+      'Tailwind CSS',
+    ],
     features: [
       'Responsive UI',
       'Reusable Components',
@@ -23,21 +28,35 @@ const projects = [
     ],
     image:
       'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&auto=format&fit=crop&q=85',
+    liveUrl: '',
   },
+
   {
     id: '02',
     title: 'URS Skill',
     category: 'CORPORATE WEBSITE',
     description:
       'A responsive corporate website designed with reusable components, polished interactions, and purposeful GSAP motion.',
-    technologies: ['Next.js', 'React.js', 'Tailwind CSS', 'GSAP'],
+    technologies: [
+      'Next.js',
+      'React.js',
+      'Tailwind CSS',
+      'GSAP',
+    ],
     features: [
       'Responsive Design',
       'Reusable Architecture',
       'GSAP Animations',
     ],
-    image:
-      'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1600&auto=format&fit=crop&q=85',
+
+    // YOUR ACTUAL LOCAL IMAGE
+    image: '/project/ursSkill1.png',
+
+    // LIVE WEBSITE
+    liveUrl: 'https://www.ursskill.com/',
+
+    // CASE STUDY
+    caseStudyUrl: '/projects/urs-skill',
   },
 ]
 
@@ -57,10 +76,6 @@ export default function Projects() {
     offset: ['start end', 'end start'],
   })
 
-  /*
-   * Very subtle scroll movement.
-   * No heavy parallax — keeps it premium.
-   */
   const ambientY = useTransform(
     scrollYProgress,
     [0, 0.5, 1],
@@ -85,13 +100,10 @@ export default function Projects() {
       "
     >
       {/* =====================================================
-          CLEAN ATMOSPHERIC BACKGROUND
-          NO GRID / NO PATTERN / NO NOISE
+          BACKGROUND
       ====================================================== */}
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
-        {/* Large soft blue atmosphere */}
 
         <motion.div
           style={{ y: ambientY }}
@@ -121,8 +133,6 @@ export default function Projects() {
           "
         />
 
-        {/* Very subtle center atmosphere */}
-
         <div
           className="
             absolute
@@ -136,8 +146,6 @@ export default function Projects() {
             blur-[170px]
           "
         />
-
-        {/* Soft top light */}
 
         <motion.div
           initial={{
@@ -169,8 +177,6 @@ export default function Projects() {
           "
         />
 
-        {/* Floating blue light */}
-
         <motion.div
           animate={{
             y: [0, -20, 0],
@@ -194,8 +200,6 @@ export default function Projects() {
           "
         />
 
-        {/* Another tiny light */}
-
         <motion.div
           animate={{
             y: [0, 15, 0],
@@ -218,7 +222,9 @@ export default function Projects() {
             shadow-[0_0_18px_rgba(96,165,250,0.6)]
           "
         />
+
       </div>
+
 
       {/* =====================================================
           CONTENT
@@ -226,9 +232,9 @@ export default function Projects() {
 
       <div className="relative z-10 mx-auto max-w-[1500px]">
 
-        {/* =====================================================
+        {/* ===================================================
             HEADER
-        ====================================================== */}
+        ==================================================== */}
 
         <div
           className="
@@ -268,7 +274,7 @@ export default function Projects() {
             }}
           >
 
-            {/* Small label */}
+            {/* LABEL */}
 
             <motion.div
               initial={{
@@ -329,9 +335,11 @@ export default function Projects() {
               >
                 Selected Work
               </span>
+
             </motion.div>
 
-            {/* Heading */}
+
+            {/* HEADING */}
 
             <motion.h2
               initial={{
@@ -367,15 +375,12 @@ export default function Projects() {
                 lg:text-6xl
               "
             >
+
               <span className="inline-block">
                 Work that
               </span>
 
               <br />
-
-              {/* ============================================
-                  FLIPPING TEXT
-              ============================================= */}
 
               <span
                 className="
@@ -384,10 +389,8 @@ export default function Projects() {
                   overflow-hidden
                   align-bottom
                 "
-                style={{
-                  perspective: '1000px',
-                }}
               >
+
                 <motion.span
                   initial={{
                     opacity: 0,
@@ -413,15 +416,16 @@ export default function Projects() {
                     origin-bottom
                     text-white/35
                   "
-                  style={{
-                    transformStyle: 'preserve-3d',
-                  }}
                 >
                   speaks for itself.
                 </motion.span>
+
               </span>
+
             </motion.h2>
+
           </motion.div>
+
 
           {/* RIGHT DESCRIPTION */}
 
@@ -447,6 +451,7 @@ export default function Projects() {
             }}
             className="max-w-[310px]"
           >
+
             <p
               className="
                 text-xs
@@ -458,8 +463,11 @@ export default function Projects() {
               engineering, responsive design and thoughtful
               interaction come together.
             </p>
+
           </motion.div>
+
         </div>
+
 
         {/* =====================================================
             PROJECT LIST
@@ -468,6 +476,7 @@ export default function Projects() {
         <div className="space-y-9">
 
           {projects.map((project, index) => {
+
             const isActive =
               activeProject === project.id
 
@@ -569,7 +578,9 @@ export default function Projects() {
                   >
                     {project.category}
                   </motion.span>
+
                 </motion.div>
+
 
                 {/* =================================================
                     PROJECT GRID
@@ -591,7 +602,7 @@ export default function Projects() {
                 >
 
                   {/* =================================================
-                      CONTENT
+                      PROJECT CONTENT
                   ================================================== */}
 
                   <div
@@ -629,10 +640,8 @@ export default function Projects() {
                       animate={{
                         x: isActive ? 6 : 0,
                       }}
-                      style={{
-                        perspective: '1000px',
-                      }}
                     >
+
                       <h3
                         className="
                           font-clash
@@ -647,9 +656,7 @@ export default function Projects() {
 
                         <motion.span
                           animate={{
-                            opacity: isActive
-                              ? 0.7
-                              : 0.2,
+                            opacity: isActive ? 0.7 : 0.2,
                             x: isActive ? 5 : 0,
                           }}
                           transition={{
@@ -662,8 +669,11 @@ export default function Projects() {
                         >
                           .
                         </motion.span>
+
                       </h3>
+
                     </motion.div>
+
 
                     {/* DESCRIPTION */}
 
@@ -699,6 +709,7 @@ export default function Projects() {
                     >
                       {project.description}
                     </motion.p>
+
 
                     {/* TECHNOLOGIES */}
 
@@ -789,7 +800,9 @@ export default function Projects() {
                         )}
 
                       </div>
+
                     </motion.div>
+
 
                     {/* FEATURES */}
 
@@ -848,9 +861,7 @@ export default function Projects() {
 
                             <motion.span
                               animate={{
-                                width: isActive
-                                  ? 28
-                                  : 18,
+                                width: isActive ? 28 : 18,
                                 opacity: isActive
                                   ? 0.85
                                   : 0.4,
@@ -879,81 +890,85 @@ export default function Projects() {
 
                     </motion.div>
 
-                    {/* EXPLORE */}
 
-                    <motion.div
-                      initial={{
-                        opacity: 0,
-                        y: 15,
-                      }}
-                      whileInView={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      viewport={{
-                        once: true,
-                      }}
-                      transition={{
-                        duration: 0.65,
-                        delay: 0.45,
-                        ease,
-                      }}
-                      className="
-                        mt-4
-                        inline-flex
-                        items-center
-                        gap-3
-                        text-[10px]
-                        uppercase
-                        tracking-[0.15em]
-                        text-[#60A5FA]
-                      "
-                    >
+                    {/* =================================================
+                        LIVE WEBSITE ONLY
+                    ================================================== */}
 
-                      <span className="relative">
-
-                        Explore project
-
-                        <motion.span
-                          initial={{
-                            width: 0,
-                          }}
-                          animate={{
-                            width: isActive
-                              ? '100%'
-                              : 0,
-                          }}
-                          transition={{
-                            duration: 0.45,
-                          }}
-                          className="
-                            absolute
-                            -bottom-2
-                            left-0
-                            h-px
-                            bg-[#60A5FA]
-                            shadow-[0_0_8px_rgba(96,165,250,0.4)]
-                          "
-                        />
-
-                      </span>
-
-                      <motion.span
-                        animate={{
-                          x: isActive ? 6 : 0,
-                          y: isActive ? -3 : 0,
-                          rotate: isActive ? -8 : 0,
+                    {project.liveUrl && (
+                      <motion.div
+                        initial={{
+                          opacity: 0,
+                          y: 15,
+                        }}
+                        whileInView={{
+                          opacity: 1,
+                          y: 0,
+                        }}
+                        viewport={{
+                          once: true,
                         }}
                         transition={{
-                          duration: 0.35,
+                          duration: 0.65,
+                          delay: 0.45,
                           ease,
                         }}
+                        className="
+                          mt-6
+                          flex
+                          items-center
+                        "
                       >
-                        ↗
-                      </motion.span>
 
-                    </motion.div>
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="
+                            group/live
+                            inline-flex
+                            items-center
+                            gap-2.5
+                            border
+                            border-[#60A5FA]/25
+                            bg-[#60A5FA]/[0.045]
+                            px-4
+                            py-2.5
+                            text-[9px]
+                            font-medium
+                            uppercase
+                            tracking-[0.13em]
+                            text-[#93C5FD]/70
+                            transition-all
+                            duration-300
+                            hover:border-[#60A5FA]/60
+                            hover:bg-[#60A5FA]/[0.09]
+                            hover:text-[#BFDBFE]
+                          "
+                        >
+
+                          <span>
+                            Live Website
+                          </span>
+
+                          <ArrowUpRight
+                            size={13}
+                            strokeWidth={1.3}
+                            className="
+                              transition-transform
+                              duration-300
+                              group-hover/live:-translate-y-0.5
+                              group-hover/live:translate-x-0.5
+                            "
+                          />
+
+                        </a>
+
+                      </motion.div>
+                    )}
+
                   </div>
+
 
                   {/* =================================================
                       PROJECT PREVIEW
@@ -969,407 +984,39 @@ export default function Projects() {
 
                     <div className="relative">
 
-                      <motion.div
-                        initial={{
-                          opacity: 0,
-                          scale: 0.91,
-                          y: 45,
-                          rotateX: 10,
-                          filter: 'blur(8px)',
-                        }}
-                        whileInView={{
-                          opacity: 1,
-                          scale: 1,
-                          y: 0,
-                          rotateX: 0,
-                          filter: 'blur(0px)',
-                        }}
-                        viewport={{
-                          once: true,
-                          amount: 0.18,
-                        }}
-                        transition={{
-                          duration: 1.15,
-                          delay:
-                            0.15 + index * 0.1,
-                          ease,
-                        }}
-                        animate={{
-                          y: isActive ? -6 : 0,
-                          scale: isActive
-                            ? 1.012
-                            : 1,
-                        }}
-                        className="relative"
-                      >
+                      {/* CASE STUDY LINK */}
 
-                        {/* SOFT GLOW */}
-
-                        <motion.div
-                          animate={{
-                            opacity: isActive
-                              ? 0.45
-                              : 0.12,
-                            scale: isActive
-                              ? 1.05
-                              : 1,
-                          }}
-                          transition={{
-                            duration: 0.8,
-                            ease,
-                          }}
-                          className="
-                            absolute
-                            -inset-8
-                            rounded-[50px]
-                            bg-[#3B82F6]/[0.07]
-                            blur-[50px]
-                          "
-                        />
-
-                        {/* OUTER FRAME */}
-
-                        <motion.div
-                          animate={{
-                            scale: isActive
-                              ? 1.015
-                              : 1,
-                            opacity: isActive
-                              ? 1
-                              : 0.6,
-                          }}
-                          transition={{
-                            duration: 0.7,
-                            ease,
-                          }}
-                          className={`
-                            absolute
-                            -inset-3
-                            border
-                            ${
-                              isActive
-                                ? 'border-[#60A5FA]/30'
-                                : 'border-white/[0.05]'
-                            }
-                          `}
-                        />
-
-                        {/* BROWSER */}
-
-                        <div
-                          className="
-                            relative
-                            aspect-[16/10]
-                            overflow-hidden
-                            border
-                            border-white/[0.10]
-                            bg-[#091321]
-                            shadow-[0_30px_90px_rgba(0,0,0,0.38)]
-                          "
+                      {project.caseStudyUrl ? (
+                        <a
+                          href={project.caseStudyUrl}
+                          aria-label={`View ${project.title} case study`}
+                          className="block cursor-pointer"
                         >
-
-                          {/* Browser Header */}
-
-                          <div
-                            className="
-                              absolute
-                              left-0
-                              right-0
-                              top-0
-                              z-20
-                              flex
-                              h-9
-                              items-center
-                              justify-between
-                              border-b
-                              border-white/[0.07]
-                              bg-[#091321]/90
-                              px-4
-                              backdrop-blur-xl
-                            "
-                          >
-
-                            <div className="flex items-center gap-1.5">
-
-                              <span className="
-                                h-1.5
-                                w-1.5
-                                rounded-full
-                                bg-white/15
-                              " />
-
-                              <span className="
-                                h-1.5
-                                w-1.5
-                                rounded-full
-                                bg-white/15
-                              " />
-
-                              <span className="
-                                h-1.5
-                                w-1.5
-                                rounded-full
-                                bg-white/15
-                              " />
-
-                            </div>
-
-                            <motion.span
-                              animate={{
-                                opacity: isActive
-                                  ? 0.5
-                                  : 0.2,
-                                letterSpacing:
-                                  isActive
-                                    ? '0.2em'
-                                    : '0.12em',
-                              }}
-                              transition={{
-                                duration: 0.45,
-                              }}
-                              className="
-                                font-mono
-                                text-[8px]
-                                text-white/20
-                              "
-                            >
-                              {project.title.toUpperCase()}
-                            </motion.span>
-
-                            <span
-                              className="
-                                font-mono
-                                text-[8px]
-                                text-[#60A5FA]/60
-                              "
-                            >
-                              ↗
-                            </span>
-                          </div>
-
-                          {/* IMAGE */}
-
-                          <motion.img
-                            src={project.image}
-                            alt={`${project.title} project preview`}
-                            loading="lazy"
-                            animate={{
-                              scale: isActive
-                                ? 1.055
-                                : 1,
-                            }}
-                            transition={{
-                              duration: 1.4,
-                              ease,
-                            }}
-                            className="
-                              absolute
-                              inset-0
-                              h-full
-                              w-full
-                              object-cover
-                              pt-9
-                            "
+                          <ProjectPreview
+                            project={project}
+                            isActive={isActive}
+                            index={index}
+                            ease={ease}
                           />
-
-                          {/* CINEMATIC OVERLAY */}
-
-                          <motion.div
-                            animate={{
-                              opacity: isActive
-                                ? 0.1
-                                : 0.4,
-                            }}
-                            transition={{
-                              duration: 0.7,
-                            }}
-                            className="
-                              absolute
-                              inset-0
-                              bg-[#07101D]
-                            "
-                          />
-
-                          {/* LIGHT BLUE WASH */}
-
-                          <motion.div
-                            animate={{
-                              opacity: isActive
-                                ? 0.12
-                                : 0.035,
-                            }}
-                            transition={{
-                              duration: 0.7,
-                            }}
-                            className="
-                              absolute
-                              inset-0
-                              bg-[#60A5FA]
-                              mix-blend-screen
-                            "
-                          />
-
-                          {/* MOVING LIGHT */}
-
-                          <motion.div
-                            initial={{
-                              x: '-130%',
-                            }}
-                            animate={{
-                              x: isActive
-                                ? '130%'
-                                : '-130%',
-                            }}
-                            transition={{
-                              duration: 1.4,
-                              ease: 'easeInOut',
-                            }}
-                            className="
-                              pointer-events-none
-                              absolute
-                              bottom-0
-                              top-0
-                              w-1/3
-                              bg-gradient-to-r
-                              from-transparent
-                              via-[#BFDBFE]/[0.13]
-                              to-transparent
-                              blur-[2px]
-                            "
-                          />
-
-                          {/* BOTTOM LABEL */}
-
-                          <motion.div
-                            animate={{
-                              opacity: isActive
-                                ? 0.7
-                                : 0.3,
-                              x: isActive ? 4 : 0,
-                            }}
-                            transition={{
-                              duration: 0.4,
-                            }}
-                            className="
-                              absolute
-                              bottom-4
-                              left-4
-                              z-10
-                              font-mono
-                              text-[8px]
-                              tracking-wider
-                              text-white/30
-                            "
-                          >
-                            FRONTEND
-                          </motion.div>
-
-                          <motion.div
-                            animate={{
-                              opacity: isActive
-                                ? 0.95
-                                : 0.55,
-                              x: isActive ? -4 : 0,
-                            }}
-                            transition={{
-                              duration: 0.4,
-                            }}
-                            className="
-                              absolute
-                              bottom-4
-                              right-4
-                              z-10
-                              font-mono
-                              text-[8px]
-                              text-[#60A5FA]/70
-                            "
-                          >
-                            VIEW ↗
-                          </motion.div>
-
-                        </div>
-
-                        {/* CORNER MARKS */}
-
-                        <motion.span
-                          animate={{
-                            opacity: isActive
-                              ? 1
-                              : 0.4,
-                          }}
-                          className="
-                            absolute
-                            -left-3
-                            -top-3
-                            h-5
-                            w-5
-                            border-l
-                            border-t
-                            border-[#60A5FA]/60
-                          "
+                        </a>
+                      ) : (
+                        <ProjectPreview
+                          project={project}
+                          isActive={isActive}
+                          index={index}
+                          ease={ease}
                         />
+                      )}
 
-                        <motion.span
-                          animate={{
-                            opacity: isActive
-                              ? 1
-                              : 0.4,
-                          }}
-                          className="
-                            absolute
-                            -right-3
-                            -top-3
-                            h-5
-                            w-5
-                            border-r
-                            border-t
-                            border-[#60A5FA]/60
-                          "
-                        />
-
-                        <motion.span
-                          animate={{
-                            opacity: isActive
-                              ? 1
-                              : 0.4,
-                          }}
-                          className="
-                            absolute
-                            -bottom-3
-                            -left-3
-                            h-5
-                            w-5
-                            border-b
-                            border-l
-                            border-[#60A5FA]/60
-                          "
-                        />
-
-                        <motion.span
-                          animate={{
-                            opacity: isActive
-                              ? 1
-                              : 0.4,
-                          }}
-                          className="
-                            absolute
-                            -bottom-3
-                            -right-3
-                            h-5
-                            w-5
-                            border-b
-                            border-r
-                            border-[#60A5FA]/60
-                          "
-                        />
-
-                      </motion.div>
                     </div>
+
                   </div>
+
                 </div>
 
+
                 {/* =================================================
-                    PROJECT DIVIDER
+                    DIVIDER
                 ================================================== */}
 
                 {index < projects.length - 1 && (
@@ -1401,10 +1048,13 @@ export default function Projects() {
                     "
                   />
                 )}
+
               </motion.article>
             )
           })}
+
         </div>
+
 
         {/* =====================================================
             BOTTOM STATEMENT
@@ -1468,6 +1118,7 @@ export default function Projects() {
 
           </div>
 
+
           <div className="flex items-center gap-3">
 
             <motion.span
@@ -1501,9 +1152,473 @@ export default function Projects() {
             </span>
 
           </div>
+
         </motion.div>
 
       </div>
+
     </section>
+  )
+}
+
+
+/* ============================================================
+   PROJECT PREVIEW COMPONENT
+============================================================ */
+
+function ProjectPreview({
+  project,
+  isActive,
+  index,
+  ease,
+}) {
+  return (
+    <motion.div
+      initial={{
+        opacity: 0,
+        scale: 0.91,
+        y: 45,
+        rotateX: 10,
+        filter: 'blur(8px)',
+      }}
+      whileInView={{
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        rotateX: 0,
+        filter: 'blur(0px)',
+      }}
+      viewport={{
+        once: true,
+        amount: 0.18,
+      }}
+      transition={{
+        duration: 1.15,
+        delay: 0.15 + index * 0.1,
+        ease,
+      }}
+      animate={{
+        y: isActive ? -6 : 0,
+        scale: isActive ? 1.012 : 1,
+      }}
+      className="relative"
+    >
+
+      {/* SOFT GLOW */}
+
+      <motion.div
+        animate={{
+          opacity: isActive ? 0.45 : 0.12,
+          scale: isActive ? 1.05 : 1,
+        }}
+        transition={{
+          duration: 0.8,
+          ease,
+        }}
+        className="
+          absolute
+          -inset-8
+          rounded-[50px]
+          bg-[#3B82F6]/[0.07]
+          blur-[50px]
+        "
+      />
+
+
+      {/* OUTER FRAME */}
+
+      <motion.div
+        animate={{
+          scale: isActive ? 1.015 : 1,
+          opacity: isActive ? 1 : 0.6,
+        }}
+        transition={{
+          duration: 0.7,
+          ease,
+        }}
+        className={`
+          absolute
+          -inset-3
+          border
+          ${
+            isActive
+              ? 'border-[#60A5FA]/30'
+              : 'border-white/[0.05]'
+          }
+        `}
+      />
+
+
+      {/* BROWSER */}
+
+      <div
+        className="
+          relative
+          aspect-[16/10]
+          overflow-hidden
+          border
+          border-white/[0.10]
+          bg-[#091321]
+          shadow-[0_30px_90px_rgba(0,0,0,0.38)]
+        "
+      >
+
+        {/* BROWSER HEADER */}
+
+        <div
+          className="
+            absolute
+            left-0
+            right-0
+            top-0
+            z-20
+            flex
+            h-9
+            items-center
+            justify-between
+            border-b
+            border-white/[0.07]
+            bg-[#091321]/90
+            px-4
+            backdrop-blur-xl
+          "
+        >
+
+          <div className="flex items-center gap-1.5">
+
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-white/15
+              "
+            />
+
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-white/15
+              "
+            />
+
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-white/15
+              "
+            />
+
+          </div>
+
+
+          <motion.span
+            animate={{
+              opacity: isActive ? 0.5 : 0.2,
+              letterSpacing: isActive
+                ? '0.2em'
+                : '0.12em',
+            }}
+            transition={{
+              duration: 0.45,
+            }}
+            className="
+              font-mono
+              text-[8px]
+              text-white/20
+            "
+          >
+            {project.title.toUpperCase()}
+          </motion.span>
+
+
+          <span
+            className="
+              font-mono
+              text-[8px]
+              text-[#60A5FA]/60
+            "
+          >
+            ↗
+          </span>
+
+        </div>
+
+
+        {/* IMAGE */}
+
+        <motion.img
+          src={project.image}
+          alt={`${project.title} project preview`}
+          loading="lazy"
+          draggable={false}
+          animate={{
+            scale: isActive ? 1.055 : 1,
+          }}
+          transition={{
+            duration: 1.4,
+            ease,
+          }}
+          className="
+            absolute
+            inset-0
+            h-full
+            w-full
+            object-cover
+            pt-9
+          "
+        />
+
+
+        {/* CINEMATIC OVERLAY */}
+
+        <motion.div
+          animate={{
+            opacity: isActive ? 0.1 : 0.4,
+          }}
+          transition={{
+            duration: 0.7,
+          }}
+          className="
+            absolute
+            inset-0
+            bg-[#07101D]
+          "
+        />
+
+
+        {/* LIGHT BLUE WASH */}
+
+        <motion.div
+          animate={{
+            opacity: isActive ? 0.12 : 0.035,
+          }}
+          transition={{
+            duration: 0.7,
+          }}
+          className="
+            absolute
+            inset-0
+            bg-[#60A5FA]
+            mix-blend-screen
+          "
+        />
+
+
+        {/* MOVING LIGHT */}
+
+        <motion.div
+          initial={{
+            x: '-130%',
+          }}
+          animate={{
+            x: isActive ? '130%' : '-130%',
+          }}
+          transition={{
+            duration: 1.4,
+            ease: 'easeInOut',
+          }}
+          className="
+            pointer-events-none
+            absolute
+            bottom-0
+            top-0
+            w-1/3
+            bg-gradient-to-r
+            from-transparent
+            via-[#BFDBFE]/[0.13]
+            to-transparent
+            blur-[2px]
+          "
+        />
+
+
+        {/* BOTTOM LEFT LABEL */}
+
+        <motion.div
+          animate={{
+            opacity: isActive ? 0.7 : 0.3,
+            x: isActive ? 4 : 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+          className="
+            absolute
+            bottom-4
+            left-4
+            z-10
+            font-mono
+            text-[8px]
+            tracking-wider
+            text-white/30
+          "
+        >
+          FRONTEND
+        </motion.div>
+
+
+        {/* =================================================
+            CASE STUDY SEMI-CIRCLE
+        ================================================== */}
+
+        {project.caseStudyUrl && (
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: 0.65,
+              x: 75,
+              y: 75,
+            }}
+            animate={{
+              opacity: isActive ? 1 : 0,
+              scale: isActive ? 1 : 0.65,
+              x: isActive ? 0 : 75,
+              y: isActive ? 0 : 75,
+            }}
+            transition={{
+              duration: 0.55,
+              ease,
+            }}
+            className="
+              pointer-events-none
+              absolute
+              bottom-[-1px]
+              right-[-1px]
+              z-30
+              flex
+              h-[180px]
+              w-[180px]
+              items-center
+              justify-center
+              rounded-tl-[100%]
+              bg-[#60A5FA]/[0.90]
+              shadow-[-25px_-20px_80px_rgba(96,165,250,0.20)]
+              backdrop-blur-sm
+            "
+          >
+
+            <motion.div
+              animate={{
+                x: isActive ? 0 : 15,
+                y: isActive ? 0 : 15,
+                opacity: isActive ? 1 : 0,
+              }}
+              transition={{
+                duration: 0.4,
+                delay: 0.08,
+                ease,
+              }}
+              className="
+                mb-[-55px]
+                ml-[38px]
+                flex
+                flex-col
+                items-start
+              "
+            >
+
+              <span
+                className="
+                  text-[10px]
+                  font-medium
+                  uppercase
+                  tracking-[0.16em]
+                  text-[#07101D]
+                "
+              >
+                View Study
+              </span>
+
+              <span
+                className="
+                  mt-1
+                  text-[18px]
+                  leading-none
+                  text-[#07101D]
+                "
+              >
+                ↗
+              </span>
+
+            </motion.div>
+
+          </motion.div>
+        )}
+
+      </div>
+
+
+      {/* CORNER MARKS */}
+
+      <motion.span
+        animate={{
+          opacity: isActive ? 1 : 0.4,
+        }}
+        className="
+          absolute
+          -left-3
+          -top-3
+          h-5
+          w-5
+          border-l
+          border-t
+          border-[#60A5FA]/60
+        "
+      />
+
+      <motion.span
+        animate={{
+          opacity: isActive ? 1 : 0.4,
+        }}
+        className="
+          absolute
+          -right-3
+          -top-3
+          h-5
+          w-5
+          border-r
+          border-t
+          border-[#60A5FA]/60
+        "
+      />
+
+      <motion.span
+        animate={{
+          opacity: isActive ? 1 : 0.4,
+        }}
+        className="
+          absolute
+          -bottom-3
+          -left-3
+          h-5
+          w-5
+          border-b
+          border-l
+          border-[#60A5FA]/60
+        "
+      />
+
+      <motion.span
+        animate={{
+          opacity: isActive ? 1 : 0.4,
+        }}
+        className="
+          absolute
+          -bottom-3
+          -right-3
+          h-5
+          w-5
+          border-b
+          border-r
+          border-[#60A5FA]/60
+        "
+      />
+
+    </motion.div>
   )
 }

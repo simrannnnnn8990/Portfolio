@@ -257,7 +257,7 @@ export default function Hero() {
             TOP NAV-LIKE INFORMATION — NOT A BADGE
         ======================================================== */}
 
-        <div className="absolute left-6 right-6 top-7 z-30 flex items-center justify-between sm:left-8 sm:right-8 lg:left-12 lg:right-12">
+        {/* <div className="absolute left-6 right-6 top-7 z-30 flex items-center justify-between sm:left-8 sm:right-8 lg:left-12 lg:right-12">
           <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">
             Simran Gautam
           </div>
@@ -265,7 +265,7 @@ export default function Hero() {
           <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
             frontend / learning / building
           </div>
-        </div>
+        </div> */}
 
         {/* =======================================================
             STORY COUNTER
